@@ -7,3 +7,12 @@ plugins {
 
     kotlin("jvm") version "1.2.61"
 }
+
+subprojects {
+    repositories {
+        jcenter()
+    }
+
+    apply(plugin = "org.jetbrains.intellij")
+    apply(plugin = "kotlin")
+}
