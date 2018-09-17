@@ -17,3 +17,7 @@ allprojects {
         version = "2018.2"
     }
 }
+
+dependencies {
+    compile(project(":skaffold"))
+}
