@@ -11,4 +11,9 @@ allprojects {
 
     apply(plugin = "org.jetbrains.intellij")
     apply(plugin = "kotlin")
+
+    intellij {
+        type = "IU"
+        version = "2018.2"
+    }
 }
