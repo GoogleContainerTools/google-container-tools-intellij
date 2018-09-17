@@ -2,23 +2,26 @@ package com.google.container.tools.skaffold.run
 
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationType
+import com.intellij.icons.AllIcons
 import javax.swing.Icon
 
 open class SkaffoldRunConfigurationType : ConfigurationType {
+    val ID = "google-container-tools-skaffold-run-config"
+
     override fun getIcon(): Icon {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return AllIcons.General.Balloon
     }
 
     override fun getConfigurationTypeDescription(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return "Skaffold"
     }
 
     override fun getId(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return ID
     }
 
     override fun getDisplayName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return "Skaffold"
     }
 
     override fun getConfigurationFactories(): Array<ConfigurationFactory> {

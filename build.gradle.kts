@@ -13,7 +13,7 @@ allprojects {
     apply(plugin = "kotlin")
 
     intellij {
-        type = "IU"
+        type = "IC"
         version = "2018.2"
     }
 }
