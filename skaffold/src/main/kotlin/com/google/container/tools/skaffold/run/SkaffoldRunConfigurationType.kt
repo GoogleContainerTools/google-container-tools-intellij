@@ -23,15 +23,17 @@ import com.intellij.execution.configurations.ConfigurationType
 import javax.swing.Icon
 
 /**
- * [ConfigurationType] extension that registers and enables Skaffold run configuration type, including single run and
- * continuous deployment targets provided by separate [ConfigurationFactory].
+ * [ConfigurationType] extension that registers and enables Skaffold run configuration type,
+ * including single run and continuous deployment targets provided by separate
+ * [ConfigurationFactory].
  */
 class SkaffoldRunConfigurationType : ConfigurationType {
     val ID = "google-container-tools-skaffold-run-config"
 
     override fun getIcon(): Icon = SKAFFOLD_ICON
 
-    override fun getConfigurationTypeDescription(): String = message("skaffold.run.config.general.description")
+    override fun getConfigurationTypeDescription(): String =
+            message("skaffold.run.config.general.description")
 
     override fun getId(): String = ID
 
