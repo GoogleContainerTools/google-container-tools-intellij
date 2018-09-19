@@ -29,23 +29,13 @@ import javax.swing.Icon
 class SkaffoldRunConfigurationType : ConfigurationType {
     val ID = "google-container-tools-skaffold-run-config"
 
-    override fun getIcon(): Icon {
-        return SKAFFOLD_ICON
-    }
+    override fun getIcon(): Icon = SKAFFOLD_ICON
 
-    override fun getConfigurationTypeDescription(): String {
-        return message("skaffold.run.config.general.description")
-    }
+    override fun getConfigurationTypeDescription(): String = message("skaffold.run.config.general.description")
 
-    override fun getId(): String {
-        return ID
-    }
+    override fun getId(): String = ID
 
-    override fun getDisplayName(): String {
-        return message("skaffold.run.config.general.name")
-    }
+    override fun getDisplayName(): String = message("skaffold.run.config.general.name")
 
-    override fun getConfigurationFactories(): Array<ConfigurationFactory> {
-        return emptyArray()
-    }
+    override fun getConfigurationFactories(): Array<ConfigurationFactory> = emptyArray()
 }

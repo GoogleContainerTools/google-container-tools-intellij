@@ -19,7 +19,7 @@ package com.google.container.tools.skaffold
 import com.intellij.CommonBundle
 import com.intellij.openapi.util.IconLoader
 import org.jetbrains.annotations.PropertyKey
-import java.util.*
+import java.util.ResourceBundle
 
 internal val SKAFFOLD_ICON = IconLoader.getIcon("/icons/skaffold.png")
 
