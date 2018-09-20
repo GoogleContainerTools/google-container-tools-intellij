@@ -21,11 +21,12 @@ allprojects {
 
     spotless {
         kotlin {
+            target("**/src/**/*.kt")
             ktlint()
         }
 
         kotlinGradle {
-            target("**/*.kts", "**/src/**/*.kt")
+            target("**/*.gradle.kts")
             ktlint()
         }
     }
