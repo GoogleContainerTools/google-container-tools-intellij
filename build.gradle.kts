@@ -22,7 +22,8 @@ allprojects {
     spotless {
         kotlin {
             target("**/src/**/*.kt")
-            ktlint()
+            // Set ktlint to follow the Android Style Guide for source files
+            ktlint().userData(mapOf("android" to "true"))
         }
 
         kotlinGradle {
