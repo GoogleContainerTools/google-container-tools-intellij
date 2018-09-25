@@ -56,7 +56,7 @@ class SkaffoldSingleRunConfigurationFactory(type: ConfigurationType) : Configura
     override fun createTemplateConfiguration(project: Project): RunConfiguration =
         SkaffoldSingleRunConfiguration(project, this, name)
 
-    override fun getName(): String = message("skaffold.run.config.single.run")
+    override fun getName(): String = message("skaffold.run.config.single.run.name")
 }
 
 /**
@@ -67,5 +67,5 @@ class SkaffoldDevConfigurationFactory(type: ConfigurationType) : ConfigurationFa
     override fun createTemplateConfiguration(project: Project): RunConfiguration =
         SkaffoldDevConfiguration(project, this, name)
 
-    override fun getName(): String = message("skaffold.run.config.dev.run")
+    override fun getName(): String = message("skaffold.run.config.dev.run.name")
 }
