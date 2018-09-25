@@ -22,8 +22,9 @@ import javax.swing.JComponent
 import javax.swing.JPanel
 
 /**
- * Settings editor that provides a UI for Skaffold development mode run configuration settings,
- * also saves and retrieves the settings from the project state.
+ * Settings editor that provides a UI for Skaffold continuous development mode run
+ * configuration settings (ultimately calling "skaffold dev"), also saves and retrieves
+ * the settings from the project state.
  */
 class SkaffoldDevSettingsEditor : SettingsEditor<RunConfiguration>() {
     override fun resetEditorFrom(s: RunConfiguration) {
