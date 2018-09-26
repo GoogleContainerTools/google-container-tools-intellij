@@ -2,4 +2,4 @@
 
 # Google Container Tools for IntelliJ
 
-In development
+In development.
