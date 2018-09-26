@@ -27,7 +27,7 @@
 @rem (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 @rem OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-cd github/google-cloud-intellij
+cd github/google-container-tools-intellij
 
 @rem Explicitly set to JDK 8 to get around Kokoro default environment value of JDK 9
 set JAVA_HOME=C:\program files\java\jdk1.8.0_152
