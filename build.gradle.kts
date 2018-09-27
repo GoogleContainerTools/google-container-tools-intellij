@@ -31,6 +31,8 @@ allprojects {
     apply(plugin = "com.diffplug.gradle.spotless")
 
     intellij {
+        setPlugins("yaml")
+
         type = project.properties["ideaEdition"].toString()
         version = project.properties["ideaVersion"].toString()
         intellijRepo = project.properties["intellijRepoUrl"].toString()
@@ -46,6 +48,12 @@ allprojects {
         kotlinGradle {
             target("**/*.gradle.kts")
             ktlint()
+        }
+    }
+
+    dependencies {
+        testCompile("com.google.truth:truth:+") {
+            exclude(group = "com.google.guava", module = "guava")
         }
     }
 }

@@ -16,6 +16,7 @@
 
 package com.google.container.tools.skaffold.run
 
+import com.google.container.tools.skaffold.findSkaffoldFiles
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.openapi.options.SettingsEditor
 import javax.swing.JComponent
@@ -28,6 +29,7 @@ import javax.swing.JPanel
  */
 class SkaffoldDevSettingsEditor : SettingsEditor<RunConfiguration>() {
     override fun resetEditorFrom(s: RunConfiguration) {
+        print(findSkaffoldFiles(s.project))
     }
 
     override fun createEditor(): JComponent = JPanel()
