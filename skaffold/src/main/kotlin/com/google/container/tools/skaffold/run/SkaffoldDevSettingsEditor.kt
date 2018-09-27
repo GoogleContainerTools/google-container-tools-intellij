@@ -29,7 +29,6 @@ import javax.swing.JPanel
  */
 class SkaffoldDevSettingsEditor : SettingsEditor<RunConfiguration>() {
     override fun resetEditorFrom(s: RunConfiguration) {
-        print(findSkaffoldFiles(s.project))
     }
 
     override fun createEditor(): JComponent = JPanel()
