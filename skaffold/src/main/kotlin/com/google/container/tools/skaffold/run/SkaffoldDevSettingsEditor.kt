@@ -16,7 +16,6 @@
 
 package com.google.container.tools.skaffold.run
 
-import com.google.container.tools.skaffold.findSkaffoldFiles
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.openapi.options.SettingsEditor
 import javax.swing.JComponent
