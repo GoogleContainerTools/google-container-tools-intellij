@@ -47,6 +47,8 @@ internal fun isSkaffoldFile(file: VirtualFile): Boolean {
 /**
  * Finds all Skaffold configuration YAML files in the given project. "Excluded" directories from
  * project modules are omitted and not searched (such as build output).
+ * @param project IDE project to search Skaffold file in
+ * @return List of Skaffold configuration files in the project.
  */
 internal fun findSkaffoldFiles(project: Project): List<VirtualFile> {
     val results: MutableList<VirtualFile> = ArrayList()
