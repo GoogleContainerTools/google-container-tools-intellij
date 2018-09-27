@@ -16,10 +16,10 @@
 
 package com.google.container.tools.skaffold
 
-import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.rootManager
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.FileTypeIndex
+import com.intellij.psi.search.GlobalSearchScope
 import org.jetbrains.yaml.YAMLFileType
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -57,34 +57,6 @@ internal fun isSkaffoldFile(file: VirtualFile): Boolean {
  * @return List of Skaffold configuration files in the project.
  */
 internal fun findSkaffoldFiles(project: Project): List<VirtualFile> {
-    val results: MutableList<VirtualFile> = ArrayList()
-    val excludedRoots: MutableList<VirtualFile> = ArrayList()
-    ModuleManager.getInstance(project)
-        .modules.forEach { excludedRoots.addAll(it.rootManager.excludeRoots) }
-
-    findSkaffoldFiles(project.baseDir, excludedRoots, results)
-    return results
-}
-
-/**
- * Recursively finds all Skaffold configuration YAML files in the given root file/directory.
- * @param file file to start search from, directory or a file itself.
- * @param excludedRoots file roots to exclude search on.
- * @param results list to collect resulting Skaffold files into.
- */
-internal fun findSkaffoldFiles(
-    file: VirtualFile,
-    excludedRoots: List<VirtualFile>,
-    results: MutableList<VirtualFile>
-) {
-    if (file in excludedRoots) return
-
-    if (isSkaffoldFile(file)) {
-        results.add(file)
-        return
-    }
-
-    if (file.isDirectory) {
-        file.children.forEach { findSkaffoldFiles(it, excludedRoots, results) }
-    }
+    return FileTypeIndex.getFiles(YAMLFileType.YML, GlobalSearchScope.allScope(project))
+        .filter { isSkaffoldFile(it) }
 }
