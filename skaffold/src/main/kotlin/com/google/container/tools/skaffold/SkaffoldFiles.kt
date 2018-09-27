@@ -24,8 +24,13 @@ import org.jetbrains.yaml.YAMLFileType
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.util.Scanner
+import java.util.regex.Pattern
 
-private const val SKAFFOLD_API_HEADER = "apiVersion: skaffold/"
+// see https://github.com/GoogleContainerTools/skaffold/blob/master/examples/annotated-skaffold.yaml
+private const val SKAFFOLD_API_HEADER_REGEX = """\s*apiVersion:\s*skaffold/v"""
+private val SKAFFOLD_API_HEADER_PATTERN: Pattern by lazy {
+    Pattern.compile(SKAFFOLD_API_HEADER_REGEX)
+}
 
 /**
  * Checks if a given file is a valid Skaffold configuration file based on type and API version.
@@ -37,7 +42,8 @@ internal fun isSkaffoldFile(file: VirtualFile): Boolean {
             inputStream.use {
                 val scanner = Scanner(it)
                 // consider this YAML file as Skaffold when first line contains proper API version
-                return scanner.hasNextLine() && scanner.nextLine().startsWith(SKAFFOLD_API_HEADER)
+                return scanner.hasNextLine() &&
+                    SKAFFOLD_API_HEADER_PATTERN.matcher(scanner.nextLine()).find()
             }
         }
     }
