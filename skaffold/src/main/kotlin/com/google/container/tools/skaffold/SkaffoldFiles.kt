@@ -25,29 +25,11 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.util.Scanner
 
-internal fun findSkaffoldFiles(project: Project): List<VirtualFile> {
-    val results: MutableList<VirtualFile> = ArrayList()
-    val excludedRoots: MutableList<VirtualFile> = ArrayList()
-    ModuleManager.getInstance(project)
-        .modules.forEach { excludedRoots.addAll(it.rootManager.excludeRoots) }
-
-    findSkaffoldFiles(project.baseDir, results)
-    return results
-}
-
-internal fun findSkaffoldFiles(file: VirtualFile, results: MutableList<VirtualFile>) {
-    if (isSkaffoldFile(file)) {
-        results.add(file)
-        return
-    }
-
-    if (file.isDirectory) {
-        file.children.forEach { findSkaffoldFiles(it, results) }
-    }
-}
-
 private const val SKAFFOLD_API_HEADER = "apiVersion: skaffold/"
 
+/**
+ * Checks if a given file is a valid Skaffold configuration file based on type and API version.
+ */
 fun isSkaffoldFile(file: VirtualFile): Boolean {
     with(file) {
         if (!isDirectory && fileType is YAMLFileType && isValid) {
@@ -60,4 +42,34 @@ fun isSkaffoldFile(file: VirtualFile): Boolean {
         }
     }
     return false
+}
+
+/**
+ * Finds all Skaffold configuration YAML files in the given project. "Excluded" directories from
+ * project modules are omitted and not searched (such as build output).
+ */
+internal fun findSkaffoldFiles(project: Project): List<VirtualFile> {
+    val results: MutableList<VirtualFile> = ArrayList()
+    val excludedRoots: MutableList<VirtualFile> = ArrayList()
+    ModuleManager.getInstance(project)
+        .modules.forEach { excludedRoots.addAll(it.rootManager.excludeRoots) }
+
+    findSkaffoldFiles(project.baseDir, results)
+    return results
+}
+
+/**
+ * Recursively finds all Skaffold configuration YAML files in the given root file/directory.
+ * @param file file to start search from, directory or a file itself.
+ * @param results list to collect resulting Skaffold files into.
+ */
+internal fun findSkaffoldFiles(file: VirtualFile, results: MutableList<VirtualFile>) {
+    if (isSkaffoldFile(file)) {
+        results.add(file)
+        return
+    }
+
+    if (file.isDirectory) {
+        file.children.forEach { findSkaffoldFiles(it, results) }
+    }
 }
