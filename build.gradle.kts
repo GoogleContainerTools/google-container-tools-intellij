@@ -50,12 +50,6 @@ allprojects {
             ktlint()
         }
     }
-
-    dependencies {
-        testCompile("com.google.truth:truth:+") {
-            exclude(group = "com.google.guava", module = "guava")
-        }
-    }
 }
 
 dependencies {
