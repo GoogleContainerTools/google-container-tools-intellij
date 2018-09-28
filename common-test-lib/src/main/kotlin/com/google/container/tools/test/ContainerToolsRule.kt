@@ -16,7 +16,6 @@
 
 package com.google.container.tools.test
 
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.testFramework.EdtTestUtil
 import com.intellij.testFramework.fixtures.IdeaProjectTestFixture
 import com.intellij.testFramework.fixtures.IdeaTestFixtureFactory
@@ -45,14 +44,10 @@ class ContainerToolsRule : TestRule {
     private fun setUpRule() {
         lightTestFixture =
             IdeaTestFixtureFactory.getFixtureFactory().createLightFixtureBuilder().fixture
-        EdtTestUtil.runInEdtAndWait(object : ThrowableRunnable<Throwable> {
-            override fun run() {
-                lightTestFixture.setUp()
-            }
-        })
+        EdtTestUtil.runInEdtAndWait(ThrowableRunnable { lightTestFixture.setUp() })
     }
 
     private fun tearDownRule() {
-        ApplicationManager.getApplication().invokeAndWait { lightTestFixture.tearDown() }
+        EdtTestUtil.runInEdtAndWait(ThrowableRunnable { lightTestFixture.tearDown() })
     }
 }
