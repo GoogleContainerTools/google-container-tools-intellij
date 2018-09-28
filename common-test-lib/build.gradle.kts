@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-include 'skaffold'
-include 'common-test-lib'
+dependencies {
+}

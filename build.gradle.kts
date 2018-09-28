@@ -38,6 +38,13 @@ allprojects {
         intellijRepo = project.properties["intellijRepoUrl"].toString()
     }
 
+    dependencies {
+        testCompile(project(":common-test-lib"))
+        testCompile("com.google.truth:truth:+") {
+            exclude(group = "com.google.guava", module = "guava")
+        }
+    }
+
     spotless {
         kotlin {
             target("**/src/**/*.kt")
