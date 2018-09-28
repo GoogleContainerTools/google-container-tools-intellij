@@ -39,7 +39,6 @@ allprojects {
     }
 
     dependencies {
-        testCompile(project(":common-test-lib"))
         testCompile("com.google.truth:truth:+") {
             exclude(group = "com.google.guava", module = "guava")
         }

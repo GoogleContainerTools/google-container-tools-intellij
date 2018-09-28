@@ -17,17 +17,18 @@
 package com.google.container.tools.skaffold
 
 import com.google.common.truth.Truth.assertThat
+import com.google.container.tools.test.ContainerToolsRule
 import com.intellij.mock.MockVirtualFile
+import org.junit.Rule
 import org.junit.Test
 
 class SkaffoldFilesTest {
-    @Test
-    fun `empty project return empty list`() {
-    }
+    @get:Rule
+    val containerToolsRule: ContainerToolsRule = ContainerToolsRule()
 
     @Test
     fun `valid skaffold file is recognized`() {
-        val skaffoldFile: MockVirtualFile = MockVirtualFile.file("skaffold.yaml")
+        val skaffoldFile = MockVirtualFile.file("skaffold.yaml")
         skaffoldFile.setText("apiVersion: skaffold/v1alpha2")
 
         assertThat(isSkaffoldFile(skaffoldFile)).isTrue()
@@ -35,7 +36,7 @@ class SkaffoldFilesTest {
 
     @Test
     fun `kubernetes file is not valid skaffold file`() {
-        val k8sFile: MockVirtualFile = MockVirtualFile.file("deploy.yaml")
+        val k8sFile = MockVirtualFile.file("deploy.yaml")
         k8sFile.setText("apiVersion: apps/v1")
 
         assertThat(isSkaffoldFile(k8sFile)).isFalse()

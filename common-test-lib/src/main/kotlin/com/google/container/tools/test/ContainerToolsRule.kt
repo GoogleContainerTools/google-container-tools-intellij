@@ -27,7 +27,7 @@ import org.junit.runners.model.Statement
 import kotlin.properties.Delegates
 
 class ContainerToolsRule : TestRule {
-    private var lightTestFixture: IdeaProjectTestFixture by Delegates.notNull()
+    var lightTestFixture: IdeaProjectTestFixture by Delegates.notNull()
 
     override fun apply(baseStatement: Statement, description: Description): Statement {
         return object : Statement() {
