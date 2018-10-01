@@ -23,7 +23,6 @@ import com.intellij.util.ThrowableRunnable
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
-import kotlin.properties.Delegates
 
 /**
  * A custom [TestRule] for Container Tools unit tests.
@@ -34,7 +33,7 @@ import kotlin.properties.Delegates
  *    this text fixture is "light", i.e. instance of [LightIdeaTestFixture].
  */
 class ContainerToolsRule : TestRule {
-    var ideaProjectTestFixture: IdeaProjectTestFixture by Delegates.notNull()
+    lateinit var ideaProjectTestFixture: IdeaProjectTestFixture
 
     override fun apply(baseStatement: Statement, description: Description): Statement {
         return object : Statement() {
