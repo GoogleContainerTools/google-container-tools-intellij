@@ -46,7 +46,7 @@ class ContainerToolsRule : TestRule {
                 }
             }
         }
-    
+
     private fun setUpRule() {
         ideaProjectTestFixture =
             IdeaTestFixtureFactory.getFixtureFactory().createLightFixtureBuilder().fixture
