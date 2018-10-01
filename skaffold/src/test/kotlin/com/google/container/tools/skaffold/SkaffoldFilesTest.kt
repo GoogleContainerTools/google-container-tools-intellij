@@ -22,14 +22,23 @@ import com.intellij.mock.MockVirtualFile
 import org.junit.Rule
 import org.junit.Test
 
+/** Unit tests for Skaffold files functionality in [SkaffoldFiles.kt] */
 class SkaffoldFilesTest {
     @get:Rule
-    val containerToolsRule: ContainerToolsRule = ContainerToolsRule()
+    val containerToolsRule = ContainerToolsRule()
 
     @Test
-    fun `valid skaffold file is recognized`() {
+    fun `valid skaffold file is accepted`() {
         val skaffoldFile = MockVirtualFile.file("skaffold.yaml")
         skaffoldFile.setText("apiVersion: skaffold/v1alpha2")
+
+        assertThat(isSkaffoldFile(skaffoldFile)).isTrue()
+    }
+
+    @Test
+    fun `frivolously formatted skaffold file is accepted`() {
+        val skaffoldFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldFile.setText("  apiVersion:    skaffold/v1alpha3")
 
         assertThat(isSkaffoldFile(skaffoldFile)).isTrue()
     }

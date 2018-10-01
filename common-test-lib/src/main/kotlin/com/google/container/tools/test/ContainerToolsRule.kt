@@ -25,8 +25,16 @@ import org.junit.runner.Description
 import org.junit.runners.model.Statement
 import kotlin.properties.Delegates
 
+/**
+ * A custom [TestRule] for Container Tools unit tests.
+ *
+ * This rule adds the following functionality:
+ *
+ *  * Creates an [IdeaProjectTestFixture] and makes it available for tests via property. By default
+ *    this text fixture is "light", i.e. instance of [LightIdeaTestFixture].
+ */
 class ContainerToolsRule : TestRule {
-    var lightTestFixture: IdeaProjectTestFixture by Delegates.notNull()
+    var ideaProjectTestFixture: IdeaProjectTestFixture by Delegates.notNull()
 
     override fun apply(baseStatement: Statement, description: Description): Statement {
         return object : Statement() {
@@ -42,12 +50,12 @@ class ContainerToolsRule : TestRule {
     }
 
     private fun setUpRule() {
-        lightTestFixture =
+        ideaProjectTestFixture =
             IdeaTestFixtureFactory.getFixtureFactory().createLightFixtureBuilder().fixture
-        EdtTestUtil.runInEdtAndWait(ThrowableRunnable { lightTestFixture.setUp() })
+        EdtTestUtil.runInEdtAndWait(ThrowableRunnable { ideaProjectTestFixture.setUp() })
     }
 
     private fun tearDownRule() {
-        EdtTestUtil.runInEdtAndWait(ThrowableRunnable { lightTestFixture.tearDown() })
+        EdtTestUtil.runInEdtAndWait(ThrowableRunnable { ideaProjectTestFixture.tearDown() })
     }
 }
