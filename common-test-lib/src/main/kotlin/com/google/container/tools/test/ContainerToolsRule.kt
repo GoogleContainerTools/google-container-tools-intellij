@@ -35,8 +35,8 @@ import org.junit.runners.model.Statement
 class ContainerToolsRule : TestRule {
     lateinit var ideaProjectTestFixture: IdeaProjectTestFixture
 
-    override fun apply(baseStatement: Statement, description: Description): Statement {
-        return object : Statement() {
+    override fun apply(baseStatement: Statement, description: Description): Statement =
+        object : Statement() {
             override fun evaluate() {
                 try {
                     setUpRule()
@@ -46,8 +46,7 @@ class ContainerToolsRule : TestRule {
                 }
             }
         }
-    }
-
+    
     private fun setUpRule() {
         ideaProjectTestFixture =
             IdeaTestFixtureFactory.getFixtureFactory().createLightFixtureBuilder().fixture
