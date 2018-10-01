@@ -36,7 +36,7 @@ class SkaffoldFilesTest {
     }
 
     @Test
-    fun `frivolously formatted skaffold file is accepted`() {
+    fun `extra spaces and tabs in header skaffold file is accepted`() {
         val skaffoldFile = MockVirtualFile.file("skaffold.yaml")
         skaffoldFile.setText("  apiVersion:    skaffold/v1alpha3")
 
