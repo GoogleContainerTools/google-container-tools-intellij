@@ -26,9 +26,9 @@ import javax.swing.JPanel
  * list of all Skaffold configuration files ([SkaffoldFilesComboBox]) found in the project.
  */
 class BaseSkaffoldSettingsEditorPanel(project: Project) : JPanel() {
-    val skaffoldFilesComboBox: SkaffoldFilesComboBox = SkaffoldFilesComboBox(project)
+    private val skaffoldFilesComboBox: SkaffoldFilesComboBox = SkaffoldFilesComboBox(project)
 
-    val basePanel = panel {
+    private val basePanel = panel {
         row(message("skaffold.configuration.label")) { skaffoldFilesComboBox(grow) }
     }
 

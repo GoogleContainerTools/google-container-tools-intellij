@@ -22,9 +22,20 @@ import com.intellij.openapi.vfs.VirtualFile
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComboBox
 
+/**
+ * A combo box with a list of available Skaffold configuration files for a given project.
+ */
 class SkaffoldFilesComboBox(project: Project) : JComboBox<VirtualFile>() {
+    private val skaffoldFilesMutableModel =
+        DefaultComboBoxModel<VirtualFile>(findSkaffoldFiles(project).toTypedArray())
+
     init {
-        model = DefaultComboBoxModel<VirtualFile>(findSkaffoldFiles(project).toTypedArray())
+        model = skaffoldFilesMutableModel
         if (model.size > 0) selectedIndex = 0
+    }
+
+    fun setSelectedSkaffoldFile(skaffoldFile: VirtualFile) {
+        skaffoldFilesMutableModel.addElement(skaffoldFile)
+        selectedItem = skaffoldFile
     }
 }
