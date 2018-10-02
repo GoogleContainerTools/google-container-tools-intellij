@@ -24,7 +24,7 @@ import javax.swing.JComboBox
 
 class SkaffoldFilesComboBox(project: Project) : JComboBox<VirtualFile>() {
     init {
-        setModel(DefaultComboBoxModel<VirtualFile>(findSkaffoldFiles(project).toTypedArray()))
+        model = DefaultComboBoxModel<VirtualFile>(findSkaffoldFiles(project).toTypedArray())
         if (model.size > 0) selectedIndex = 0
     }
 }
