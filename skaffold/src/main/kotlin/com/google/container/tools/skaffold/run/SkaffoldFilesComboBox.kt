@@ -18,18 +18,26 @@ package com.google.container.tools.skaffold.run
 
 import com.google.container.tools.skaffold.findSkaffoldFiles
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
+import java.awt.Component
 import javax.swing.DefaultComboBoxModel
+import javax.swing.DefaultListCellRenderer
 import javax.swing.JComboBox
+import javax.swing.JLabel
+import javax.swing.JList
+import javax.swing.MutableComboBoxModel
 
 /**
  * A combo box with a list of available Skaffold configuration files for a given project.
  */
-class SkaffoldFilesComboBox(project: Project) : JComboBox<VirtualFile>() {
-    private val skaffoldFilesMutableModel =
-        DefaultComboBoxModel<VirtualFile>(findSkaffoldFiles(project).toTypedArray())
+class SkaffoldFilesComboBox : JComboBox<VirtualFile>() {
+    private lateinit var skaffoldFilesMutableModel: MutableComboBoxModel<VirtualFile>
 
-    init {
+    fun setProject(project: Project) {
+        setRenderer(VirtualFileRenderer(project.baseDir))
+        skaffoldFilesMutableModel =
+            DefaultComboBoxModel<VirtualFile>(findSkaffoldFiles(project).toTypedArray())
         model = skaffoldFilesMutableModel
         if (model.size > 0) selectedIndex = 0
     }
@@ -37,5 +45,23 @@ class SkaffoldFilesComboBox(project: Project) : JComboBox<VirtualFile>() {
     fun setSelectedSkaffoldFile(skaffoldFile: VirtualFile) {
         skaffoldFilesMutableModel.addElement(skaffoldFile)
         selectedItem = skaffoldFile
+    }
+}
+
+private class VirtualFileRenderer(val projectBaseDir: VirtualFile) : DefaultListCellRenderer() {
+    override fun getListCellRendererComponent(
+        list: JList<*>?,
+        value: Any?,
+        index: Int,
+        isSelected: Boolean,
+        cellHasFocus: Boolean
+    ): Component {
+        val renderer =
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
+        if (value is VirtualFile && renderer is JLabel) {
+            renderer.text = VfsUtilCore.getRelativeLocation(value, projectBaseDir)
+        }
+
+        return renderer
     }
 }
