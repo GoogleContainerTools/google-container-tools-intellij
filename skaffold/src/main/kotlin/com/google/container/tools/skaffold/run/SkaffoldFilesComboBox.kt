@@ -34,6 +34,10 @@ import javax.swing.MutableComboBoxModel
 class SkaffoldFilesComboBox : JComboBox<VirtualFile>() {
     private lateinit var skaffoldFilesMutableModel: MutableComboBoxModel<VirtualFile>
 
+    /**
+     * Sets project for the combo box, and fills combo box with all Skaffold files available
+     * in this project. First file is selected by default.
+     */
     fun setProject(project: Project) {
         setRenderer(VirtualFileRenderer(project.baseDir))
         skaffoldFilesMutableModel =
@@ -42,12 +46,17 @@ class SkaffoldFilesComboBox : JComboBox<VirtualFile>() {
         if (model.size > 0) selectedIndex = 0
     }
 
+    /**
+     * Sets give file as a selected Skaffold file in the drop-down. If model does not contain
+     * the file, adds it and selects it.
+     */
     fun setSelectedSkaffoldFile(skaffoldFile: VirtualFile) {
         skaffoldFilesMutableModel.addElement(skaffoldFile)
         selectedItem = skaffoldFile
     }
 }
 
+/** Renders name of the Skaffold file relative to the base dir of the current IDE project. */
 private class VirtualFileRenderer(val projectBaseDir: VirtualFile) : DefaultListCellRenderer() {
     override fun getListCellRendererComponent(
         list: JList<*>?,

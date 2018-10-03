@@ -45,7 +45,7 @@ open class BaseSkaffoldSettingsEditor : SettingsEditor<RunConfiguration>() {
         return basePanel
     }
 
-    override fun applyEditorTo(s: RunConfiguration) {
+    override fun applyEditorTo(runConfig: RunConfiguration) {
         val selectedSkaffoldFile: VirtualFile =
             skaffoldFilesComboBox.getItemAt(skaffoldFilesComboBox.selectedIndex)
                 ?: throw ConfigurationException("Skaffold configuration file not selected.")
@@ -55,7 +55,7 @@ open class BaseSkaffoldSettingsEditor : SettingsEditor<RunConfiguration>() {
         }
     }
 
-    override fun resetEditorFrom(s: RunConfiguration) {
-        skaffoldFilesComboBox.setProject(s.project)
+    override fun resetEditorFrom(runConfig: RunConfiguration) {
+        skaffoldFilesComboBox.setProject(runConfig.project)
     }
 }
