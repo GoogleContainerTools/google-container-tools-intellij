@@ -47,7 +47,7 @@ class SkaffoldFilesComboBox : JComboBox<VirtualFile>() {
     }
 
     /**
-     * Sets give file as a selected Skaffold file in the drop-down. If model does not contain
+     * Sets given file as a selected Skaffold file in the drop-down. If model does not contain
      * the file, adds it and selects it.
      */
     fun setSelectedSkaffoldFile(skaffoldFile: VirtualFile) {
