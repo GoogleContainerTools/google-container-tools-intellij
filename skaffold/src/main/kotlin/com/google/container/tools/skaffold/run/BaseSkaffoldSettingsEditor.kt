@@ -48,10 +48,10 @@ open class BaseSkaffoldSettingsEditor : SettingsEditor<RunConfiguration>() {
     override fun applyEditorTo(runConfig: RunConfiguration) {
         val selectedSkaffoldFile: VirtualFile =
             skaffoldFilesComboBox.getItemAt(skaffoldFilesComboBox.selectedIndex)
-                ?: throw ConfigurationException("Skaffold configuration file not selected.")
+                ?: throw ConfigurationException(message("skaffold.no.file.selected.error"))
 
         if (!isSkaffoldFile(selectedSkaffoldFile)) {
-            throw ConfigurationException("Invalid Skaffold configuration file.")
+            throw ConfigurationException(message("skaffold.invalid.file.error"))
         }
     }
 
