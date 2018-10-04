@@ -24,7 +24,6 @@ import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.layout.panel
 import javax.swing.JComponent
-import javax.swing.JPanel
 
 /**
  * Base settings editor for both Skaffold single run and continunous run configurations. Includes
@@ -34,11 +33,9 @@ import javax.swing.JPanel
 open class BaseSkaffoldSettingsEditor : SettingsEditor<RunConfiguration>() {
     private lateinit var skaffoldFilesComboBox: SkaffoldFilesComboBox
 
-    protected lateinit var basePanel: JPanel
-
     override fun createEditor(): JComponent {
         skaffoldFilesComboBox = SkaffoldFilesComboBox()
-        basePanel = panel {
+        val basePanel = panel {
             row(message("skaffold.configuration.label")) { skaffoldFilesComboBox(grow) }
         }
 

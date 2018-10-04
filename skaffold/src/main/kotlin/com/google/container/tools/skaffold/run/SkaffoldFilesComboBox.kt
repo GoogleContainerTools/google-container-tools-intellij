@@ -39,7 +39,7 @@ class SkaffoldFilesComboBox : JComboBox<VirtualFile>() {
      * in this project. First file is selected by default.
      */
     fun setProject(project: Project) {
-        setRenderer(VirtualFileRenderer(project.baseDir))
+        renderer = VirtualFileRenderer(project.baseDir)
         skaffoldFilesMutableModel =
             DefaultComboBoxModel<VirtualFile>(findSkaffoldFiles(project).toTypedArray())
         model = skaffoldFilesMutableModel
