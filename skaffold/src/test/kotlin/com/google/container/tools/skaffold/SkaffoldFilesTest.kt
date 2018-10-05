@@ -26,7 +26,7 @@ import org.junit.Test
 /** Unit tests for Skaffold files functionality in [SkaffoldFiles.kt] */
 class SkaffoldFilesTest {
     @get:Rule
-    val containerToolsRule = ContainerToolsRule()
+    val containerToolsRule = ContainerToolsRule(this)
 
     @Test
     fun `valid skaffold file is accepted`() {
