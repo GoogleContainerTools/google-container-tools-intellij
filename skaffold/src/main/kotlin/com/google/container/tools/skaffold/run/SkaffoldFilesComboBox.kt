@@ -53,7 +53,17 @@ class SkaffoldFilesComboBox : JComboBox<VirtualFile>() {
      * the file, adds it and selects it.
      */
     fun setSelectedSkaffoldFile(skaffoldFile: VirtualFile) {
-        skaffoldFilesMutableModel.addElement(skaffoldFile)
+        var existingElement = false
+        for (i in 0..skaffoldFilesMutableModel.size) {
+            if (skaffoldFilesMutableModel.getElementAt(i) == skaffoldFile) {
+                existingElement = true
+                break
+            }
+        }
+        if (!existingElement) {
+            skaffoldFilesMutableModel.addElement(skaffoldFile)
+        }
+
         selectedItem = skaffoldFile
     }
 

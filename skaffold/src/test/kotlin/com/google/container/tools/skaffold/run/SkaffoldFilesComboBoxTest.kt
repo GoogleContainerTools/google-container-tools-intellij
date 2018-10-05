@@ -20,6 +20,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.skaffold.SkaffoldFileService
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
+import com.intellij.mock.MockVirtualFile
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
@@ -43,11 +44,74 @@ class SkaffoldFilesComboBoxTest {
     }
 
     @Test
-    fun `empty combobox for empty project with no files`() {
+    fun `empty combobox for empty project has no files`() {
         val project = containerToolsRule.ideaProjectTestFixture.project
         every { mockSkaffoldFileService.findSkaffoldFiles(project) } returns listOf()
         skaffoldFilesComboBox.setProject(project)
 
         assertThat(skaffoldFilesComboBox.getSelectedSkaffoldFile()).isNull()
+    }
+
+    @Test
+    fun `single skaffold file from project is pre-selected in combo box`() {
+        val project = containerToolsRule.ideaProjectTestFixture.project
+        val mockSkaffoldFile = MockVirtualFile.file("skaffold.yaml")
+        every { mockSkaffoldFileService.findSkaffoldFiles(project) } returns
+            listOf(mockSkaffoldFile)
+        skaffoldFilesComboBox.setProject(project)
+
+        assertThat(skaffoldFilesComboBox.getSelectedSkaffoldFile()).isEqualTo(mockSkaffoldFile)
+    }
+
+    @Test
+    fun `first skaffold file from multi-file project is pre-selected in combo box`() {
+        val project = containerToolsRule.ideaProjectTestFixture.project
+        val mockSkaffoldFile1 = MockVirtualFile.file("k8s/deploy.yaml")
+        val mockSkaffoldFile2 = MockVirtualFile.file("skaffold.yaml")
+        every { mockSkaffoldFileService.findSkaffoldFiles(project) } returns listOf(
+            mockSkaffoldFile1,
+            mockSkaffoldFile2
+        )
+        skaffoldFilesComboBox.setProject(project)
+
+        assertThat(skaffoldFilesComboBox.getSelectedSkaffoldFile()).isEqualTo(mockSkaffoldFile1)
+    }
+
+    @Test
+    fun `setSelectedSkaffoldFile with existing file changes selection in combo box`() {
+        val project = containerToolsRule.ideaProjectTestFixture.project
+        val mockSkaffoldFile1 = MockVirtualFile.file("k8s/deploy.yaml")
+        val mockSkaffoldFile2 = MockVirtualFile.file("skaffold.yaml")
+        every { mockSkaffoldFileService.findSkaffoldFiles(project) } returns listOf(
+            mockSkaffoldFile1,
+            mockSkaffoldFile2
+        )
+        skaffoldFilesComboBox.setProject(project)
+        skaffoldFilesComboBox.setSelectedSkaffoldFile(mockSkaffoldFile2)
+
+        // make sure the file is not double-added.
+        assertThat(skaffoldFilesComboBox.model.size).isEqualTo(2)
+        assertThat(skaffoldFilesComboBox.getSelectedSkaffoldFile()).isEqualTo(mockSkaffoldFile2)
+    }
+
+    @Test
+    fun `setSelectedSkaffoldFile with non-existing file changes selection and adds element`() {
+        val project = containerToolsRule.ideaProjectTestFixture.project
+        val mockSkaffoldFile1 = MockVirtualFile.file("k8s/deploy.yaml")
+        val mockSkaffoldFile2 = MockVirtualFile.file("skaffold.yaml")
+        every { mockSkaffoldFileService.findSkaffoldFiles(project) } returns listOf(
+            mockSkaffoldFile1,
+            mockSkaffoldFile2
+        )
+        skaffoldFilesComboBox.setProject(project)
+        // non-existing file from previously saved configuration case
+        val nonExistingSkaffoldFile = MockVirtualFile.file("old-one.yaml")
+        skaffoldFilesComboBox.setSelectedSkaffoldFile(nonExistingSkaffoldFile)
+
+        // make sure the file is added
+        assertThat(skaffoldFilesComboBox.model.size).isEqualTo(3)
+        assertThat(skaffoldFilesComboBox.getSelectedSkaffoldFile()).isEqualTo(
+            nonExistingSkaffoldFile
+        )
     }
 }
