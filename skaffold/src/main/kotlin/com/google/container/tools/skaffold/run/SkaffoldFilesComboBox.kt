@@ -67,6 +67,7 @@ class SkaffoldFilesComboBox : JComboBox<VirtualFile>() {
         selectedItem = skaffoldFile
     }
 
+    /** Returns currently selected Skaffold file or null if none is selected. */
     fun getSelectedSkaffoldFile(): VirtualFile? =
         if (selectedIndex >= 0) model.getElementAt(selectedIndex) else null
 }
