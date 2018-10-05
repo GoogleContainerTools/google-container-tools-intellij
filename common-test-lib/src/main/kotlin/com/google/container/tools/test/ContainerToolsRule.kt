@@ -26,7 +26,6 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 import org.picocontainer.MutablePicoContainer
-import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
@@ -39,7 +38,7 @@ import kotlin.reflect.jvm.isAccessible
  *  * Creates an [IdeaProjectTestFixture] and makes it available for tests via property. By default
  *    this text fixture is "light", i.e. instance of [LightIdeaTestFixture].
  */
-class ContainerToolsRule(val testInstance: Any) : TestRule {
+class ContainerToolsRule(private val testInstance: Any) : TestRule {
     lateinit var ideaProjectTestFixture: IdeaProjectTestFixture
 
     override fun apply(baseStatement: Statement, description: Description): Statement =
@@ -76,7 +75,7 @@ class ContainerToolsRule(val testInstance: Any) : TestRule {
                 member as KProperty1<Any?, Any?>
                 member.isAccessible = true
                 val service: Any = member.get(testInstance)!!
-                setService(member::class, service)
+                setService(service)
             }
         }
     }
@@ -85,13 +84,15 @@ class ContainerToolsRule(val testInstance: Any) : TestRule {
      * Replaces the service binding in the [MutablePicoContainer] with the given instance and
      * returns the original service instance.
      *
-     * @param clazz the class of the registered service
      * @param newInstance the new instance to register
      */
-    private fun setService(clazz: KClass<*>, newInstance: Any) {
+    private fun setService(newInstance: Any) {
         val applicationContainer =
             ApplicationManager.getApplication().picoContainer as MutablePicoContainer
-        applicationContainer.unregisterComponent(clazz.simpleName)
-        applicationContainer.registerComponentInstance(clazz.simpleName, newInstance)
+        applicationContainer.unregisterComponent(newInstance::class.java.name)
+        applicationContainer.registerComponentInstance(
+            newInstance::class.java.name,
+            newInstance
+        )
     }
 }

@@ -69,9 +69,10 @@ class SkaffoldFilesTest {
     @Test
     fun `empty IDE project does not contain skaffold yaml files`() {
         val project = containerToolsRule.ideaProjectTestFixture.project
+        val skaffoldFilesService = SkaffoldFileService()
 
         ApplicationManager.getApplication().runReadAction {
-            val skaffoldFiles = findSkaffoldFiles(project)
+            val skaffoldFiles = skaffoldFilesService.findSkaffoldFiles(project)
             assertThat(skaffoldFiles).isEmpty()
         }
     }

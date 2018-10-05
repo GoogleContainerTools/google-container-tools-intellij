@@ -27,17 +27,17 @@ package com.google.container.tools.test
  * to substitute the real service in the [PicoContainer][org.picocontainer.PicoContainer]:
  *
  * ```
- * @Rule public final ContainerToolsRule rule = new ContainerToolsRule(this)
+ * @get:Rule val  ContainerToolsRule rule = new ContainerToolsRule(this)
  *
- * @TestService mockCloudSdkService: XxxService = mockk()
+ * @TestService @MockK mockXxxService: XxxService
  * ```
  *
  * Now this mock can be used like any other Mockk variable:
  *
  * ```
- * every { mockCloudSdkService.validateCloudSdk() } returns listOf()
+ * every { mockXxxService.getData() } returns listOf()
  * ```
  */
-@Target(AnnotationTarget.FIELD)
+@Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class TestService

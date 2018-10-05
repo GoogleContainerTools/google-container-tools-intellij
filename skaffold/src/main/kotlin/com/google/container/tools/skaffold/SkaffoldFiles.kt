@@ -16,6 +16,7 @@
 
 package com.google.container.tools.skaffold
 
+import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.FileTypeIndex
@@ -50,13 +51,20 @@ fun isSkaffoldFile(file: VirtualFile): Boolean {
     return false
 }
 
-/**
- * Finds all Skaffold configuration YAML files in the given project.
- *
- * @param project IDE project to search Skaffold file in
- * @return List of Skaffold configuration files in the project.
- */
-fun findSkaffoldFiles(project: Project): List<VirtualFile> {
-    return FileTypeIndex.getFiles(YAMLFileType.YML, GlobalSearchScope.allScope(project))
-        .filter { isSkaffoldFile(it) }
+/** Obtains current active implementation of [SkaffoldFileService] */
+fun getSkaffoldFileService() = ServiceManager.getService(SkaffoldFileService::class.java)!!
+
+/** IDE service for findind Skaffold files in the given IDE project. */
+class SkaffoldFileService {
+
+    /**
+     * Finds all Skaffold configuration YAML files in the given project.
+     *
+     * @param project IDE project to search Skaffold file in
+     * @return List of Skaffold configuration files in the project.
+     */
+    fun findSkaffoldFiles(project: Project): List<VirtualFile> {
+        return FileTypeIndex.getFiles(YAMLFileType.YML, GlobalSearchScope.allScope(project))
+            .filter { isSkaffoldFile(it) }
+    }
 }
