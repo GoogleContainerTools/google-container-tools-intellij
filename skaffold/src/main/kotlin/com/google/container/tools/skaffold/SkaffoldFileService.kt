@@ -33,29 +33,29 @@ private val SKAFFOLD_API_HEADER_PATTERN: Pattern by lazy {
     Pattern.compile(SKAFFOLD_API_HEADER_REGEX)
 }
 
-/**
- * Checks if a given file is a valid Skaffold configuration file based on type and API version.
- */
-fun isSkaffoldFile(file: VirtualFile): Boolean {
-    with(file) {
-        if (!isDirectory && fileType is YAMLFileType && isValid) {
-            val inputStream: InputStream = ByteArrayInputStream(contentsToByteArray())
-            inputStream.use {
-                val scanner = Scanner(it)
-                // consider this YAML file as Skaffold when first line contains proper API version
-                return scanner.hasNextLine() &&
-                    SKAFFOLD_API_HEADER_PATTERN.matcher(scanner.nextLine()).find()
-            }
-        }
-    }
-    return false
-}
-
 /** Obtains current active implementation of [SkaffoldFileService] */
 fun getSkaffoldFileService() = ServiceManager.getService(SkaffoldFileService::class.java)!!
 
 /** IDE service for findind Skaffold files in the given IDE project. */
 class SkaffoldFileService {
+
+    /**
+     * Checks if a given file is a valid Skaffold configuration file based on type and API version.
+     */
+    fun isSkaffoldFile(file: VirtualFile): Boolean {
+        with(file) {
+            if (!isDirectory && fileType is YAMLFileType && isValid) {
+                val inputStream: InputStream = ByteArrayInputStream(contentsToByteArray())
+                inputStream.use {
+                    val scanner = Scanner(it)
+                    // consider this YAML file as Skaffold when first line contains proper API version
+                    return scanner.hasNextLine() &&
+                        SKAFFOLD_API_HEADER_PATTERN.matcher(scanner.nextLine()).find()
+                }
+            }
+        }
+        return false
+    }
 
     /**
      * Finds all Skaffold configuration YAML files in the given project.

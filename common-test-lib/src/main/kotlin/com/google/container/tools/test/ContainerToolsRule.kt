@@ -87,12 +87,12 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
      * @param newInstance the new instance to register
      */
     private fun setService(newInstance: Any) {
-        val applicationContainer =
-            ApplicationManager.getApplication().picoContainer as MutablePicoContainer
-        applicationContainer.unregisterComponent(newInstance::class.java.name)
-        applicationContainer.registerComponentInstance(
-            newInstance::class.java.name,
-            newInstance
-        )
+        with(ApplicationManager.getApplication().picoContainer as MutablePicoContainer) {
+            unregisterComponent(newInstance::class.java.name)
+            registerComponentInstance(
+                newInstance::class.java.name,
+                newInstance
+            )
+        }
     }
 }

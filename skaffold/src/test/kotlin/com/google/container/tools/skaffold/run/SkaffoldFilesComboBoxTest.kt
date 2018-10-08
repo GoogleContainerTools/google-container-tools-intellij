@@ -34,7 +34,7 @@ class SkaffoldFilesComboBoxTest {
 
     @MockK
     @TestService
-    lateinit var mockSkaffoldFileService: SkaffoldFileService
+    private lateinit var mockSkaffoldFileService: SkaffoldFileService
 
     private lateinit var skaffoldFilesComboBox: SkaffoldFilesComboBox
 
@@ -44,7 +44,7 @@ class SkaffoldFilesComboBoxTest {
     }
 
     @Test
-    fun `empty combobox for empty project has no files`() {
+    fun `skaffold combo box for a project with no files has no elements and empty selection`() {
         val project = containerToolsRule.ideaProjectTestFixture.project
         every { mockSkaffoldFileService.findSkaffoldFiles(project) } returns listOf()
         skaffoldFilesComboBox.setProject(project)
