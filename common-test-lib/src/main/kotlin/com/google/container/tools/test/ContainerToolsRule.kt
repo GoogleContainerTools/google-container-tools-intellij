@@ -37,6 +37,8 @@ import kotlin.reflect.jvm.isAccessible
  *
  *  * Creates an [IdeaProjectTestFixture] and makes it available for tests via property. By default
  *    this text fixture is "light", i.e. instance of [LightIdeaTestFixture].
+ *  * Replaces all fields annotated with [TestService] in the
+ *    [PicoContainer][org.picocontainer.PicoContainer] with the field values.
  */
 class ContainerToolsRule(private val testInstance: Any) : TestRule {
     lateinit var ideaProjectTestFixture: IdeaProjectTestFixture
