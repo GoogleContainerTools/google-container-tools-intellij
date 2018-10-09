@@ -55,6 +55,7 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
             }
         }
 
+    /** Checks the test method for additional annotations such as UI thread, and runs it. */
     private fun executeTest(baseStatement: Statement, description: Description) {
         if (description.annotations.any { it is UiTest }) {
             EdtTestUtil.runInEdtAndWait(ThrowableRunnable { baseStatement.evaluate() })

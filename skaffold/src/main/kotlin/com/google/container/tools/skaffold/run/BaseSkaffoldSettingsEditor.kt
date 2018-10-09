@@ -16,6 +16,7 @@
 
 package com.google.container.tools.skaffold.run
 
+import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.skaffold.SkaffoldFileService
 import com.google.container.tools.skaffold.message
 import com.intellij.openapi.options.ConfigurationException
@@ -31,7 +32,8 @@ import javax.swing.JComponent
  * in the project and basic validation of the currently selected Skaffold file.
  */
 open class BaseSkaffoldSettingsEditor : SettingsEditor<BaseSkaffoldRunConfiguration>() {
-    private lateinit var skaffoldFilesComboBox: SkaffoldFilesComboBox
+    @VisibleForTesting
+    lateinit var skaffoldFilesComboBox: SkaffoldFilesComboBox
 
     override fun createEditor(): JComponent {
         skaffoldFilesComboBox = SkaffoldFilesComboBox()

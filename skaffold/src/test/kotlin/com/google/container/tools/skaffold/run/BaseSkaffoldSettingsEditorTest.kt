@@ -16,15 +16,18 @@
 
 package com.google.container.tools.skaffold.run
 
+import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.skaffold.SkaffoldFileService
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
 import com.google.container.tools.test.UiTest
+import com.intellij.mock.MockVirtualFile
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.testFramework.EdtTestUtil
 import com.intellij.util.ThrowableRunnable
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.SpyK
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,9 +40,9 @@ class BaseSkaffoldSettingsEditorTest {
     @get:Rule
     val containerToolsRule = ContainerToolsRule(this)
 
-    @MockK
+    @SpyK
     @TestService
-    private lateinit var mockSkaffoldFileService: SkaffoldFileService
+    private var mockSkaffoldFileService: SkaffoldFileService = SkaffoldFileService()
 
     @MockK
     private lateinit var mockSkaffoldSettings: BaseSkaffoldRunConfiguration
@@ -71,10 +74,29 @@ class BaseSkaffoldSettingsEditorTest {
 
     @Test(expected = ConfigurationException::class)
     @UiTest
-    fun `settings are invalid for non-existing Skaffold files`() {
+    fun `settings are invalid for non-existing Skaffold file`() {
         every { mockSkaffoldSettings.skaffoldConfigurationFilePath } answers { "no-such-file.yaml" }
         baseSkaffoldSettingsEditor.resetFrom(mockSkaffoldSettings)
 
         baseSkaffoldSettingsEditor.applyTo(mockSkaffoldSettings)
+    }
+
+    @Test
+    @UiTest
+    fun `editor successfully saves selected valid Skaffold configuration file`() {
+        val skaffoldFile = MockVirtualFile.file("tests-deploy.yaml")
+        skaffoldFile.setText("apiVersion: skaffold/v1alpha3")
+        every { mockSkaffoldFileService.findSkaffoldFiles(any())} returns listOf(skaffoldFile)
+        baseSkaffoldSettingsEditor.resetFrom(mockSkaffoldSettings)
+        baseSkaffoldSettingsEditor.skaffoldFilesComboBox.setSelectedSkaffoldFile(skaffoldFile)
+        baseSkaffoldSettingsEditor.applyTo(mockSkaffoldSettings)
+
+        // capture settings update
+        every {
+            mockSkaffoldSettings setProperty "skaffoldConfigurationFilePath" value any<String>()
+        } propertyType String::class answers {
+            fieldValue = value
+            assertThat(value).isEqualTo(skaffoldFile.path)
+        }
     }
 }
