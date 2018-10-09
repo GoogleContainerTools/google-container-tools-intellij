@@ -86,7 +86,7 @@ class BaseSkaffoldSettingsEditorTest {
     fun `editor successfully saves selected valid Skaffold configuration file`() {
         val skaffoldFile = MockVirtualFile.file("tests-deploy.yaml")
         skaffoldFile.setText("apiVersion: skaffold/v1alpha3")
-        every { mockSkaffoldFileService.findSkaffoldFiles(any())} returns listOf(skaffoldFile)
+        every { mockSkaffoldFileService.findSkaffoldFiles(any()) } returns listOf(skaffoldFile)
         baseSkaffoldSettingsEditor.resetFrom(mockSkaffoldSettings)
         baseSkaffoldSettingsEditor.skaffoldFilesComboBox.setSelectedSkaffoldFile(skaffoldFile)
         baseSkaffoldSettingsEditor.applyTo(mockSkaffoldSettings)
