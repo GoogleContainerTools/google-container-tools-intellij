@@ -71,7 +71,8 @@ abstract class BaseSkaffoldRunConfiguration(
     factory: ConfigurationFactory,
     name: String
 ) : RunConfigurationBase(project, factory, name) {
-    /** Persisted Skaffold config file name for run Skaffold run configurations. */
+
+    /** Persisted Skaffold config file name for Skaffold run configurations. */
     @Attribute("skaffoldConfigurationFilePath")
     var skaffoldConfigurationFilePath: String? = null
 }
