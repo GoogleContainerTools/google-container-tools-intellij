@@ -33,11 +33,13 @@ private val SKAFFOLD_API_HEADER_PATTERN: Pattern by lazy {
     Pattern.compile(SKAFFOLD_API_HEADER_REGEX)
 }
 
-/** Obtains current active implementation of [SkaffoldFileService] */
-fun getSkaffoldFileService() = ServiceManager.getService(SkaffoldFileService::class.java)!!
-
-/** IDE service for findind Skaffold files in the given IDE project. */
+/** IDE service for finding Skaffold files in the given IDE project. */
 class SkaffoldFileService {
+    companion object {
+        /** Current active implementation of [SkaffoldFileService] */
+        val instance: SkaffoldFileService
+            get() = ServiceManager.getService(SkaffoldFileService::class.java)!!
+    }
 
     /**
      * Checks if a given file is a valid Skaffold configuration file based on type and API version.
