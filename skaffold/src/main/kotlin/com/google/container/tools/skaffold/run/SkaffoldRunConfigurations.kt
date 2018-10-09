@@ -24,6 +24,7 @@ import com.intellij.execution.configurations.RunProfileState
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
+import com.intellij.util.xmlb.annotations.Attribute
 
 /**
  * Template configuration for Skaffold single run configuration, serving as a base for all new
@@ -34,7 +35,7 @@ class SkaffoldSingleRunConfiguration(
     project: Project,
     factory: ConfigurationFactory,
     name: String
-) : RunConfigurationBase(project, factory, name) {
+) : BaseSkaffoldRunConfiguration(project, factory, name) {
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? =
         null
@@ -52,11 +53,25 @@ class SkaffoldDevConfiguration(
     project: Project,
     factory: ConfigurationFactory,
     name: String
-) : RunConfigurationBase(project, factory, name) {
+) : BaseSkaffoldRunConfiguration(project, factory, name) {
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? =
         null
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> =
         SkaffoldDevSettingsEditor()
+}
+
+/**
+ * Base class for Skaffold run configurations, includes base properties such as Skaffold
+ * configuration file path.
+ */
+abstract class BaseSkaffoldRunConfiguration(
+    project: Project,
+    factory: ConfigurationFactory,
+    name: String
+) : RunConfigurationBase(project, factory, name) {
+    /** Persisted Skaffold config file name for run Skaffold run configurations. */
+    @Attribute("skaffoldConfigurationFilePath")
+    var skaffoldConfigurationFilePath: String? = null
 }
