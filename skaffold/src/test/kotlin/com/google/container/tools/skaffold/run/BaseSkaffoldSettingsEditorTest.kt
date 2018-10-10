@@ -67,7 +67,7 @@ class BaseSkaffoldSettingsEditorTest {
 
     @Test
     @UiTest
-    fun `settings are invalid for project with no existing Skaffold files`() {
+    fun `when project has no Skaffold files resetFrom throws a ConfigurationException`() {
         baseSkaffoldSettingsEditor.resetFrom(mockSkaffoldSettings)
 
         expectThrows(
@@ -77,7 +77,7 @@ class BaseSkaffoldSettingsEditorTest {
 
     @Test
     @UiTest
-    fun `settings are invalid for non-existing Skaffold file`() {
+    fun `given non-existing Skaffold file resetFrom throws a ConfigurationException`() {
         every { mockSkaffoldSettings.skaffoldConfigurationFilePath } answers { "no-such-file.yaml" }
         baseSkaffoldSettingsEditor.resetFrom(mockSkaffoldSettings)
 
@@ -88,7 +88,7 @@ class BaseSkaffoldSettingsEditorTest {
 
     @Test
     @UiTest
-    fun `editor successfully saves selected valid Skaffold configuration file`() {
+    fun `given valid Skaffold configuration file applyTo successfully saves settings`() {
         val skaffoldFile = MockVirtualFile.file("tests-deploy.yaml")
         skaffoldFile.setText("apiVersion: skaffold/v1alpha3")
         every { mockSkaffoldFileService.findSkaffoldFiles(any()) } returns listOf(skaffoldFile)

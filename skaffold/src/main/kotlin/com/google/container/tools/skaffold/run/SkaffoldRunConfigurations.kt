@@ -72,7 +72,10 @@ abstract class BaseSkaffoldRunConfiguration(
     name: String
 ) : RunConfigurationBase(project, factory, name) {
 
-    /** Persisted Skaffold config file name for Skaffold run configurations. */
+    /**
+     * Persisted Skaffold config file absolute path for Skaffold run configurations.
+     * See more at [com.intellij.openapi.vfs.VirtualFile.getPath]
+     */
     @Attribute("skaffoldConfigurationFilePath")
     var skaffoldConfigurationFilePath: String? = null
 }
