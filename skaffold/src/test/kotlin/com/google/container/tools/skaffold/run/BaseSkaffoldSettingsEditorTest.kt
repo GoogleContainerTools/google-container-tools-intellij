@@ -21,6 +21,7 @@ import com.google.container.tools.skaffold.SkaffoldFileService
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
 import com.google.container.tools.test.UiTest
+import com.google.container.tools.test.expectThrows
 import com.intellij.mock.MockVirtualFile
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.testFramework.EdtTestUtil
@@ -64,21 +65,25 @@ class BaseSkaffoldSettingsEditorTest {
             { containerToolsRule.ideaProjectTestFixture.project }
     }
 
-    @Test(expected = ConfigurationException::class)
+    @Test
     @UiTest
     fun `settings are invalid for project with no existing Skaffold files`() {
         baseSkaffoldSettingsEditor.resetFrom(mockSkaffoldSettings)
 
-        baseSkaffoldSettingsEditor.applyTo(mockSkaffoldSettings)
+        expectThrows(
+            ConfigurationException::class,
+            ThrowableRunnable { baseSkaffoldSettingsEditor.applyTo(mockSkaffoldSettings) })
     }
 
-    @Test(expected = ConfigurationException::class)
+    @Test
     @UiTest
     fun `settings are invalid for non-existing Skaffold file`() {
         every { mockSkaffoldSettings.skaffoldConfigurationFilePath } answers { "no-such-file.yaml" }
         baseSkaffoldSettingsEditor.resetFrom(mockSkaffoldSettings)
 
-        baseSkaffoldSettingsEditor.applyTo(mockSkaffoldSettings)
+        expectThrows(
+            ConfigurationException::class,
+            ThrowableRunnable { baseSkaffoldSettingsEditor.applyTo(mockSkaffoldSettings) })
     }
 
     @Test
