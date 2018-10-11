@@ -21,5 +21,7 @@
         <configurationType implementation="com.google.container.tools.skaffold.run.SkaffoldRunConfigurationType"/>
 
         <applicationService serviceImplementation="com.google.container.tools.skaffold.SkaffoldFileService"/>
+
+        <applicationService serviceImplementation="com.google.container.tools.skaffold.SkaffoldExecutorService"/>
     </extensions>
 </idea-plugin>
