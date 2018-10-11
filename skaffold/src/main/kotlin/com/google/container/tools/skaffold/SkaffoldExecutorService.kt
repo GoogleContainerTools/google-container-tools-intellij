@@ -16,6 +16,23 @@
 
 package com.google.container.tools.skaffold
 
-class SkaffoldExecutorService {
-    
+class DefaultSkaffoldExecutorService : SkaffoldExecutorService {
+    override var skaffoldConfigurationFilePath: String?
+        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        set(value) {}
+
+    override fun executeSingleRun() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun executeDevMode() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
+
+interface SkaffoldExecutorService {
+    var skaffoldConfigurationFilePath: String?
+
+    fun executeSingleRun()
+    fun executeDevMode()
 }
