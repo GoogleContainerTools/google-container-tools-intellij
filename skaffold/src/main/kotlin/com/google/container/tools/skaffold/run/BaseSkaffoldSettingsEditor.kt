@@ -31,7 +31,7 @@ import javax.swing.JComponent
  * drop-down list of all Skaffold configuration files ([SkaffoldFilesComboBox]) found
  * in the project and basic validation of the currently selected Skaffold file.
  */
-open class BaseSkaffoldSettingsEditor : SettingsEditor<BaseSkaffoldRunConfiguration>() {
+open class BaseSkaffoldSettingsEditor : SettingsEditor<AbstractSkaffoldRunConfiguration>() {
     @VisibleForTesting
     lateinit var skaffoldFilesComboBox: SkaffoldFilesComboBox
 
@@ -44,7 +44,7 @@ open class BaseSkaffoldSettingsEditor : SettingsEditor<BaseSkaffoldRunConfigurat
         return basePanel
     }
 
-    override fun applyEditorTo(runConfig: BaseSkaffoldRunConfiguration) {
+    override fun applyEditorTo(runConfig: AbstractSkaffoldRunConfiguration) {
         val selectedSkaffoldFile: VirtualFile =
             skaffoldFilesComboBox.getItemAt(skaffoldFilesComboBox.selectedIndex)
                 ?: throw ConfigurationException(message("skaffold.no.file.selected.error"))
@@ -57,7 +57,7 @@ open class BaseSkaffoldSettingsEditor : SettingsEditor<BaseSkaffoldRunConfigurat
         runConfig.skaffoldConfigurationFilePath = selectedSkaffoldFile.path
     }
 
-    override fun resetEditorFrom(runConfig: BaseSkaffoldRunConfiguration) {
+    override fun resetEditorFrom(runConfig: AbstractSkaffoldRunConfiguration) {
         skaffoldFilesComboBox.setProject(runConfig.project)
         runConfig.skaffoldConfigurationFilePath?.let {
             LocalFileSystem.getInstance().findFileByPath(it)

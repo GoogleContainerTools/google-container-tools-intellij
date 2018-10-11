@@ -35,7 +35,7 @@ class SkaffoldSingleRunConfiguration(
     project: Project,
     factory: ConfigurationFactory,
     name: String
-) : BaseSkaffoldRunConfiguration(project, factory, name) {
+) : AbstractSkaffoldRunConfiguration(project, factory, name) {
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? =
         null
@@ -53,7 +53,7 @@ class SkaffoldDevConfiguration(
     project: Project,
     factory: ConfigurationFactory,
     name: String
-) : BaseSkaffoldRunConfiguration(project, factory, name) {
+) : AbstractSkaffoldRunConfiguration(project, factory, name) {
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? =
         null
@@ -66,7 +66,7 @@ class SkaffoldDevConfiguration(
  * Base class for Skaffold run configurations, includes base properties such as Skaffold
  * configuration file path.
  */
-abstract class BaseSkaffoldRunConfiguration(
+abstract class AbstractSkaffoldRunConfiguration(
     project: Project,
     factory: ConfigurationFactory,
     name: String

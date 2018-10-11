@@ -35,7 +35,7 @@ import org.junit.Test
 
 /**
  * Unit tests for base Skaffold settings support defined in [BaseSkaffoldSettingsEditor] and
- * [BaseSkaffoldRunConfiguration].
+ * [AbstractSkaffoldRunConfiguration].
  */
 class BaseSkaffoldSettingsEditorTest {
     @get:Rule
@@ -46,7 +46,7 @@ class BaseSkaffoldSettingsEditorTest {
     private var mockSkaffoldFileService: SkaffoldFileService = SkaffoldFileService()
 
     @MockK
-    private lateinit var mockSkaffoldSettings: BaseSkaffoldRunConfiguration
+    private lateinit var mockSkaffoldSettings: AbstractSkaffoldRunConfiguration
 
     private lateinit var baseSkaffoldSettingsEditor: BaseSkaffoldSettingsEditor
 
