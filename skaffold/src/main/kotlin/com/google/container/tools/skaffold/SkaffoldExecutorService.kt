@@ -16,23 +16,110 @@
 
 package com.google.container.tools.skaffold
 
-class DefaultSkaffoldExecutorService : SkaffoldExecutorService {
-    override var skaffoldConfigurationFilePath: String?
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-        set(value) {}
+import com.google.common.annotations.VisibleForTesting
+import com.intellij.openapi.components.ServiceManager
+import java.io.File
+import java.nio.file.Path
+import java.nio.file.Paths
 
-    override fun executeSingleRun() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+/**
+ * Interface for Skaffold execution service. This service builds and launches Skaffold process from
+ * the given set of standard flags and settings. [DefaultSkaffoldExecutorService] assumes Skaffold
+ * to be already installed and available.
+ */
+interface SkaffoldExecutorService {
+    companion object {
+        val instance
+            get() = ServiceManager.getService(SkaffoldExecutorService::class.java)!!
     }
 
-    override fun executeDevMode() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    /**
+     * Creates Skaffold command line from the given settings and returns resulting launched
+     * Skaffold system process.
+     *
+     * @param settings Settings with flags supported by Skaffold.
+     * @return [SkaffoldProcess] with resulting process and the command line used to launch it.
+     */
+    fun executeSkaffold(settings: SkaffoldExecutorSettings): SkaffoldProcess
+
+    /**
+     * Execution mode for Skaffold, single run, continuous development, etc.
+     */
+    enum class SkaffoldExecutionMode(val modeFlag: String) {
+        SINGLE_RUN("run"),
+        DEV("dev")
+    }
+
+    /**
+     * Set of settings to control Skaffold execution, including flags and execution mode.
+     */
+    data class SkaffoldExecutorSettings(
+        /** Mandatory execution mode for Skaffold, see [SkaffoldExecutionMode]. */
+        val executionMode: SkaffoldExecutionMode,
+        /**
+         * Optional, location of the Skaffold YAML configuration file.
+         * If not provided, default `skaffold.yaml` used.
+         */
+        val skaffoldConfigurationFilePath: String? = null,
+        /**
+         * Optional, working directory where Skaffold needs to be launched. This is usually set to
+         * project working directory.
+         */
+        var workingDirectory: File? = null
+    )
+
+    /**
+     * Data object with launched Skaffold process and its command line.
+     *
+     * @property process System process for Skaffold.
+     * @property commandLine Command line used to launch the process.
+     */
+    data class SkaffoldProcess(val process: Process, val commandLine: String)
+}
+
+/**
+ * Abstract implementation of [SkaffoldExecutorService], constructs Skaffold command line and
+ * build resulting process. Path to Skaffold executable must be set by subclasses.
+ */
+abstract class AbstractSkaffoldExecutorService : SkaffoldExecutorService {
+    /** Path for Skaffold executable, any form supported by [ProcessBuilder] */
+    protected abstract var skaffoldExecutablePath: Path
+
+    override fun executeSkaffold(settings: SkaffoldExecutorService.SkaffoldExecutorSettings):
+        SkaffoldExecutorService.SkaffoldProcess {
+        val commandList = mutableListOf<String>()
+        with(commandList) {
+            add(skaffoldExecutablePath.toString())
+            add(settings.executionMode.modeFlag)
+            settings.skaffoldConfigurationFilePath?.let {
+                add("--filename")
+                add(it)
+            }
+        }
+
+        return SkaffoldExecutorService.SkaffoldProcess(
+            createProcess(settings.workingDirectory, commandList),
+            commandLine = commandList.joinToString(" ")
+        )
+    }
+
+    @VisibleForTesting
+    fun createProcess(
+        workingDirectory: File?,
+        commandList: List<String>
+    ): Process {
+        val processBuilder = ProcessBuilder()
+        workingDirectory?.let { processBuilder.directory(it) }
+
+        return processBuilder.command(commandList).start()
     }
 }
 
-interface SkaffoldExecutorService {
-    var skaffoldConfigurationFilePath: String?
-
-    fun executeSingleRun()
-    fun executeDevMode()
+/**
+ * Default implementation of Skaffold execution service, where Skaffold executable is assumed to
+ * be already installed on the system and be available in PATH.
+ */
+class DefaultSkaffoldExecutorService : AbstractSkaffoldExecutorService() {
+    // use executable available in PATH
+    override var skaffoldExecutablePath: Path = Paths.get("skaffold")
 }
