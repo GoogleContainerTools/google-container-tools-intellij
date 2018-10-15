@@ -21,9 +21,11 @@ import com.google.container.tools.test.ContainerToolsRule
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.spyk
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.io.File
 
 /** Unit tests for [DefaultSkaffoldExecutorService] and [AbstractSkaffoldExecutorService] */
 class DefaultSkaffoldExecutorServiceTest {
@@ -73,5 +75,18 @@ class DefaultSkaffoldExecutorServiceTest {
         )
 
         assertThat(result.commandLine).isEqualTo("skaffold dev --filename test.yaml")
+    }
+
+    @Test
+    fun `working directory is passed on to process builder`() {
+        val result = defaultSkaffoldExecutorService.executeSkaffold(
+            SkaffoldExecutorService.SkaffoldExecutorSettings(
+                SkaffoldExecutorService.SkaffoldExecutionMode.DEV,
+                skaffoldConfigurationFilePath = "test.yaml",
+                workingDirectory = File("/tmp")
+            )
+        )
+
+        verify { defaultSkaffoldExecutorService.createProcess(File("/tmp"), any()) }
     }
 }
