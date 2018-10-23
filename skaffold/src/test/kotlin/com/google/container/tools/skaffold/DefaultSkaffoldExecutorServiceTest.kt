@@ -27,7 +27,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.File
 
-/** Unit tests for [DefaultSkaffoldExecutorService] and [AbstractSkaffoldExecutorService] */
+/** Unit tests for [DefaultSkaffoldExecutorService] and [SkaffoldExecutorService] */
 class DefaultSkaffoldExecutorServiceTest {
     @get:Rule
     val containerToolsRule = ContainerToolsRule(this)
@@ -46,8 +46,8 @@ class DefaultSkaffoldExecutorServiceTest {
     @Test
     fun `single run with no arguments launches skaffold run`() {
         val result = defaultSkaffoldExecutorService.executeSkaffold(
-            SkaffoldExecutorService.SkaffoldExecutorSettings(
-                SkaffoldExecutorService.SkaffoldExecutionMode.SINGLE_RUN
+            SkaffoldExecutorSettings(
+                SkaffoldExecutorSettings.ExecutionMode.SINGLE_RUN
             )
         )
 
@@ -57,8 +57,8 @@ class DefaultSkaffoldExecutorServiceTest {
     @Test
     fun `dev mode with no arguments launches skaffold dev`() {
         val result = defaultSkaffoldExecutorService.executeSkaffold(
-            SkaffoldExecutorService.SkaffoldExecutorSettings(
-                SkaffoldExecutorService.SkaffoldExecutionMode.DEV
+            SkaffoldExecutorSettings(
+                SkaffoldExecutorSettings.ExecutionMode.DEV
             )
         )
 
@@ -68,8 +68,8 @@ class DefaultSkaffoldExecutorServiceTest {
     @Test
     fun `skaffold config filename argument generates valid skaffold filename flag`() {
         val result = defaultSkaffoldExecutorService.executeSkaffold(
-            SkaffoldExecutorService.SkaffoldExecutorSettings(
-                SkaffoldExecutorService.SkaffoldExecutionMode.DEV,
+            SkaffoldExecutorSettings(
+                SkaffoldExecutorSettings.ExecutionMode.DEV,
                 skaffoldConfigurationFilePath = "test.yaml"
             )
         )
@@ -79,9 +79,9 @@ class DefaultSkaffoldExecutorServiceTest {
 
     @Test
     fun `working directory is passed on to process builder`() {
-        val result = defaultSkaffoldExecutorService.executeSkaffold(
-            SkaffoldExecutorService.SkaffoldExecutorSettings(
-                SkaffoldExecutorService.SkaffoldExecutionMode.DEV,
+        defaultSkaffoldExecutorService.executeSkaffold(
+            SkaffoldExecutorSettings(
+                SkaffoldExecutorSettings.ExecutionMode.DEV,
                 skaffoldConfigurationFilePath = "test.yaml",
                 workingDirectory = File("/tmp")
             )
