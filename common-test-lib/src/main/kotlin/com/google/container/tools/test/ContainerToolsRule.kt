@@ -107,8 +107,8 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
     private fun createTestFiles(directoryName: String) {
         for (member in getMembersWithAnnotation(TestFile::class.java)) {
             member.isAccessible = true
-            if (!member.returnType.isSubtypeOf(File::class.createType())
-                || member !is KMutableProperty<*>
+            if (!member.returnType.isSubtypeOf(File::class.createType()) ||
+                member !is KMutableProperty<*>
             ) {
                 throw IllegalArgumentException(
                     "@TestFile can only annotate mutable fields of type " +

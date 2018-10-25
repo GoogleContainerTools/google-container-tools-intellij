@@ -19,7 +19,7 @@ class SkaffoldContextType(
      * A file is in context for Skaffold live templates if it is a yaml file.
      */
     override fun isInContext(file: PsiFile, offset: Int): Boolean {
-        return file.name.endsWith(suffix = "yaml", ignoreCase = true)
-            || file.name.endsWith(suffix = "yml", ignoreCase = true)
+        return file.name.endsWith(suffix = "yaml", ignoreCase = true) ||
+            file.name.endsWith(suffix = "yml", ignoreCase = true)
     }
 }
