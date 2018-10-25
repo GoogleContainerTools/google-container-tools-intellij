@@ -99,6 +99,11 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
         }
     }
 
+    /**
+     * Creates all [File] annotated with [TestFile] in the given directory name.
+     *
+     * @param directoryName the name of the directory to create the test files in
+     */
     private fun createTestFiles(directoryName: String) {
         for (member in getMembersWithAnnotation(TestFile::class.java)) {
             member.isAccessible = true
