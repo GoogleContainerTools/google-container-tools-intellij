@@ -1,0 +1,9 @@
+apiVersion: apps/v1alpha2
+kind: Config
+build:
+  artifacts:
+    - image:
+deploy:
+  kubectl:
+    manifests:
+    

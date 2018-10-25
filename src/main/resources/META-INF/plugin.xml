@@ -24,6 +24,8 @@
     <!-- Set manually because the gradle-intellij-plugin cannot span across major release versions -->
     <idea-version since-build="171.3780" until-build="182.*"/>
 
+    <depends optional="true" config-file="skaffold-editing.xml">com.intellij.kubernetes</depends>
+
     <xi:include href="/META-INF/skaffold.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
 </idea-plugin>

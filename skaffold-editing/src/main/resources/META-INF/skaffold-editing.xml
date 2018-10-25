@@ -16,17 +16,17 @@
 
 <!-- Declares IDE extensions and components for Skaffold support in Container Tools -->
 <idea-plugin>
-    <depends>org.jetbrains.plugins.yaml</depends>
+
+    <project-components>
+        <component>
+            <implementation-class>com.google.container.tools.skaffold.editing.Test
+            </implementation-class>
+        </component>
+    </project-components>
 
     <extensions defaultExtensionNs="com.intellij">
-        <configurationType
-                implementation="com.google.container.tools.skaffold.run.SkaffoldRunConfigurationType"/>
-
-        <applicationService
-                serviceImplementation="com.google.container.tools.skaffold.SkaffoldFileService"/>
-
-        <applicationService
-                serviceInterface="com.google.container.tools.skaffold.SkaffoldExecutorService"
-                serviceImplementation="com.google.container.tools.skaffold.DefaultSkaffoldExecutorService"/>
+        <liveTemplateContext implementation="com.google.container.tools.skaffold.editing.SkaffoldContextType"/>
+        <defaultLiveTemplatesProvider
+                implementation="com.google.container.tools.skaffold.editing.SkaffoldLiveTemplatesProvider"/>
     </extensions>
 </idea-plugin>
