@@ -15,4 +15,5 @@
  */
 
 include 'skaffold'
+include 'skaffold-editing'
 include 'common-test-lib'
