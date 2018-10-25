@@ -17,6 +17,7 @@
 package com.google.container.tools.test
 
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.testFramework.EdtTestUtil
 import com.intellij.testFramework.fixtures.IdeaProjectTestFixture
 import com.intellij.testFramework.fixtures.IdeaTestFixtureFactory
@@ -26,8 +27,14 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 import org.picocontainer.MutablePicoContainer
+import java.io.File
+import java.io.IOException
+import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty1
+import kotlin.reflect.full.createType
 import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.jvm.isAccessible
 
 /**
@@ -42,12 +49,13 @@ import kotlin.reflect.jvm.isAccessible
  */
 class ContainerToolsRule(private val testInstance: Any) : TestRule {
     lateinit var ideaProjectTestFixture: IdeaProjectTestFixture
+    private val filesToDelete: MutableList<File> = mutableListOf()
 
     override fun apply(baseStatement: Statement, description: Description): Statement =
         object : Statement() {
             override fun evaluate() {
                 try {
-                    setUpRule()
+                    setUpRule(description)
                     executeTest(baseStatement, description)
                 } finally {
                     tearDownRule()
@@ -64,16 +72,18 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
         }
     }
 
-    private fun setUpRule() {
+    private fun setUpRule(description: Description) {
         ideaProjectTestFixture =
             IdeaTestFixtureFactory.getFixtureFactory().createLightFixtureBuilder().fixture
         EdtTestUtil.runInEdtAndWait(ThrowableRunnable { ideaProjectTestFixture.setUp() })
 
         MockKAnnotations.init(testInstance, relaxed = true)
         replaceServices()
+        createTestFiles(description.methodName)
     }
 
     private fun tearDownRule() {
+        filesToDelete.forEach { it.delete() }
         EdtTestUtil.runInEdtAndWait(ThrowableRunnable { ideaProjectTestFixture.tearDown() })
     }
 
@@ -81,15 +91,49 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
      * Replaces all services annotated with [TestService].
      */
     private fun replaceServices() {
-        for (member in testInstance::class.declaredMemberProperties) {
-            if (member.annotations.filter { it is TestService }.isNotEmpty()) {
-                member as KProperty1<Any?, Any?>
-                member.isAccessible = true
-                val service: Any = member.get(testInstance)!!
-                setService(service)
-            }
+        for (member in getMembersWithAnnotation(TestService::class.java)) {
+            member as KProperty1<Any?, Any?>
+            member.isAccessible = true
+            val service: Any = member.get(testInstance)!!
+            setService(service)
         }
     }
+
+    private fun createTestFiles(directoryName: String) {
+        for (member in getMembersWithAnnotation(TestFile::class.java)) {
+            member.isAccessible = true
+            if (!member.returnType.isSubtypeOf(File::class.createType())
+                || member !is KMutableProperty<*>
+            ) {
+                throw IllegalArgumentException(
+                    "@TestFile can only annotate mutable fields of type " +
+                        "java.io.File"
+                )
+            }
+
+            val annotation: TestFile? = member.findAnnotation()
+            val directory: File = FileUtil.createTempDirectory(directoryName, null)
+            val file = File(directory, annotation?.name)
+            if (!file.createNewFile()) {
+                throw IOException("Can't create file: $file")
+            }
+            annotation?.let {
+                if (!annotation.contents.isEmpty()) {
+                    FileUtil.writeToFile(file, annotation.contents)
+                }
+            }
+
+            filesToDelete.add(file)
+            member.setter.call(testInstance, file)
+        }
+    }
+
+    private fun getMembersWithAnnotation(annotation: Class<out Annotation>) =
+        testInstance::class.declaredMemberProperties.filter { member ->
+            member.annotations.filter {
+                annotation.isAssignableFrom(it::class.java)
+            }.isNotEmpty()
+        }
 
     /**
      * Replaces the service binding in the [MutablePicoContainer] with the given instance and
