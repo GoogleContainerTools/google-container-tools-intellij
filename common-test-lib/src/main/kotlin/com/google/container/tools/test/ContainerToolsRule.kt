@@ -36,7 +36,6 @@ import kotlin.reflect.full.createType
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.full.isSuperclassOf
 import kotlin.reflect.jvm.isAccessible
 
 /**
@@ -144,7 +143,7 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
         List<KProperty1<out Any, Any?>> =
         testInstance::class.declaredMemberProperties.filter { member ->
             member.annotations.filter {
-                annotation.isSuperclassOf(it::class)
+                annotation.isInstance(it)
             }.isNotEmpty()
         }
 
