@@ -18,6 +18,7 @@ package com.google.container.tools.skaffold.editing
 
 import com.intellij.codeInsight.template.TemplateContextType
 import com.intellij.psi.PsiFile
+import org.jetbrains.yaml.YAMLFileType
 
 private const val SKAFFOLD_TEMPLATE_ID = "SKAFFOLD"
 private const val SKAFFOLD_TEMPLATE_NAME = "Skaffold"
@@ -34,8 +35,6 @@ class SkaffoldContextType(
     /**
      * A file is in context for Skaffold live templates if it is a yaml file.
      */
-    override fun isInContext(file: PsiFile, offset: Int): Boolean {
-        return file.name.endsWith(suffix = "yaml", ignoreCase = true) ||
-            file.name.endsWith(suffix = "yml", ignoreCase = true)
-    }
+    override fun isInContext(file: PsiFile, offset: Int): Boolean =
+        file.fileType == YAMLFileType.YML
 }

@@ -18,9 +18,11 @@ package com.google.container.tools.skaffold.editing
 
 import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.test.ContainerToolsRule
+import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.psi.PsiFile
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import org.jetbrains.yaml.YAMLFileType
 import org.junit.Rule
 import org.junit.Test
 
@@ -38,13 +40,10 @@ class SkaffoldContextTypeTest {
 
     @Test
     fun `isInContext checks valid skaffold file extensions`() {
-        every { psiFile.name } returns "yaml"
+        every { psiFile.fileType } returns YAMLFileType.YML
         assertThat(skaffoldContextType.isInContext(psiFile, offset = 0)).isTrue()
 
-        every { psiFile.name } returns "yml"
-        assertThat(skaffoldContextType.isInContext(psiFile, offset = 0)).isTrue()
-
-        every { psiFile.name } returns "xml"
+        every { psiFile.fileType } returns XmlFileType.INSTANCE
         assertThat(skaffoldContextType.isInContext(psiFile, offset = 0)).isFalse()
     }
 }
