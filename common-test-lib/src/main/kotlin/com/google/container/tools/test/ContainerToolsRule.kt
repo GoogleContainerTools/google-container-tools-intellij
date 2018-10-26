@@ -29,12 +29,14 @@ import org.junit.runners.model.Statement
 import org.picocontainer.MutablePicoContainer
 import java.io.File
 import java.io.IOException
+import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.isSuperclassOf
 import kotlin.reflect.jvm.isAccessible
 
 /**
@@ -91,7 +93,7 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
      * Replaces all services annotated with [TestService].
      */
     private fun replaceServices() {
-        for (member in getMembersWithAnnotation(TestService::class.java)) {
+        for (member in getMembersWithAnnotation(TestService::class)) {
             member as KProperty1<Any?, Any?>
             member.isAccessible = true
             val service: Any = member.get(testInstance)!!
@@ -105,7 +107,7 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
      * @param directoryName the name of the directory to create the test files in
      */
     private fun createTestFiles(directoryName: String) {
-        for (member in getMembersWithAnnotation(TestFile::class.java)) {
+        for (member in getMembersWithAnnotation(TestFile::class)) {
             member.isAccessible = true
             if (!member.returnType.isSubtypeOf(File::class.createType()) ||
                 member !is KMutableProperty<*>
@@ -138,11 +140,11 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
      *
      * @param annotation find members containing this annotation
      */
-    private fun getMembersWithAnnotation(annotation: Class<out Annotation>):
+    private fun getMembersWithAnnotation(annotation: KClass<out Annotation>):
         List<KProperty1<out Any, Any?>> =
         testInstance::class.declaredMemberProperties.filter { member ->
             member.annotations.filter {
-                annotation.isAssignableFrom(it::class.java)
+                annotation.isSuperclassOf(it::class)
             }.isNotEmpty()
         }
 
