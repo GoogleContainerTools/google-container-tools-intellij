@@ -26,11 +26,9 @@ private const val SKAFFOLD_LIVE_TEMPLATE_PATH = "liveTemplates/Skaffold"
  */
 class SkaffoldLiveTemplatesProvider : DefaultLiveTemplatesProvider {
 
-    override fun getDefaultLiveTemplateFiles(): Array<String> {
-        return arrayOf(SKAFFOLD_LIVE_TEMPLATE_PATH)
-    }
+    override fun getDefaultLiveTemplateFiles(): Array<String> =
+        arrayOf(SKAFFOLD_LIVE_TEMPLATE_PATH)
 
-    override fun getHiddenLiveTemplateFiles(): Array<String>? {
-        return emptyArray()
-    }
+    override fun getHiddenLiveTemplateFiles(): Array<String>? =
+        emptyArray()
 }
