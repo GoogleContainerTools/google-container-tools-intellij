@@ -133,7 +133,13 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
         }
     }
 
-    private fun getMembersWithAnnotation(annotation: Class<out Annotation>) =
+    /**
+     * Returns a list of members containing the given annotation.
+     *
+     * @param annotation find members containing this annotation
+     */
+    private fun getMembersWithAnnotation(annotation: Class<out Annotation>):
+        List<KProperty1<out Any, Any?>> =
         testInstance::class.declaredMemberProperties.filter { member ->
             member.annotations.filter {
                 annotation.isAssignableFrom(it::class.java)
