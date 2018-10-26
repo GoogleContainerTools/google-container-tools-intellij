@@ -123,8 +123,8 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
                 throw IOException("Can't create file: $file")
             }
             annotation?.let {
-                if (!annotation.contents.isEmpty()) {
-                    FileUtil.writeToFile(file, annotation.contents)
+                if (!it.contents.isEmpty()) {
+                    FileUtil.writeToFile(file, it.contents)
                 }
             }
 
