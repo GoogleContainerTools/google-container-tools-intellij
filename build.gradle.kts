@@ -38,7 +38,6 @@ allprojects {
         type = project.properties["ideaEdition"].toString()
         version = project.properties["ideaVersion"].toString()
         intellijRepo = project.properties["intellijRepoUrl"].toString()
-        alternativeIdePath = "/usr/local/google/home/ivanporty/Documents/GoLand-2018.1.5/"
     }
 
     tasks.withType<KotlinCompile> {
