@@ -29,7 +29,7 @@ import com.intellij.openapi.vfs.VfsUtilCore
 import java.io.File
 
 /**
- * Generic [CommandLineState] implementation for running Skaffold on command line based on the given
+ * Runs Skaffold on command line in both "run"/"dev" modes based on the given
  * [AbstractSkaffoldRunConfiguration] and current IDE project. [startProcess] checks configuration
  * and constructs command line to launch Skaffold process. Base class manages console
  * window output and graceful process shutdown (also see [KillableProcessHandler])
