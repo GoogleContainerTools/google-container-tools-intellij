@@ -18,6 +18,7 @@ package com.google.container.tools.skaffold.run
 
 import com.google.container.tools.skaffold.SkaffoldExecutorService
 import com.google.container.tools.skaffold.SkaffoldExecutorSettings
+import com.google.container.tools.skaffold.message
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.CommandLineState
 import com.intellij.execution.process.KillableProcessHandler
@@ -27,34 +28,44 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtilCore
 import java.io.File
 
+/**
+ * [CommandLineState] subclass for running Skaffold on command line based on the given
+ * [AbstractSkaffoldRunConfiguration] and current IDE project,
+ */
 class SkaffoldCommandLineState(
-    environment: ExecutionEnvironment
+    environment: ExecutionEnvironment,
+    val executionMode: SkaffoldExecutorSettings.ExecutionMode
 ) : CommandLineState(environment) {
     override fun startProcess(): ProcessHandler {
-        with(SkaffoldExecutorService.instance) {
-            val runConfiguration = environment.runnerAndConfigurationSettings?.configuration
-            runConfiguration?.let { it ->
-                if (it is AbstractSkaffoldRunConfiguration) {
-                    val projectBaseDir = environment.project.baseDir!!
-                    val workingDirectory = File(environment.project.basePath)
-                    val configFile = LocalFileSystem.getInstance()
-                        .findFileByPath(it.skaffoldConfigurationFilePath!!)!!
-                    val skaffoldConfigurationFilePath = VfsUtilCore.getRelativeLocation(
-                        configFile, projectBaseDir
-                    )
-                    executeSkaffold(
-                        SkaffoldExecutorSettings(
-                            SkaffoldExecutorSettings.ExecutionMode.DEV,
-                            skaffoldConfigurationFilePath,
-                            workingDirectory
-                        )
-                    ).let {
-                        return KillableProcessHandler(it.process, it.commandLine)
-                    }
-                }
-            }
+        val runConfiguration = environment.runnerAndConfigurationSettings?.configuration
+        val projectBaseDir = environment.project.baseDir
+        // ensure the configuration is valid for execution - settings are of supported type,
+        // project is valid and Skaffold file is present.
+        if (runConfiguration == null || runConfiguration !is AbstractSkaffoldRunConfiguration
+            || projectBaseDir == null
+        ) {
+            throw ExecutionException("Unsupported settings.")
+        }
+        if (runConfiguration.skaffoldConfigurationFilePath == null) {
+            throw ExecutionException(message("skaffold.no.file.selected.error"))
         }
 
-        throw ExecutionException("Unsupported settings.")
+        val workingDirectory = File(environment.project.basePath)
+        val configFile = LocalFileSystem.getInstance()
+            .findFileByPath(runConfiguration.skaffoldConfigurationFilePath!!)
+        // use project dir relative location for cleaner command line representation
+        val skaffoldConfigurationFilePath = VfsUtilCore.getRelativeLocation(
+            configFile, projectBaseDir
+        )
+
+        SkaffoldExecutorService.instance.executeSkaffold(
+            SkaffoldExecutorSettings(
+                executionMode,
+                skaffoldConfigurationFilePath,
+                workingDirectory
+            )
+        ).let {
+            return KillableProcessHandler(it.process, it.commandLine)
+        }
     }
 }
