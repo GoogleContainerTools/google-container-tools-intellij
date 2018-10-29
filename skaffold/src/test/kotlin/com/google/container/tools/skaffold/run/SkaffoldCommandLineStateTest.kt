@@ -96,7 +96,7 @@ class SkaffoldCommandLineStateTest {
             ExecutionException::class,
             ThrowableRunnable { skaffoldCommandLineState.startProcess() })
         assertThat(exception.message).isEqualTo(
-            "Your Skaffold run configuration is corrupted. Please edit or re-create it to fix.")
+            "Your Skaffold run configuration is corrupted. Please re-create it to fix.")
     }
 
     @Test

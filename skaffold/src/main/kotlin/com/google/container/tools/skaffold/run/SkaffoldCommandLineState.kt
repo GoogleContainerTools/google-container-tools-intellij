@@ -21,11 +21,13 @@ import com.google.container.tools.skaffold.SkaffoldExecutorSettings
 import com.google.container.tools.skaffold.message
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.CommandLineState
+import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.process.KillableProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtilCore
+import com.intellij.openapi.vfs.VirtualFile
 import java.io.File
 
 /**
@@ -42,8 +44,9 @@ class SkaffoldCommandLineState(
     val executionMode: SkaffoldExecutorSettings.ExecutionMode
 ) : CommandLineState(environment) {
     public override fun startProcess(): ProcessHandler {
-        val runConfiguration = environment.runnerAndConfigurationSettings?.configuration
-        val projectBaseDir = environment.project.baseDir
+        val runConfiguration: RunConfiguration? =
+            environment.runnerAndConfigurationSettings?.configuration
+        val projectBaseDir: VirtualFile? = environment.project.baseDir
         // ensure the configuration is valid for execution - settings are of supported type,
         // project is valid and Skaffold file is present.
         if (runConfiguration == null || runConfiguration !is AbstractSkaffoldRunConfiguration ||
@@ -55,11 +58,10 @@ class SkaffoldCommandLineState(
             throw ExecutionException(message("skaffold.no.file.selected.error"))
         }
 
-        val workingDirectory = File(environment.project.basePath)
-        val configFile = LocalFileSystem.getInstance()
+        val configFile: VirtualFile? = LocalFileSystem.getInstance()
             .findFileByPath(runConfiguration.skaffoldConfigurationFilePath!!)
         // use project dir relative location for cleaner command line representation
-        val skaffoldConfigurationFilePath = VfsUtilCore.getRelativeLocation(
+        val skaffoldConfigurationFilePath: String? = VfsUtilCore.getRelativeLocation(
             configFile, projectBaseDir
         )
 
@@ -67,7 +69,7 @@ class SkaffoldCommandLineState(
             SkaffoldExecutorSettings(
                 executionMode,
                 skaffoldConfigurationFilePath,
-                workingDirectory
+                workingDirectory = File(environment.project.basePath)
             )
         )
 
