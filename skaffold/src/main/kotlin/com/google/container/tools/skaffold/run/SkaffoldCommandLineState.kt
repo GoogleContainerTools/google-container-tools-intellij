@@ -46,7 +46,7 @@ class SkaffoldCommandLineState(
         if (runConfiguration == null || runConfiguration !is AbstractSkaffoldRunConfiguration ||
             projectBaseDir == null
         ) {
-            throw ExecutionException("Unsupported settings.")
+            throw ExecutionException(message("skaffold.unsupported.run.settings"))
         }
         if (runConfiguration.skaffoldConfigurationFilePath == null) {
             throw ExecutionException(message("skaffold.no.file.selected.error"))
