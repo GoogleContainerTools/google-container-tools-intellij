@@ -71,10 +71,6 @@ abstract class SkaffoldExecutorService {
     ): Process {
         val processBuilder = ProcessBuilder()
         workingDirectory?.let { processBuilder.directory(it) }
-        val envMap = processBuilder.environment()
-        envMap["PATH"] = envMap["PATH"] + File.pathSeparator +
-            "/usr/local/google/home/ivanporty/google-cloud-sdk/bin"
-
 
         return processBuilder.command(commandList).start()
     }
