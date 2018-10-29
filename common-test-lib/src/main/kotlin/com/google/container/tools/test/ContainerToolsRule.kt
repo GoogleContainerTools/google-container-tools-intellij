@@ -95,12 +95,15 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
      * Replaces the service binding in the [MutablePicoContainer] with the given instance and
      * returns the original service instance.
      *
+     * In case of using [mockk] for mocking, tries to extract original class name from a randomly
+     * assigned mocked class name.
+     *
      * @param newInstance the new instance to register
      */
     private fun setService(newInstance: Any) {
         with(ApplicationManager.getApplication().picoContainer as MutablePicoContainer) {
             var javaClassName = newInstance::class.java.name
-            // when using Mockk, the class name for mocks is random and using ByteBuddy suffix.
+            // when using Mockk, the class name for mocks is random and uses ByteBuddy suffix.
             val mockkClassNameIndex = javaClassName.indexOf("\$ByteBuddy")
             if (mockkClassNameIndex > 0) {
                 javaClassName = javaClassName.substring(0, mockkClassNameIndex)

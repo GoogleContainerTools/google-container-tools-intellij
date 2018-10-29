@@ -16,6 +16,7 @@
 
 package com.google.container.tools.skaffold
 
+import com.google.common.annotations.VisibleForTesting
 import com.intellij.CommonBundle
 import com.intellij.openapi.util.IconLoader
 import org.jetbrains.annotations.PropertyKey
@@ -28,6 +29,7 @@ private const val BUNDLE_NAME = "messages.SkaffoldBundle"
 /**
  * Returns message by provided key from Skaffold message bundle with optional parameters.
  */
+@VisibleForTesting
 fun message(
     @PropertyKey(resourceBundle = BUNDLE_NAME) key: String,
     vararg params: String
