@@ -53,6 +53,8 @@ class SkaffoldCommandLineStateTest {
     @MockK
     private lateinit var mockRunnerSettings: RunnerAndConfigurationSettings
     @MockK
+    private lateinit var mockDevConfiguration: SkaffoldDevConfiguration
+    @MockK
     @TestService
     private lateinit var mockSkaffoldExecutorService: SkaffoldExecutorService
 
@@ -63,6 +65,12 @@ class SkaffoldCommandLineStateTest {
         every {
             mockExecutionEnvironment.runnerAndConfigurationSettings
         } answers { mockRunnerSettings }
+
+        every { mockRunnerSettings.configuration } answers { mockDevConfiguration }
+        // pass project into the CLI state
+        every { mockExecutionEnvironment.project } answers {
+            containerToolsRule.ideaProjectTestFixture.project
+        }
 
         // CommandLineState calls this static method, needs to be mocked
         mockkStatic(SearchScopeProvider::class)
@@ -77,7 +85,8 @@ class SkaffoldCommandLineStateTest {
 
     @Test
     fun `unsupported run configuration type throws execution exception`() {
-        every { mockRunnerSettings.configuration } answers { mockk<RunConfigurationBase>() }
+        val invalidSkaffoldRunConfiguration = mockk<RunConfigurationBase>()
+        every { mockRunnerSettings.configuration } answers { invalidSkaffoldRunConfiguration }
 
         skaffoldCommandLineState = SkaffoldCommandLineState(
             mockExecutionEnvironment,
@@ -92,9 +101,7 @@ class SkaffoldCommandLineStateTest {
 
     @Test
     fun `null Skaffold config file results in execution exception`() {
-        val mockDevConfiguration: SkaffoldDevConfiguration = mockk()
         every { mockDevConfiguration.skaffoldConfigurationFilePath } answers { null }
-        every { mockRunnerSettings.configuration } answers { mockDevConfiguration }
 
         skaffoldCommandLineState = SkaffoldCommandLineState(
             mockExecutionEnvironment,
@@ -110,14 +117,8 @@ class SkaffoldCommandLineStateTest {
     @Test
     fun `given valid settings skaffold process is executed from the project directory`() {
         val projectBaseDir = containerToolsRule.ideaProjectTestFixture.project.baseDir.path
-        val mockDevConfiguration: SkaffoldDevConfiguration = mockk()
         every { mockDevConfiguration.skaffoldConfigurationFilePath } answers {
             projectBaseDir + "/skaffold.yaml"
-        }
-        every { mockRunnerSettings.configuration } answers { mockDevConfiguration }
-        // pass project into the CLI state
-        every { mockExecutionEnvironment.project } answers {
-            containerToolsRule.ideaProjectTestFixture.project
         }
 
         skaffoldCommandLineState = SkaffoldCommandLineState(
