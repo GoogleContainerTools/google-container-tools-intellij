@@ -63,14 +63,14 @@ class SkaffoldCommandLineState(
             configFile, projectBaseDir
         )
 
-        SkaffoldExecutorService.instance.executeSkaffold(
+        val skaffoldProcess = SkaffoldExecutorService.instance.executeSkaffold(
             SkaffoldExecutorSettings(
                 executionMode,
                 skaffoldConfigurationFilePath,
                 workingDirectory
             )
-        ).let {
-            return KillableProcessHandler(it.process, it.commandLine)
-        }
+        )
+
+        return KillableProcessHandler(skaffoldProcess.process, skaffoldProcess.commandLine)
     }
 }
