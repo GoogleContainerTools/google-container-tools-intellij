@@ -29,8 +29,10 @@ import com.intellij.openapi.vfs.VfsUtilCore
 import java.io.File
 
 /**
- * [CommandLineState] subclass for running Skaffold on command line based on the given
- * [AbstractSkaffoldRunConfiguration] and current IDE project,
+ * Generic [CommandLineState] implementation for running Skaffold on command line based on the given
+ * [AbstractSkaffoldRunConfiguration] and current IDE project. [startProcess] checks configuration
+ * and constructs command line to launch Skaffold process. Base class manages console
+ * window output and graceful process shutdown (also see [KillableProcessHandler])
  */
 class SkaffoldCommandLineState(
     environment: ExecutionEnvironment,
@@ -41,8 +43,8 @@ class SkaffoldCommandLineState(
         val projectBaseDir = environment.project.baseDir
         // ensure the configuration is valid for execution - settings are of supported type,
         // project is valid and Skaffold file is present.
-        if (runConfiguration == null || runConfiguration !is AbstractSkaffoldRunConfiguration
-            || projectBaseDir == null
+        if (runConfiguration == null || runConfiguration !is AbstractSkaffoldRunConfiguration ||
+            projectBaseDir == null
         ) {
             throw ExecutionException("Unsupported settings.")
         }
