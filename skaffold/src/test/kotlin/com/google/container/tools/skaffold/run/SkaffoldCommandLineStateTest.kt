@@ -20,7 +20,6 @@ import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.skaffold.SkaffoldExecutorService
 import com.google.container.tools.skaffold.SkaffoldExecutorSettings
 import com.google.container.tools.skaffold.SkaffoldProcess
-import com.google.container.tools.skaffold.message
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
 import com.google.container.tools.test.expectThrows
@@ -96,7 +95,8 @@ class SkaffoldCommandLineStateTest {
         val exception = expectThrows(
             ExecutionException::class,
             ThrowableRunnable { skaffoldCommandLineState.startProcess() })
-        assertThat(exception.message).isEqualTo(message("skaffold.unsupported.run.settings"))
+        assertThat(exception.message).isEqualTo(
+            "Your Skaffold run configuration is corrupted. Please edit or re-create it to fix.")
     }
 
     @Test
@@ -111,7 +111,7 @@ class SkaffoldCommandLineStateTest {
         val exception = expectThrows(
             ExecutionException::class,
             ThrowableRunnable { skaffoldCommandLineState.startProcess() })
-        assertThat(exception.message).isEqualTo(message("skaffold.no.file.selected.error"))
+        assertThat(exception.message).isEqualTo("Skaffold configuration file is not selected.")
     }
 
     @Test
