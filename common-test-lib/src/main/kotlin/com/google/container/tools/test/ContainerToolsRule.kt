@@ -99,9 +99,16 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
      */
     private fun setService(newInstance: Any) {
         with(ApplicationManager.getApplication().picoContainer as MutablePicoContainer) {
-            unregisterComponent(newInstance::class.java.name)
+            var javaClassName = newInstance::class.java.name
+            // when using Mockk, the class name for mocks is random and using ByteBuddy suffix.
+            val mockkClassNameIndex = javaClassName.indexOf("\$ByteBuddy")
+            if (mockkClassNameIndex > 0) {
+                javaClassName = javaClassName.substring(0, mockkClassNameIndex)
+            }
+
+            unregisterComponent(javaClassName)
             registerComponentInstance(
-                newInstance::class.java.name,
+                javaClassName,
                 newInstance
             )
         }

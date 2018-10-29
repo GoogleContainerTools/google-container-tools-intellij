@@ -33,12 +33,15 @@ import java.io.File
  * [AbstractSkaffoldRunConfiguration] and current IDE project. [startProcess] checks configuration
  * and constructs command line to launch Skaffold process. Base class manages console
  * window output and graceful process shutdown (also see [KillableProcessHandler])
+ *
+ * @param environment Execution environment provided by IDE
+ * @param executionMode Skaffold  mode execution, i.e. DEV
  */
 class SkaffoldCommandLineState(
     environment: ExecutionEnvironment,
     val executionMode: SkaffoldExecutorSettings.ExecutionMode
 ) : CommandLineState(environment) {
-    override fun startProcess(): ProcessHandler {
+    public override fun startProcess(): ProcessHandler {
         val runConfiguration = environment.runnerAndConfigurationSettings?.configuration
         val projectBaseDir = environment.project.baseDir
         // ensure the configuration is valid for execution - settings are of supported type,
