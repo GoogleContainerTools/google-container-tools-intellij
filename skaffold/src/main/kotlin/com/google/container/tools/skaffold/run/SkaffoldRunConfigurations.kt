@@ -26,7 +26,6 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.util.xmlb.XmlSerializer
-import com.intellij.util.xmlb.annotations.OptionTag
 import org.jdom.Element
 
 /**
@@ -79,7 +78,6 @@ abstract class AbstractSkaffoldRunConfiguration(
      * Persisted Skaffold config file absolute path for Skaffold run configurations.
      * See more at [com.intellij.openapi.vfs.VirtualFile.getPath]
      */
-    @get:OptionTag("skaffoldConfigurationFilePath")
     var skaffoldConfigurationFilePath: String? = null
 
     override fun readExternal(element: Element) {
