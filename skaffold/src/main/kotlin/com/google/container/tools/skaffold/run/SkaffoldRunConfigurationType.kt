@@ -16,6 +16,7 @@
 
 package com.google.container.tools.skaffold.run
 
+import com.google.container.tools.skaffold.SKAFFOLD_DEV_ICON
 import com.google.container.tools.skaffold.SKAFFOLD_ICON
 import com.google.container.tools.skaffold.message
 import com.intellij.execution.configurations.ConfigurationFactory
@@ -68,4 +69,6 @@ class SkaffoldDevConfigurationFactory(type: ConfigurationType) : ConfigurationFa
         SkaffoldDevConfiguration(project, this, name)
 
     override fun getName(): String = message("skaffold.run.config.dev.run.name")
+
+    override fun getIcon(): Icon = SKAFFOLD_DEV_ICON
 }

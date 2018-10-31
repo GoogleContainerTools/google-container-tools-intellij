@@ -23,6 +23,7 @@ import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.IdeBorderFactory
 import com.intellij.ui.layout.panel
 import javax.swing.JComponent
 
@@ -31,15 +32,18 @@ import javax.swing.JComponent
  * drop-down list of all Skaffold configuration files ([SkaffoldFilesComboBox]) found
  * in the project and basic validation of the currently selected Skaffold file.
  */
-open class BaseSkaffoldSettingsEditor : SettingsEditor<AbstractSkaffoldRunConfiguration>() {
+open class BaseSkaffoldSettingsEditor(val editorTitle: String) :
+    SettingsEditor<AbstractSkaffoldRunConfiguration>() {
+
     @VisibleForTesting
-    lateinit var skaffoldFilesComboBox: SkaffoldFilesComboBox
+    val skaffoldFilesComboBox = SkaffoldFilesComboBox()
+
+    val basePanel = panel {
+        row(message("skaffold.configuration.label")) { skaffoldFilesComboBox(grow) }
+    }
 
     override fun createEditor(): JComponent {
-        skaffoldFilesComboBox = SkaffoldFilesComboBox()
-        val basePanel = panel {
-            row(message("skaffold.configuration.label")) { skaffoldFilesComboBox(grow) }
-        }
+        basePanel.border = IdeBorderFactory.createTitledBorder(editorTitle)
 
         return basePanel
     }
