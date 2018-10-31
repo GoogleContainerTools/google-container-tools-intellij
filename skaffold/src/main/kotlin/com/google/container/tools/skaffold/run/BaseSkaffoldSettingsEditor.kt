@@ -23,8 +23,9 @@ import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.ui.IdeBorderFactory
+import com.intellij.ui.border.IdeaTitledBorder
 import com.intellij.ui.layout.panel
+import java.awt.Insets
 import javax.swing.JComponent
 
 /**
@@ -43,7 +44,7 @@ open class BaseSkaffoldSettingsEditor(val editorTitle: String) :
     }
 
     override fun createEditor(): JComponent {
-        basePanel.border = IdeBorderFactory.createTitledBorder(editorTitle)
+        basePanel.border = IdeaTitledBorder(editorTitle, 0, Insets(0, 0, 0, 0))
 
         return basePanel
     }
