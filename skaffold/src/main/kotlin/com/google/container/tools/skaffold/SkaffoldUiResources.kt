@@ -23,7 +23,6 @@ import org.jetbrains.annotations.PropertyKey
 import java.util.ResourceBundle
 
 internal val SKAFFOLD_ICON = IconLoader.getIcon("/icons/skaffold.png")
-internal val SKAFFOLD_DEV_ICON = IconLoader.getIcon("/icons/skaffold-dev.png")
 
 private const val BUNDLE_NAME = "messages.SkaffoldBundle"
 

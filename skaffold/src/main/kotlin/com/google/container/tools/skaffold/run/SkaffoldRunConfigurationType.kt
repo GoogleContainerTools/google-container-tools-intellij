@@ -16,7 +16,6 @@
 
 package com.google.container.tools.skaffold.run
 
-import com.google.container.tools.skaffold.SKAFFOLD_DEV_ICON
 import com.google.container.tools.skaffold.SKAFFOLD_ICON
 import com.google.container.tools.skaffold.message
 import com.intellij.execution.configurations.ConfigurationFactory
@@ -54,7 +53,7 @@ class SkaffoldRunConfigurationType : ConfigurationType {
  * at [SkaffoldSingleRunConfiguration].
  */
 class SkaffoldSingleRunConfigurationFactory(type: ConfigurationType) : ConfigurationFactory(type) {
-    val RUN_ID = "google-container-tools-skaffold-run-config-single"
+    val RUN_ID = "google-container-tools-skaffold-run-config-run"
 
     override fun createTemplateConfiguration(project: Project): RunConfiguration =
         SkaffoldSingleRunConfiguration(project, this, name)
@@ -76,7 +75,7 @@ class SkaffoldDevConfigurationFactory(type: ConfigurationType) : ConfigurationFa
 
     override fun getName(): String = message("skaffold.run.config.dev.run.name")
 
-    override fun getIcon(): Icon = SKAFFOLD_DEV_ICON
+    override fun getIcon(): Icon = SKAFFOLD_ICON
 
     override fun getId(): String = DEV_ID
 }
