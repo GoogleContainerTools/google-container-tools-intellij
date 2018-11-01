@@ -23,4 +23,7 @@ import com.google.container.tools.skaffold.message
  * also saves and retrieves the settings from the project state.
  */
 class SkaffoldSingleRunSettingsEditor :
-    BaseSkaffoldSettingsEditor(message("skaffold.run.config.single.run.name"))
+    BaseSkaffoldSettingsEditor(
+        editorTitle = message("skaffold.run.config.single.run.name"),
+        helperText = message("skaffold.run.config.single.run.helperText")
+    )

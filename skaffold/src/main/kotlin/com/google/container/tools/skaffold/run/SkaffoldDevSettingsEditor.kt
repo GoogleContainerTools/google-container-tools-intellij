@@ -24,4 +24,7 @@ import com.google.container.tools.skaffold.message
  * the settings from the project state.
  */
 class SkaffoldDevSettingsEditor :
-    BaseSkaffoldSettingsEditor(message("skaffold.run.config.dev.run.name"))
+    BaseSkaffoldSettingsEditor(
+        editorTitle = message("skaffold.run.config.dev.run.name"),
+        helperText = message("skaffold.run.config.dev.run.helperText")
+    )
