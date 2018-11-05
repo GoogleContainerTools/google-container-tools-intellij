@@ -89,4 +89,54 @@ class DefaultSkaffoldExecutorServiceTest {
 
         verify { defaultSkaffoldExecutorService.createProcess(File("/tmp"), any()) }
     }
+
+    @Test
+    fun `empty skaffold label list does not generate label flags`() {
+        val skaffoldLabels = SkaffoldLabels()
+
+        val result = defaultSkaffoldExecutorService.executeSkaffold(
+            SkaffoldExecutorSettings(
+                SkaffoldExecutorSettings.ExecutionMode.DEV,
+                skaffoldConfigurationFilePath = "test.yaml",
+                skaffoldLabels = skaffoldLabels
+            )
+        )
+
+        assertThat(result.commandLine).isEqualTo("skaffold dev --filename test.yaml")
+    }
+
+    @Test
+    fun `single skaffold label list generates correct label flag`() {
+        val skaffoldLabels = SkaffoldLabels()
+        skaffoldLabels.addLabel("ide", "testIde")
+
+        val result = defaultSkaffoldExecutorService.executeSkaffold(
+            SkaffoldExecutorSettings(
+                SkaffoldExecutorSettings.ExecutionMode.DEV,
+                skaffoldConfigurationFilePath = "test.yaml",
+                skaffoldLabels = skaffoldLabels
+            )
+        )
+
+        assertThat(result.commandLine).contains("--label ide=testIde")
+    }
+
+
+    @Test
+    fun `multiple skaffold label list generates correct label flag set`() {
+        val skaffoldLabels = SkaffoldLabels()
+        skaffoldLabels.addLabel("ide", "testIde")
+        skaffoldLabels.addLabel("name", "unitTest")
+        skaffoldLabels.addLabel("version", "1")
+
+        val result = defaultSkaffoldExecutorService.executeSkaffold(
+            SkaffoldExecutorSettings(
+                SkaffoldExecutorSettings.ExecutionMode.DEV,
+                skaffoldConfigurationFilePath = "test.yaml",
+                skaffoldLabels = skaffoldLabels
+            )
+        )
+
+        assertThat(result.commandLine).contains("--label ide=testIde --label name=unitTest --label version=1")
+    }
 }
