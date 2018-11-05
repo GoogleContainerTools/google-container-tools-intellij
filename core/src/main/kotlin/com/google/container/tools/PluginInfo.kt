@@ -14,7 +14,18 @@
  * limitations under the License.
  */
 
-dependencies {
-    compile(project(":core"))
-    testCompile(project(":common-test-lib"))
+package com.google.container.tools
+
+import com.intellij.ide.plugins.IdeaPluginDescriptor
+import com.intellij.ide.plugins.PluginManager
+import com.intellij.openapi.extensions.PluginId
+
+const val CONTAINER_TOOLS_PLUGIN_ID = "com.google.container.tools"
+const val UNKNOWN_VERSION = "N/A"
+
+fun getPluginVersion(): String {
+    val ideaPluginDescriptor: IdeaPluginDescriptor? =
+        PluginManager.getPlugin(PluginId.getId(CONTAINER_TOOLS_PLUGIN_ID))
+
+    return ideaPluginDescriptor?.version ?: UNKNOWN_VERSION
 }

@@ -16,5 +16,34 @@
 
 package com.google.container.tools.skaffold
 
+import com.google.container.tools.getPluginVersion
+import com.intellij.openapi.application.ApplicationInfo
+import com.intellij.util.PlatformUtils
+import java.util.Collections
+
+const val IDE_LABEL = "ide"
+const val IDE_VERSION_LABEL = "ideVersion"
+const val PLUGIN_VERSION_LABEL = "ijPluginVersion"
+
 class SkaffoldLabels {
+    companion object {
+        fun getDefaultLabels(): SkaffoldLabels {
+            val defaultLabels = SkaffoldLabels()
+            with(defaultLabels) {
+                addLabel(IDE_LABEL, PlatformUtils.getPlatformPrefix())
+                addLabel(IDE_VERSION_LABEL, ApplicationInfo.getInstance().getStrictVersion())
+                addLabel(PLUGIN_VERSION_LABEL, getPluginVersion())
+            }
+
+            return defaultLabels
+        }
+    }
+
+    private val labels: MutableMap<String, String> = mutableMapOf()
+
+    fun addLabel(name: String, value: String) {
+        labels.put(name, value)
+    }
+
+    fun getLabels() = Collections.unmodifiableMap(labels)
 }
