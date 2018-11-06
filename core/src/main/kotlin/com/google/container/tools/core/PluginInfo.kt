@@ -36,5 +36,5 @@ object PluginInfo {
             return ideaPluginDescriptor?.version ?: UNKNOWN
         }
 
-    fun getPlatformPrefix(): String = PlatformUtils.getPlatformPrefix()
+    val platformPrefix: String = PlatformUtils.getPlatformPrefix()
 }

@@ -31,12 +31,12 @@ const val PLUGIN_VERSION_LABEL = "ijPluginVersion"
 class SkaffoldLabels {
     companion object {
         /**
-         * Creates default set of labels for all Skaffold-based deployments. Includes IDE type and
+         * Default set of labels for all Skaffold-based deployments. Includes IDE type and
          * version, plugin version.
          */
         val defaultLabels: SkaffoldLabels by lazy {
             SkaffoldLabels().apply {
-                this.labels[IDE_LABEL] = PluginInfo.getPlatformPrefix()
+                this.labels[IDE_LABEL] = PluginInfo.platformPrefix
                 this.labels[IDE_VERSION_LABEL] = ApplicationInfo.getInstance().getStrictVersion()
                 this.labels[PLUGIN_VERSION_LABEL] = PluginInfo.pluginVersion
             }

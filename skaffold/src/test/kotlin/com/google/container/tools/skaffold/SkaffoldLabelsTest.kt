@@ -41,7 +41,7 @@ class SkaffoldLabelsTest {
         // mock all sources of information that should be used for default labels
         every { mockApplicationInfo.strictVersion } answers { "999.9" }
         mockkObject(PluginInfo)
-        every { PluginInfo.getPlatformPrefix() } answers { "TestIde" }
+        every { PluginInfo.platformPrefix } answers { "TestIde" }
         every { PluginInfo.pluginVersion } answers { "0.1" }
 
         val defaultLabels: SkaffoldLabels = SkaffoldLabels.defaultLabels
