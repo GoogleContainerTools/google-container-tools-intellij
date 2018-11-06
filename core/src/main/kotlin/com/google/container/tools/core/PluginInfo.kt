@@ -19,6 +19,7 @@ package com.google.container.tools.core
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.openapi.extensions.PluginId
+import com.intellij.util.PlatformUtils
 
 const val CONTAINER_TOOLS_PLUGIN_ID = "com.google.container.tools"
 const val UNKNOWN = "N/A"
@@ -34,4 +35,6 @@ object PluginInfo {
 
             return ideaPluginDescriptor?.version ?: UNKNOWN
         }
+
+    fun getPlatformPrefix(): String = PlatformUtils.getPlatformPrefix()
 }

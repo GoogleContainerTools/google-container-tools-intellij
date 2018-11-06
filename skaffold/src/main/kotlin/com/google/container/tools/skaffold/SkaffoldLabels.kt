@@ -18,7 +18,6 @@ package com.google.container.tools.skaffold
 
 import com.google.container.tools.core.PluginInfo
 import com.intellij.openapi.application.ApplicationInfo
-import com.intellij.util.PlatformUtils
 
 const val IDE_LABEL = "ide"
 const val IDE_VERSION_LABEL = "ideVersion"
@@ -37,7 +36,7 @@ class SkaffoldLabels {
          */
         val defaultLabels: SkaffoldLabels by lazy {
             SkaffoldLabels().apply {
-                this.labels[IDE_LABEL] = PlatformUtils.getPlatformPrefix()
+                this.labels[IDE_LABEL] = PluginInfo.getPlatformPrefix()
                 this.labels[IDE_VERSION_LABEL] = ApplicationInfo.getInstance().getStrictVersion()
                 this.labels[PLUGIN_VERSION_LABEL] = PluginInfo.pluginVersion
             }
