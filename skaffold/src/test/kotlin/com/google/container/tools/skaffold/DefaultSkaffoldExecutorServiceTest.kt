@@ -118,9 +118,10 @@ class DefaultSkaffoldExecutorServiceTest {
             )
         )
 
-        assertThat(result.commandLine).contains("--label ide=testIde")
+        assertThat(result.commandLine).isEqualTo(
+            "skaffold dev --filename test.yaml --label ide=testIde"
+        )
     }
-
 
     @Test
     fun `multiple skaffold label list generates correct label flag set`() {
@@ -137,6 +138,9 @@ class DefaultSkaffoldExecutorServiceTest {
             )
         )
 
-        assertThat(result.commandLine).contains("--label ide=testIde --label name=unitTest --label version=1")
+        assertThat(result.commandLine).isEqualTo(
+            "skaffold dev --filename test.yaml " +
+                "--label ide=testIde --label name=unitTest --label version=1"
+        )
     }
 }

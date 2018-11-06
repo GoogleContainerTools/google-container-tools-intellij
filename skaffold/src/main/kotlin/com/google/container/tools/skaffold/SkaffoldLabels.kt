@@ -16,7 +16,7 @@
 
 package com.google.container.tools.skaffold
 
-import com.google.container.tools.getPluginVersion
+import com.google.container.tools.PluginInfo
 import com.google.container.tools.skaffold.SkaffoldLabels.Companion.getDefaultLabels
 import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.util.PlatformUtils
@@ -28,8 +28,8 @@ const val PLUGIN_VERSION_LABEL = "ijPluginVersion"
 
 /**
  * Maintains list of Kubernetes labels - string based key-value pairs used by Skaffold to apply
- * to deployments. [getDefaultLabels] function supplies default set of labels used for every
- * deployment.
+ * to all deployments. [getDefaultLabels] function supplies default set of labels used for all
+ * deployments.
  */
 class SkaffoldLabels {
     companion object {
@@ -42,7 +42,7 @@ class SkaffoldLabels {
             with(defaultLabels) {
                 addLabel(IDE_LABEL, PlatformUtils.getPlatformPrefix())
                 addLabel(IDE_VERSION_LABEL, ApplicationInfo.getInstance().getStrictVersion())
-                addLabel(PLUGIN_VERSION_LABEL, getPluginVersion())
+                addLabel(PLUGIN_VERSION_LABEL, PluginInfo.getPluginVersion())
             }
 
             return defaultLabels
