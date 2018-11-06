@@ -91,6 +91,7 @@ abstract class SkaffoldExecutorService {
  *           configuration file. If not provided, default `skaffold.yaml` used.
  * @property workingDirectory Optional, working directory where Skaffold needs to be launched.
  *           This is usually set to project working directory.
+ * @property skaffoldLabels Kubernetes style labels to apply for Skaffold deployment.
  */
 data class SkaffoldExecutorSettings(
     val executionMode: ExecutionMode,
