@@ -16,11 +16,10 @@
 
 package com.google.container.tools.skaffold
 
-import com.google.container.tools.PluginInfo
+import com.google.container.tools.core.PluginInfo
 import com.google.container.tools.skaffold.SkaffoldLabels.Companion.getDefaultLabels
 import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.util.PlatformUtils
-import java.util.Collections
 
 const val IDE_LABEL = "ide"
 const val IDE_VERSION_LABEL = "ideVersion"
@@ -40,20 +39,14 @@ class SkaffoldLabels {
         fun getDefaultLabels(): SkaffoldLabels {
             val defaultLabels = SkaffoldLabels()
             with(defaultLabels) {
-                addLabel(IDE_LABEL, PlatformUtils.getPlatformPrefix())
-                addLabel(IDE_VERSION_LABEL, ApplicationInfo.getInstance().getStrictVersion())
-                addLabel(PLUGIN_VERSION_LABEL, PluginInfo.getPluginVersion())
+                labels[IDE_LABEL] = PlatformUtils.getPlatformPrefix()
+                labels[IDE_VERSION_LABEL] = ApplicationInfo.getInstance().getStrictVersion()
+                labels[PLUGIN_VERSION_LABEL] = PluginInfo.pluginVersion
             }
 
             return defaultLabels
         }
     }
 
-    private val labels: MutableMap<String, String> = mutableMapOf()
-
-    fun addLabel(name: String, value: String) {
-        labels.put(name, value)
-    }
-
-    fun getLabels() = Collections.unmodifiableMap(labels)
+    val labels: MutableMap<String, String> = mutableMapOf()
 }

@@ -17,7 +17,7 @@
 package com.google.container.tools.skaffold
 
 import com.google.common.truth.Truth.assertThat
-import com.google.container.tools.PluginInfo
+import com.google.container.tools.core.PluginInfo
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
 import com.intellij.openapi.application.ApplicationInfo
@@ -45,12 +45,12 @@ class SkaffoldLabelsTest {
         every { PlatformUtils.getPlatformPrefix() } answers { "TestIde" }
         every { mockApplicationInfo.strictVersion } answers { "999.9" }
         mockkObject(PluginInfo)
-        every { PluginInfo.getPluginVersion() } answers { "0.1" }
+        every { PluginInfo.pluginVersion } answers { "0.1" }
 
         val defaultLabels: SkaffoldLabels = SkaffoldLabels.getDefaultLabels()
 
-        assertThat(defaultLabels.getLabels()["ide"]).isEqualTo("TestIde")
-        assertThat(defaultLabels.getLabels()["ideVersion"]).isEqualTo("999.9")
-        assertThat(defaultLabels.getLabels()["ijPluginVersion"]).isEqualTo("0.1")
+        assertThat(defaultLabels.labels["ide"]).isEqualTo("TestIde")
+        assertThat(defaultLabels.labels["ideVersion"]).isEqualTo("999.9")
+        assertThat(defaultLabels.labels["ijPluginVersion"]).isEqualTo("0.1")
     }
 }

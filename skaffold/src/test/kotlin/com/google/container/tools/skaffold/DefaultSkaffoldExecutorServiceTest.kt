@@ -108,7 +108,7 @@ class DefaultSkaffoldExecutorServiceTest {
     @Test
     fun `single skaffold label list generates correct label flag`() {
         val skaffoldLabels = SkaffoldLabels()
-        skaffoldLabels.addLabel("ide", "testIde")
+        skaffoldLabels.labels["ide"] = "testIde"
 
         val result = defaultSkaffoldExecutorService.executeSkaffold(
             SkaffoldExecutorSettings(
@@ -126,9 +126,9 @@ class DefaultSkaffoldExecutorServiceTest {
     @Test
     fun `multiple skaffold label list generates correct label flag set`() {
         val skaffoldLabels = SkaffoldLabels()
-        skaffoldLabels.addLabel("ide", "testIde")
-        skaffoldLabels.addLabel("name", "unitTest")
-        skaffoldLabels.addLabel("version", "1")
+        skaffoldLabels.labels["ide"] = "testIde"
+        skaffoldLabels.labels["name"] = "unitTest"
+        skaffoldLabels.labels["version"] = "1"
 
         val result = defaultSkaffoldExecutorService.executeSkaffold(
             SkaffoldExecutorSettings(

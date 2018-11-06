@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.container.tools
+package com.google.container.tools.core
 
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginManager
@@ -26,11 +26,12 @@ const val UNKNOWN_VERSION = "N/A"
 /** Utilities to get common plugin information such as its version. */
 object PluginInfo {
 
-    /** Returns version of the plugin installed, or `N/A` if version cannot be determined. */
-    fun getPluginVersion(): String {
-        val ideaPluginDescriptor: IdeaPluginDescriptor? =
-            PluginManager.getPlugin(PluginId.getId(CONTAINER_TOOLS_PLUGIN_ID))
+    /** Version of the plugin installed, or `N/A` if version cannot be determined. */
+    val pluginVersion: String
+        get() {
+            val ideaPluginDescriptor: IdeaPluginDescriptor? =
+                PluginManager.getPlugin(PluginId.getId(CONTAINER_TOOLS_PLUGIN_ID))
 
-        return ideaPluginDescriptor?.version ?: UNKNOWN_VERSION
-    }
+            return ideaPluginDescriptor?.version ?: UNKNOWN_VERSION
+        }
 }
