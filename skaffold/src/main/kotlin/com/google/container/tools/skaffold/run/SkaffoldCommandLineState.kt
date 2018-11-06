@@ -71,7 +71,7 @@ class SkaffoldCommandLineState(
                 executionMode,
                 skaffoldConfigurationFilePath,
                 workingDirectory = File(environment.project.basePath),
-                skaffoldLabels = SkaffoldLabels.getDefaultLabels()
+                skaffoldLabels = SkaffoldLabels.defaultLabels
             )
         )
 

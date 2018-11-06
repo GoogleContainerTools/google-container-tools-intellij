@@ -17,7 +17,6 @@
 package com.google.container.tools.skaffold
 
 import com.google.container.tools.core.PluginInfo
-import com.google.container.tools.skaffold.SkaffoldLabels.Companion.getDefaultLabels
 import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.util.PlatformUtils
 
@@ -36,15 +35,12 @@ class SkaffoldLabels {
          * Creates default set of labels for all Skaffold-based deployments. Includes IDE type and
          * version, plugin version.
          */
-        fun getDefaultLabels(): SkaffoldLabels {
-            val defaultLabels = SkaffoldLabels()
-            with(defaultLabels) {
-                labels[IDE_LABEL] = PlatformUtils.getPlatformPrefix()
-                labels[IDE_VERSION_LABEL] = ApplicationInfo.getInstance().getStrictVersion()
-                labels[PLUGIN_VERSION_LABEL] = PluginInfo.pluginVersion
+        val defaultLabels: SkaffoldLabels by lazy {
+            SkaffoldLabels().apply {
+                this.labels[IDE_LABEL] = PlatformUtils.getPlatformPrefix()
+                this.labels[IDE_VERSION_LABEL] = ApplicationInfo.getInstance().getStrictVersion()
+                this.labels[PLUGIN_VERSION_LABEL] = PluginInfo.pluginVersion
             }
-
-            return defaultLabels
         }
     }
 
