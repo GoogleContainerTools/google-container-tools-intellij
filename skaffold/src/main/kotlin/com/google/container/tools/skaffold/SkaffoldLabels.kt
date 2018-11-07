@@ -36,9 +36,9 @@ class SkaffoldLabels {
          */
         val defaultLabels: SkaffoldLabels by lazy {
             SkaffoldLabels().apply {
-                this.labels[IDE_LABEL] = PluginInfo.platformPrefix
+                this.labels[IDE_LABEL] = PluginInfo.instance.platformPrefix
                 this.labels[IDE_VERSION_LABEL] = ApplicationInfo.getInstance().getStrictVersion()
-                this.labels[PLUGIN_VERSION_LABEL] = PluginInfo.pluginVersion
+                this.labels[PLUGIN_VERSION_LABEL] = PluginInfo.instance.pluginVersion
             }
         }
     }

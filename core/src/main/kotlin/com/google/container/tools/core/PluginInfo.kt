@@ -18,6 +18,7 @@ package com.google.container.tools.core
 
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginManager
+import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.util.PlatformUtils
 
@@ -25,7 +26,11 @@ const val CONTAINER_TOOLS_PLUGIN_ID = "com.google.container.tools"
 const val UNKNOWN_VERSION = "unknown"
 
 /** Utilities to get common plugin information such as its version. */
-object PluginInfo {
+class PluginInfo {
+    companion object {
+        val instance: PluginInfo
+            get() = ServiceManager.getService(PluginInfo::class.java)!!
+    }
 
     /** Version of the plugin installed, or `N/A` if version cannot be determined. */
     val pluginVersion: String by lazy {

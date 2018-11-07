@@ -23,7 +23,6 @@ import com.google.container.tools.test.TestService
 import com.intellij.openapi.application.ApplicationInfo
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockkObject
 import org.junit.Rule
 import org.junit.Test
 
@@ -35,14 +34,16 @@ class SkaffoldLabelsTest {
     @MockK
     @TestService
     private lateinit var mockApplicationInfo: ApplicationInfo
+    @MockK
+    @TestService
+    private lateinit var mockPluginInfo: PluginInfo
 
     @Test
     fun `valid default skaffold labels are constructed from IDE and plugin information`() {
         // mock all sources of information that should be used for default labels
         every { mockApplicationInfo.strictVersion } answers { "999.9" }
-        mockkObject(PluginInfo)
-        every { PluginInfo.platformPrefix } answers { "TestIde" }
-        every { PluginInfo.pluginVersion } answers { "0.1" }
+        every { mockPluginInfo.platformPrefix } answers { "TestIde" }
+        every { mockPluginInfo.pluginVersion } answers { "0.1" }
 
         val defaultLabels: SkaffoldLabels = SkaffoldLabels.defaultLabels
 
