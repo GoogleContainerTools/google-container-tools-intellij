@@ -22,19 +22,18 @@ import com.intellij.openapi.extensions.PluginId
 import com.intellij.util.PlatformUtils
 
 const val CONTAINER_TOOLS_PLUGIN_ID = "com.google.container.tools"
-const val UNKNOWN = "N/A"
+const val UNKNOWN_VERSION = "unknown"
 
 /** Utilities to get common plugin information such as its version. */
 object PluginInfo {
 
     /** Version of the plugin installed, or `N/A` if version cannot be determined. */
-    val pluginVersion: String
-        get() {
-            val ideaPluginDescriptor: IdeaPluginDescriptor? =
-                PluginManager.getPlugin(PluginId.getId(CONTAINER_TOOLS_PLUGIN_ID))
+    val pluginVersion: String by lazy {
+        val ideaPluginDescriptor: IdeaPluginDescriptor? =
+            PluginManager.getPlugin(PluginId.getId(CONTAINER_TOOLS_PLUGIN_ID))
 
-            return ideaPluginDescriptor?.version ?: UNKNOWN
-        }
+        ideaPluginDescriptor?.version ?: UNKNOWN_VERSION
+    }
 
-    val platformPrefix: String = PlatformUtils.getPlatformPrefix()
+    val platformPrefix: String by lazy { PlatformUtils.getPlatformPrefix() }
 }
