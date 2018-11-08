@@ -45,7 +45,7 @@ class SkaffoldLabelsTest {
         every { mockPluginInfo.platformPrefix } answers { "TestIde" }
         every { mockPluginInfo.pluginVersion } answers { "0.1" }
 
-        val defaultLabels: SkaffoldLabels = SkaffoldLabels.defaultLabels
+        val defaultLabels: SkaffoldLabels = SkaffoldLabels.populateDefaultLabels()
 
         assertThat(defaultLabels.labels["ide"]).isEqualTo("TestIde")
         assertThat(defaultLabels.labels["ideVersion"]).isEqualTo("999.9")
