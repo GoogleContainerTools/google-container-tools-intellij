@@ -19,9 +19,7 @@ package com.google.container.tools.diagnostics
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.collect.ImmutableMap
 import com.google.container.tools.core.PluginInfo
-import com.intellij.diagnostic.AbstractMessage
 import com.intellij.diagnostic.ReportMessages
-import com.intellij.errorreport.bean.ErrorBean
 import com.intellij.ide.DataManager
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.idea.IdeaLogger
@@ -41,6 +39,7 @@ import com.intellij.openapi.progress.EmptyProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.Consumer
+import com.intellij.util.ExceptionUtil
 import java.awt.Component
 
 /**
@@ -60,8 +59,13 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
         parentComponent: Component,
         consumer: Consumer<SubmittedReportInfo>
     ): Boolean {
-        val errorBean = ErrorBean(events[0].throwable, IdeaLogger.ourLastActionId)
-        return doSubmit(events[0], parentComponent, consumer, errorBean, additionalInfo)
+        return doSubmit(
+            events[0],
+            parentComponent,
+            consumer,
+            IdeaLogger.ourLastActionId,
+            additionalInfo
+        )
     }
 
     companion object {
@@ -103,19 +107,16 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
             event: IdeaLoggingEvent,
             parentComponent: Component,
             callback: Consumer<SubmittedReportInfo>,
-            error: ErrorBean,
+            lastActionId: String,
             description: String?
         ): Boolean {
-            error.description = description ?: ""
-            error.message = event.message ?: ""
-
-            configureErrorFromEvent(event, error)
-
             val intelliJAppNameInfo = ApplicationNamesInfo.getInstance()
             val intelliJAppExtendedInfo = ApplicationInfoEx.getInstanceEx()
 
             val params = buildKeyValuesMap(
-                error,
+                event,
+                description,
+                lastActionId,
                 intelliJAppNameInfo,
                 intelliJAppExtendedInfo,
                 ApplicationManager.getApplication()
@@ -159,8 +160,8 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
                 true,
                 event.throwable,
                 params,
-                error.message,
-                error.description,
+                event.message ?: "",
+                description ?: "",
                 ApplicationInfo.getInstance().fullVersion,
                 successCallback,
                 errorCallback
@@ -173,28 +174,11 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
             return true
         }
 
-        private fun configureErrorFromEvent(event: IdeaLoggingEvent, error: ErrorBean) {
-            val throwable = event.throwable
-
-            if (throwable != null) {
-                val pluginId = PluginId.getId(PluginInfo.instance.pluginId)
-                val ideaPluginDescriptor = PluginManager.getPlugin(pluginId)
-                if (ideaPluginDescriptor != null && !ideaPluginDescriptor.isBundled) {
-                    error.pluginName = ideaPluginDescriptor.name
-                    error.pluginVersion = ideaPluginDescriptor.version
-                }
-            }
-
-            val data = event.data
-
-            if (data is AbstractMessage) {
-                error.attachments = data.includedAttachments
-            }
-        }
-
         @VisibleForTesting
         internal fun buildKeyValuesMap(
-            error: ErrorBean,
+            event: IdeaLoggingEvent,
+            description: String?,
+            lastActionId: String,
             intelliJAppNameInfo: ApplicationNamesInfo,
             intelliJAppExtendedInfo: ApplicationInfoEx,
             application: Application
@@ -202,11 +186,11 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
 
             return ImmutableMap.builder<String, String>()
                 // required parameters
-                .put(ERROR_MESSAGE_KEY, nullToNone(error.message))
-                .put(ERROR_STACKTRACE_KEY, nullToNone(error.stackTrace))
+                .put(ERROR_MESSAGE_KEY, nullToNone(event.message))
+                .put(ERROR_STACKTRACE_KEY, nullToNone(getStacktrace(event)))
                 // end or required parameters
-                .put(ERROR_DESCRIPTION_KEY, nullToNone(error.description))
-                .put(LAST_ACTION_KEY, nullToNone(error.lastAction))
+                .put(ERROR_DESCRIPTION_KEY, nullToNone(description))
+                .put(LAST_ACTION_KEY, nullToNone(lastActionId))
                 .put(OS_NAME_KEY, SystemInfo.OS_NAME)
                 .put(JAVA_VERSION_KEY, SystemInfo.JAVA_VERSION)
                 .put(JAVA_VM_VENDOR_KEY, SystemInfo.JAVA_VENDOR)
@@ -217,8 +201,27 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
                 .put(APP_INTERNAL_KEY, java.lang.Boolean.toString(application.isInternal))
                 .put(APP_VERSION_MAJOR_KEY, intelliJAppExtendedInfo.majorVersion)
                 .put(APP_VERSION_MINOR_KEY, intelliJAppExtendedInfo.minorVersion)
-                .put(PLUGIN_VERSION, error.pluginVersion)
+                .put(PLUGIN_VERSION, nullToNone(getPluginVersion()))
                 .build()
+        }
+
+        private fun getStacktrace(event: IdeaLoggingEvent): String? {
+            return if (event.throwable != null) {
+                ExceptionUtil.getThrowableText(event.throwable)
+            } else {
+                null
+            }
+        }
+
+        private fun getPluginVersion(): String? {
+            val pluginId = PluginId.getId(PluginInfo.instance.pluginId)
+            val ideaPluginDescriptor = PluginManager.getPlugin(pluginId)
+
+            return if (ideaPluginDescriptor != null && !ideaPluginDescriptor.isBundled) {
+                ideaPluginDescriptor.version
+            } else {
+                null
+            }
         }
 
         private fun nullToNone(possiblyNullString: String?): String {
