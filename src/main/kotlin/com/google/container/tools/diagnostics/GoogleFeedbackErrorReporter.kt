@@ -70,38 +70,22 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
 
     companion object {
 
-        @VisibleForTesting
-        internal val NONE_STRING = "__NONE___"
-        @VisibleForTesting
-        internal val ERROR_MESSAGE_KEY = "error.message"
-        @VisibleForTesting
-        internal val ERROR_STACKTRACE_KEY = "error.stacktrace"
-        @VisibleForTesting
-        internal val ERROR_DESCRIPTION_KEY = "error.description"
-        @VisibleForTesting
-        internal val LAST_ACTION_KEY = "last.action"
-        @VisibleForTesting
-        internal val OS_NAME_KEY = "os.name"
-        @VisibleForTesting
-        internal val JAVA_VERSION_KEY = "java.version"
-        @VisibleForTesting
-        internal val JAVA_VM_VENDOR_KEY = "java.vm.vendor"
-        @VisibleForTesting
-        internal val APP_NAME_KEY = "app.name"
-        @VisibleForTesting
-        internal val APP_CODE_KEY = "app.code"
-        @VisibleForTesting
-        internal val APP_NAME_VERSION_KEY = "app.name.version"
-        @VisibleForTesting
-        internal val APP_EAP_KEY = "app.eap"
-        @VisibleForTesting
-        internal val APP_INTERNAL_KEY = "app.internal"
-        @VisibleForTesting
-        internal val APP_VERSION_MAJOR_KEY = "app.version.major"
-        @VisibleForTesting
-        internal val APP_VERSION_MINOR_KEY = "app.version.minor"
-        @VisibleForTesting
-        internal val PLUGIN_VERSION = "plugin.version"
+        @VisibleForTesting const val NONE_STRING = "__NONE___"
+        @VisibleForTesting const val ERROR_MESSAGE_KEY = "error.message"
+        private const val ERROR_STACKTRACE_KEY = "error.stacktrace"
+        @VisibleForTesting const val ERROR_DESCRIPTION_KEY = "error.description"
+        @VisibleForTesting const val LAST_ACTION_KEY = "last.action"
+        private const val OS_NAME_KEY = "os.name"
+        private const val JAVA_VERSION_KEY = "java.version"
+        private const val JAVA_VM_VENDOR_KEY = "java.vm.vendor"
+        @VisibleForTesting const val APP_NAME_KEY = "app.name"
+        @VisibleForTesting const val APP_CODE_KEY = "app.code"
+        @VisibleForTesting const val APP_NAME_VERSION_KEY = "app.name.version"
+        @VisibleForTesting const val APP_EAP_KEY = "app.eap"
+        @VisibleForTesting const val APP_INTERNAL_KEY = "app.internal"
+        @VisibleForTesting const val APP_VERSION_MAJOR_KEY = "app.version.major"
+        @VisibleForTesting const val APP_VERSION_MINOR_KEY = "app.version.minor"
+        private const val PLUGIN_VERSION = "plugin.version"
 
         private fun doSubmit(
             event: IdeaLoggingEvent,
@@ -175,7 +159,7 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
         }
 
         @VisibleForTesting
-        internal fun buildKeyValuesMap(
+        fun buildKeyValuesMap(
             event: IdeaLoggingEvent,
             description: String?,
             lastActionId: String,
@@ -224,7 +208,8 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
             }
         }
 
-        private fun nullToNone(possiblyNullString: String?): String {
+        @VisibleForTesting
+        fun nullToNone(possiblyNullString: String?): String {
             return possiblyNullString ?: NONE_STRING
         }
     }
