@@ -41,4 +41,6 @@ class PluginInfo {
     }
 
     val platformPrefix: String by lazy { PlatformUtils.getPlatformPrefix() }
+
+    val pluginId: String = CONTAINER_TOOLS_PLUGIN_ID
 }
