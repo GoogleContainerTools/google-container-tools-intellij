@@ -17,7 +17,6 @@
 package com.google.container.tools.diagnostics
 
 import com.google.common.annotations.VisibleForTesting
-import com.google.common.collect.ImmutableMap
 import com.google.container.tools.core.PluginInfo
 import com.intellij.diagnostic.ReportMessages
 import com.intellij.ide.DataManager
@@ -168,25 +167,24 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
             application: Application
         ): Map<String, String> {
 
-            return ImmutableMap.builder<String, String>()
+            return mapOf(
                 // required parameters
-                .put(ERROR_MESSAGE_KEY, nullToNone(event.message))
-                .put(ERROR_STACKTRACE_KEY, nullToNone(getStacktrace(event)))
+                ERROR_MESSAGE_KEY to nullToNone(event.message),
+                ERROR_STACKTRACE_KEY to nullToNone(getStacktrace(event)),
                 // end or required parameters
-                .put(ERROR_DESCRIPTION_KEY, nullToNone(description))
-                .put(LAST_ACTION_KEY, nullToNone(lastActionId))
-                .put(OS_NAME_KEY, SystemInfo.OS_NAME)
-                .put(JAVA_VERSION_KEY, SystemInfo.JAVA_VERSION)
-                .put(JAVA_VM_VENDOR_KEY, SystemInfo.JAVA_VENDOR)
-                .put(APP_NAME_KEY, intelliJAppNameInfo.fullProductName)
-                .put(APP_CODE_KEY, intelliJAppExtendedInfo.packageCode!!)
-                .put(APP_NAME_VERSION_KEY, intelliJAppExtendedInfo.versionName)
-                .put(APP_EAP_KEY, java.lang.Boolean.toString(intelliJAppExtendedInfo.isEAP))
-                .put(APP_INTERNAL_KEY, java.lang.Boolean.toString(application.isInternal))
-                .put(APP_VERSION_MAJOR_KEY, intelliJAppExtendedInfo.majorVersion)
-                .put(APP_VERSION_MINOR_KEY, intelliJAppExtendedInfo.minorVersion)
-                .put(PLUGIN_VERSION, nullToNone(getPluginVersion()))
-                .build()
+                ERROR_DESCRIPTION_KEY to nullToNone(description),
+                LAST_ACTION_KEY to nullToNone(lastActionId),
+                OS_NAME_KEY to SystemInfo.OS_NAME,
+                JAVA_VERSION_KEY to SystemInfo.JAVA_VERSION,
+                JAVA_VM_VENDOR_KEY to SystemInfo.JAVA_VENDOR,
+                APP_NAME_KEY to intelliJAppNameInfo.fullProductName,
+                APP_CODE_KEY to intelliJAppExtendedInfo.packageCode!!,
+                APP_NAME_VERSION_KEY to intelliJAppExtendedInfo.versionName,
+                APP_EAP_KEY to java.lang.Boolean.toString(intelliJAppExtendedInfo.isEAP),
+                APP_INTERNAL_KEY to java.lang.Boolean.toString(application.isInternal),
+                APP_VERSION_MAJOR_KEY to intelliJAppExtendedInfo.majorVersion,
+                APP_VERSION_MINOR_KEY to intelliJAppExtendedInfo.minorVersion,
+                PLUGIN_VERSION to nullToNone(getPluginVersion()))
         }
 
         private fun getStacktrace(event: IdeaLoggingEvent): String? {
