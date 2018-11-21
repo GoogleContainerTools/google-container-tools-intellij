@@ -41,6 +41,14 @@ constructor(
     private val feedbackSender: FeedbackSender
 ) : Task.Backgroundable(project, title, canBeCancelled) {
 
+    companion object {
+        @VisibleForTesting
+        val CONTAINER_TOOLS_PRODUCT = "Container Tools for IntelliJ"
+        @VisibleForTesting
+        val CONTAINER_TOOLS_PACKAGE_NAME = "com.google.container.tools"
+        private val DEFAULT_FEEDBACK_SENDER = NetworkFeedbackSender()
+    }
+
     /**
      * Default constructor that creates a feedback task with the default [NetworkFeedbackSender].
      */
@@ -68,14 +76,6 @@ constructor(
         errorCallback,
         DEFAULT_FEEDBACK_SENDER
     )
-
-    companion object {
-        @VisibleForTesting
-        val CONTAINER_TOOLS_PRODUCT = "Container Tools for IntelliJ"
-        @VisibleForTesting
-        val CONTAINER_TOOLS_PACKAGE_NAME = "com.google.container.tools"
-        private val DEFAULT_FEEDBACK_SENDER = NetworkFeedbackSender()
-    }
 
     override fun run(indicator: ProgressIndicator) {
         indicator.isIndeterminate = true
