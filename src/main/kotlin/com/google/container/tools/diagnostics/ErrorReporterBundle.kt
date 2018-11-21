@@ -37,4 +37,3 @@ object ErrorReporterBundle {
         return CommonBundle.message(ResourceBundle.getBundle(BUNDLE_NAME), key, params)
     }
 }
-
