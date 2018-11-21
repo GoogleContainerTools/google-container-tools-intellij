@@ -22,9 +22,13 @@ import java.util.ResourceBundle
 
 private const val BUNDLE_NAME = "messages.ErrorReporterBundle"
 
+/**
+ * Message bundle manager for error reporting related messages.
+ */
 object ErrorReporterBundle {
+
     /**
-     * Returns message by provided key from Skaffold message bundle with optional parameters.
+     * Returns messages for the given key from the ErrorReporterBundle message bundle with optional parameters.
      */
     fun message(
         @PropertyKey(resourceBundle = BUNDLE_NAME) key: String,
@@ -33,3 +37,4 @@ object ErrorReporterBundle {
         return CommonBundle.message(ResourceBundle.getBundle(BUNDLE_NAME), key, params)
     }
 }
+

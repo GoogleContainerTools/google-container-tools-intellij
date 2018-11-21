@@ -17,10 +17,8 @@
 package com.google.container.tools.diagnostics
 
 import com.google.common.annotations.VisibleForTesting
-import com.google.common.collect.ImmutableMap
-import com.intellij.diagnostic.AbstractMessage
+import com.google.container.tools.core.PluginInfo
 import com.intellij.diagnostic.ReportMessages
-import com.intellij.errorreport.bean.ErrorBean
 import com.intellij.ide.DataManager
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.idea.IdeaLogger
@@ -38,13 +36,15 @@ import com.intellij.openapi.diagnostic.SubmittedReportInfo
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.progress.EmptyProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.Consumer
-import com.intellij.util.SystemProperties
+import com.intellij.util.ExceptionUtil
 import java.awt.Component
 
 /**
- * This class hooks into IntelliJ's error reporting framework. It's based off of [
- * ErrorReporter.java ](https://android.googlesource.com/platform/tools/adt/idea/+/studio-master-dev/android/src/com/android/tools/idea/diagnostics/error/ErrorReporter.java) in Android Studio.
+ * This class hooks into IntelliJ's error reporting framework. It's based off of
+ * [ErrorReporter.java](https://android.googlesource.com/platform/tools/adt/idea/+/studio-master-dev/android/src/com/android/tools/idea/diagnostics/error/ErrorReporter.java)
+ * in Android Studio.
  */
 class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
 
@@ -58,62 +58,48 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
         parentComponent: Component,
         consumer: Consumer<SubmittedReportInfo>
     ): Boolean {
-        val errorBean = ErrorBean(events[0].throwable, IdeaLogger.ourLastActionId)
-        return doSubmit(events[0], parentComponent, consumer, errorBean, additionalInfo)
+        return doSubmit(
+            events[0],
+            parentComponent,
+            consumer,
+            IdeaLogger.ourLastActionId,
+            additionalInfo
+        )
     }
 
     companion object {
 
-        @VisibleForTesting
-        internal val NONE_STRING = "__NONE___"
-        @VisibleForTesting
-        internal val ERROR_MESSAGE_KEY = "error.message"
-        @VisibleForTesting
-        internal val ERROR_STACKTRACE_KEY = "error.stacktrace"
-        @VisibleForTesting
-        internal val ERROR_DESCRIPTION_KEY = "error.description"
-        @VisibleForTesting
-        internal val LAST_ACTION_KEY = "last.action"
-        @VisibleForTesting
-        internal val OS_NAME_KEY = "os.name"
-        @VisibleForTesting
-        internal val JAVA_VERSION_KEY = "java.version"
-        @VisibleForTesting
-        internal val JAVA_VM_VENDOR_KEY = "java.vm.vendor"
-        @VisibleForTesting
-        internal val APP_NAME_KEY = "app.name"
-        @VisibleForTesting
-        internal val APP_CODE_KEY = "app.code"
-        @VisibleForTesting
-        internal val APP_NAME_VERSION_KEY = "app.name.version"
-        @VisibleForTesting
-        internal val APP_EAP_KEY = "app.eap"
-        @VisibleForTesting
-        internal val APP_INTERNAL_KEY = "app.internal"
-        @VisibleForTesting
-        internal val APP_VERSION_MAJOR_KEY = "app.version.major"
-        @VisibleForTesting
-        internal val APP_VERSION_MINOR_KEY = "app.version.minor"
-        @VisibleForTesting
-        internal val PLUGIN_VERSION = "plugin.version"
+        @VisibleForTesting const val NONE_STRING = "__NONE___"
+        @VisibleForTesting const val ERROR_MESSAGE_KEY = "error.message"
+        private const val ERROR_STACKTRACE_KEY = "error.stacktrace"
+        @VisibleForTesting const val ERROR_DESCRIPTION_KEY = "error.description"
+        @VisibleForTesting const val LAST_ACTION_KEY = "last.action"
+        private const val OS_NAME_KEY = "os.name"
+        private const val JAVA_VERSION_KEY = "java.version"
+        private const val JAVA_VM_VENDOR_KEY = "java.vm.vendor"
+        @VisibleForTesting const val APP_NAME_KEY = "app.name"
+        @VisibleForTesting const val APP_CODE_KEY = "app.code"
+        @VisibleForTesting const val APP_NAME_VERSION_KEY = "app.name.version"
+        @VisibleForTesting const val APP_EAP_KEY = "app.eap"
+        @VisibleForTesting const val APP_INTERNAL_KEY = "app.internal"
+        @VisibleForTesting const val APP_VERSION_MAJOR_KEY = "app.version.major"
+        @VisibleForTesting const val APP_VERSION_MINOR_KEY = "app.version.minor"
+        private const val PLUGIN_VERSION = "plugin.version"
 
         private fun doSubmit(
             event: IdeaLoggingEvent,
             parentComponent: Component,
             callback: Consumer<SubmittedReportInfo>,
-            error: ErrorBean,
+            lastActionId: String,
             description: String?
         ): Boolean {
-            error.description = description ?: ""
-            error.message =  event.message ?: ""
-
-            configureErrorFromEvent(event, error)
-
             val intelliJAppNameInfo = ApplicationNamesInfo.getInstance()
             val intelliJAppExtendedInfo = ApplicationInfoEx.getInstanceEx()
 
             val params = buildKeyValuesMap(
-                error,
+                event,
+                description,
+                lastActionId,
                 intelliJAppNameInfo,
                 intelliJAppExtendedInfo,
                 ApplicationManager.getApplication()
@@ -151,14 +137,14 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
                     .setImportant(false)
                     .notify(project)
             }
-            val task = GoogleAnonymousFeedbackTask(
+            val task = GoogleFeedbackTask(
                 project,
-                "Submitting error report",
+                ErrorReporterBundle.message("error.googlefeedback.submitting.error.message"),
                 true,
                 event.throwable,
                 params,
-                error.message,
-                error.description,
+                event.message ?: "",
+                description ?: "",
                 ApplicationInfo.getInstance().fullVersion,
                 successCallback,
                 errorCallback
@@ -171,57 +157,57 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
             return true
         }
 
-        private fun configureErrorFromEvent(event: IdeaLoggingEvent, error: ErrorBean) {
-            val throwable = event.throwable
-            if (throwable != null) {
-                val pluginId =
-                    PluginId.getId("com.google.container.tools") // todo IdeErrorsDialog.findPluginId(throwable)
-//                if (pluginId != null) {
-                val ideaPluginDescriptor = PluginManager.getPlugin(pluginId)
-                if (ideaPluginDescriptor != null && !ideaPluginDescriptor.isBundled) {
-                    error.pluginName = ideaPluginDescriptor.name
-                    error.pluginVersion = ideaPluginDescriptor.version
-                }
-//                }
-            }
-
-            val data = event.data
-
-            if (data is AbstractMessage) {
-                error.attachments = data.includedAttachments
-            }
-        }
-
         @VisibleForTesting
-        internal fun buildKeyValuesMap(
-            error: ErrorBean,
+        fun buildKeyValuesMap(
+            event: IdeaLoggingEvent,
+            description: String?,
+            lastActionId: String,
             intelliJAppNameInfo: ApplicationNamesInfo,
             intelliJAppExtendedInfo: ApplicationInfoEx,
             application: Application
         ): Map<String, String> {
 
-            return ImmutableMap.builder<String, String>()
+            return mapOf(
                 // required parameters
-                .put(ERROR_MESSAGE_KEY, nullToNone(error.message))
-                .put(ERROR_STACKTRACE_KEY, nullToNone(error.stackTrace))
+                ERROR_MESSAGE_KEY to nullToNone(event.message),
+                ERROR_STACKTRACE_KEY to nullToNone(getStacktrace(event)),
                 // end or required parameters
-                .put(ERROR_DESCRIPTION_KEY, nullToNone(error.description))
-                .put(LAST_ACTION_KEY, nullToNone(error.lastAction))
-                .put(OS_NAME_KEY, SystemProperties.getOsName())
-                .put(JAVA_VERSION_KEY, SystemProperties.getJavaVersion())
-                .put(JAVA_VM_VENDOR_KEY, SystemProperties.getJavaVmVendor())
-                .put(APP_NAME_KEY, intelliJAppNameInfo.fullProductName)
-                .put(APP_CODE_KEY, intelliJAppExtendedInfo.packageCode!!)
-                .put(APP_NAME_VERSION_KEY, intelliJAppExtendedInfo.versionName)
-                .put(APP_EAP_KEY, java.lang.Boolean.toString(intelliJAppExtendedInfo.isEAP))
-                .put(APP_INTERNAL_KEY, java.lang.Boolean.toString(application.isInternal))
-                .put(APP_VERSION_MAJOR_KEY, intelliJAppExtendedInfo.majorVersion)
-                .put(APP_VERSION_MINOR_KEY, intelliJAppExtendedInfo.minorVersion)
-                .put(PLUGIN_VERSION, error.pluginVersion)
-                .build()
+                ERROR_DESCRIPTION_KEY to nullToNone(description),
+                LAST_ACTION_KEY to nullToNone(lastActionId),
+                OS_NAME_KEY to SystemInfo.OS_NAME,
+                JAVA_VERSION_KEY to SystemInfo.JAVA_VERSION,
+                JAVA_VM_VENDOR_KEY to SystemInfo.JAVA_VENDOR,
+                APP_NAME_KEY to intelliJAppNameInfo.fullProductName,
+                APP_CODE_KEY to intelliJAppExtendedInfo.packageCode!!,
+                APP_NAME_VERSION_KEY to intelliJAppExtendedInfo.versionName,
+                APP_EAP_KEY to java.lang.Boolean.toString(intelliJAppExtendedInfo.isEAP),
+                APP_INTERNAL_KEY to java.lang.Boolean.toString(application.isInternal),
+                APP_VERSION_MAJOR_KEY to intelliJAppExtendedInfo.majorVersion,
+                APP_VERSION_MINOR_KEY to intelliJAppExtendedInfo.minorVersion,
+                PLUGIN_VERSION to nullToNone(getPluginVersion()))
         }
 
-        internal fun nullToNone(possiblyNullString: String?): String {
+        private fun getStacktrace(event: IdeaLoggingEvent): String? {
+            return if (event.throwable != null) {
+                ExceptionUtil.getThrowableText(event.throwable)
+            } else {
+                null
+            }
+        }
+
+        private fun getPluginVersion(): String? {
+            val pluginId = PluginId.getId(PluginInfo.instance.pluginId)
+            val ideaPluginDescriptor = PluginManager.getPlugin(pluginId)
+
+            return if (ideaPluginDescriptor != null && !ideaPluginDescriptor.isBundled) {
+                ideaPluginDescriptor.version
+            } else {
+                null
+            }
+        }
+
+        @VisibleForTesting
+        fun nullToNone(possiblyNullString: String?): String {
             return possiblyNullString ?: NONE_STRING
         }
     }
