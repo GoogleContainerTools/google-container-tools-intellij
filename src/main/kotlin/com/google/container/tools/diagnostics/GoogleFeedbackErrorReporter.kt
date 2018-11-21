@@ -196,7 +196,7 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
         }
 
         private fun getPluginVersion(): String? {
-            val pluginId = PluginId.getId(PluginInfo.instance.pluginId)
+            val pluginId = PluginId.getId(PluginInfo.CONTAINER_TOOLS_PLUGIN_ID)
             val ideaPluginDescriptor = PluginManager.getPlugin(pluginId)
 
             return if (ideaPluginDescriptor != null && !ideaPluginDescriptor.isBundled) {
