@@ -25,9 +25,22 @@ import com.intellij.util.net.HttpConfigurable
 import java.io.IOException
 import java.net.HttpURLConnection
 
-/** Reports an error to Google Feedback in the background.  */
-class GoogleFeedbackTask @VisibleForTesting
-constructor(
+/**
+ * Reports an error to Google Feedback in the background.
+ *
+ * @param project the current IntelliJ project
+ * @param title the title to be displayed in the feedback UI
+ * @param canBeCancelled specified if the feedback action can be cancelled
+ * @param throwable the throwable the triggered this error feedback
+ * @param params the map of parameters containing metadata about this feedback instance
+ * @param errorMessage the error message e.g. from the throwable
+ * @param errorDescription additional description that the user can enter from the UI
+ * @param appVersion the full version of the IDE
+ * @param callback the callback to be invoked upon successful transmission
+ * @param errorCallback the callback to be invoked upon failed transmission
+ * @param feedbackSender the instance of the feedback sender; defaults to an http sender
+ */
+class GoogleFeedbackTask(
     project: Project?,
     title: String,
     canBeCancelled: Boolean,
@@ -38,7 +51,7 @@ constructor(
     private val appVersion: String,
     private val callback: (String) -> Unit,
     private val errorCallback: (Exception) -> Unit,
-    private val feedbackSender: FeedbackSender
+    private val feedbackSender: FeedbackSender = DEFAULT_FEEDBACK_SENDER
 ) : Task.Backgroundable(project, title, canBeCancelled) {
 
     companion object {
@@ -48,34 +61,6 @@ constructor(
         val CONTAINER_TOOLS_PACKAGE_NAME = "com.google.container.tools"
         private val DEFAULT_FEEDBACK_SENDER = NetworkFeedbackSender()
     }
-
-    /**
-     * Default constructor that creates a feedback task with the default [NetworkFeedbackSender].
-     */
-    constructor(
-        project: Project?,
-        title: String,
-        canBeCancelled: Boolean,
-        throwable: Throwable?,
-        params: Map<String, String>,
-        errorMessage: String,
-        errorDescription: String,
-        appVersion: String,
-        callback: (String) -> Unit,
-        errorCallback: (Exception) -> Unit
-    ) : this(
-        project,
-        title,
-        canBeCancelled,
-        throwable,
-        params,
-        errorMessage,
-        errorDescription,
-        appVersion,
-        callback,
-        errorCallback,
-        DEFAULT_FEEDBACK_SENDER
-    )
 
     override fun run(indicator: ProgressIndicator) {
         indicator.isIndeterminate = true
@@ -100,6 +85,19 @@ constructor(
     /** Interface for sending feedback crash reports.  */
     interface FeedbackSender {
 
+        /**
+         * Sends the feedback report.
+         *
+         * @param feedbackProduct the name of the plugin
+         * @param feedbackPackageName the root package of the plugin
+         * @param cause the throwable the initiated this crash report
+         * @param errorMessage the error message
+         * @param errorDescription the error description
+         * @param applicationVersion the version of the IDE
+         * @param keyValues the map of metadata to send along with the report
+         * @throws IOException if the transmission fails
+         *
+         */
         @Throws(IOException::class)
         fun sendFeedback(
             feedbackProduct: String,
