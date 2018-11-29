@@ -20,7 +20,6 @@ import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.core.PluginInfo
 import com.intellij.diagnostic.ReportMessages
 import com.intellij.ide.DataManager
-import com.intellij.ide.plugins.PluginManager
 import com.intellij.idea.IdeaLogger
 import com.intellij.notification.NotificationListener
 import com.intellij.notification.NotificationType
@@ -34,7 +33,6 @@ import com.intellij.openapi.application.ex.ApplicationInfoEx
 import com.intellij.openapi.diagnostic.ErrorReportSubmitter
 import com.intellij.openapi.diagnostic.IdeaLoggingEvent
 import com.intellij.openapi.diagnostic.SubmittedReportInfo
-import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.progress.EmptyProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
@@ -188,23 +186,12 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
                 APP_INTERNAL_KEY to java.lang.Boolean.toString(application.isInternal),
                 APP_VERSION_MAJOR_KEY to intelliJAppExtendedInfo.majorVersion,
                 APP_VERSION_MINOR_KEY to intelliJAppExtendedInfo.minorVersion,
-                PLUGIN_VERSION to nullToNone(getPluginVersion())
+                PLUGIN_VERSION to nullToNone(PluginInfo.instance.pluginVersion)
             )
         }
 
         private fun getStacktrace(event: IdeaLoggingEvent): String? =
             event.throwable?.let { ExceptionUtil.getThrowableText(it) }
-
-        private fun getPluginVersion(): String? {
-            val pluginId = PluginId.getId(PluginInfo.CONTAINER_TOOLS_PLUGIN_ID)
-            val ideaPluginDescriptor = PluginManager.getPlugin(pluginId)
-
-            return if (ideaPluginDescriptor != null && !ideaPluginDescriptor.isBundled) {
-                ideaPluginDescriptor.version
-            } else {
-                null
-            }
-        }
 
         @VisibleForTesting
         fun nullToNone(possiblyNullString: String?): String {
