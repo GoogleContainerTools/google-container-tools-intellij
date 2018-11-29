@@ -84,6 +84,11 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
         return ErrorReporterBundle.message("error.googlefeedback.message")
     }
 
+    /**
+     * Builds the metadata for the feedback report and error / success callbacks. Invokes
+     * [GoogleFeedbackTask] to send the report. Errors are handled via the error callback which
+     * displays notifications, therefore this method always returns true.
+     */
     override fun submit(
         events: Array<IdeaLoggingEvent>,
         additionalInfo: String?,
