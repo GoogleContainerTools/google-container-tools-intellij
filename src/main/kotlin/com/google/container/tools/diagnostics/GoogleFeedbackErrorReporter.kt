@@ -180,7 +180,7 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
                 JAVA_VERSION_KEY to SystemInfo.JAVA_VERSION,
                 JAVA_VM_VENDOR_KEY to SystemInfo.JAVA_VENDOR,
                 APP_NAME_KEY to intelliJAppNameInfo.fullProductName,
-                APP_CODE_KEY to intelliJAppExtendedInfo.packageCode!!,
+                APP_CODE_KEY to (intelliJAppExtendedInfo.packageCode ?: NONE_STRING),
                 APP_NAME_VERSION_KEY to intelliJAppExtendedInfo.versionName,
                 APP_EAP_KEY to intelliJAppExtendedInfo.isEAP.toString(),
                 APP_INTERNAL_KEY to java.lang.Boolean.toString(application.isInternal),
