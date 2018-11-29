@@ -171,11 +171,11 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
 
             return mapOf(
                 // required parameters
-                ERROR_MESSAGE_KEY to nullToNone(event.message),
-                ERROR_STACKTRACE_KEY to nullToNone(getStacktrace(event)),
+                ERROR_MESSAGE_KEY to (event.message ?: NONE_STRING),
+                ERROR_STACKTRACE_KEY to (getStacktrace(event) ?: NONE_STRING),
                 // end or required parameters
-                ERROR_DESCRIPTION_KEY to nullToNone(description),
-                LAST_ACTION_KEY to nullToNone(lastActionId),
+                ERROR_DESCRIPTION_KEY to (description ?: NONE_STRING),
+                LAST_ACTION_KEY to lastActionId,
                 OS_NAME_KEY to SystemInfo.OS_NAME,
                 JAVA_VERSION_KEY to SystemInfo.JAVA_VERSION,
                 JAVA_VM_VENDOR_KEY to SystemInfo.JAVA_VENDOR,
@@ -186,16 +186,11 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
                 APP_INTERNAL_KEY to java.lang.Boolean.toString(application.isInternal),
                 APP_VERSION_MAJOR_KEY to intelliJAppExtendedInfo.majorVersion,
                 APP_VERSION_MINOR_KEY to intelliJAppExtendedInfo.minorVersion,
-                PLUGIN_VERSION to nullToNone(PluginInfo.instance.pluginVersion)
+                PLUGIN_VERSION to PluginInfo.instance.pluginVersion
             )
         }
 
         private fun getStacktrace(event: IdeaLoggingEvent): String? =
             event.throwable?.let { ExceptionUtil.getThrowableText(it) }
-
-        @VisibleForTesting
-        fun nullToNone(possiblyNullString: String?): String {
-            return possiblyNullString ?: NONE_STRING
-        }
     }
 }

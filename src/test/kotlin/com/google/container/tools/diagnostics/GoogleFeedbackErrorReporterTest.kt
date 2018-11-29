@@ -94,17 +94,4 @@ class GoogleFeedbackErrorReporterTest {
         assertThat(result[GoogleFeedbackErrorReporter.APP_VERSION_MINOR_KEY])
             .isEqualTo(minorVersion)
     }
-
-    @Test
-    fun nullToNone_withNonNullString_returnsNoneString() {
-        val validString = "test"
-        assertThat(GoogleFeedbackErrorReporter.nullToNone(validString)).isEqualTo(validString)
-    }
-
-    @Test
-    fun nullToNone_withNullString_returnsNoneString() {
-        assertThat(GoogleFeedbackErrorReporter.nullToNone(null)).isEqualTo(
-            GoogleFeedbackErrorReporter.NONE_STRING
-        )
-    }
 }
