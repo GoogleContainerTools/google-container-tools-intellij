@@ -192,13 +192,8 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
             )
         }
 
-        private fun getStacktrace(event: IdeaLoggingEvent): String? {
-            return if (event.throwable != null) {
-                ExceptionUtil.getThrowableText(event.throwable)
-            } else {
-                null
-            }
-        }
+        private fun getStacktrace(event: IdeaLoggingEvent): String? =
+            event.throwable?.let { ExceptionUtil.getThrowableText(event.throwable) }
 
         private fun getPluginVersion(): String? {
             val pluginId = PluginId.getId(PluginInfo.CONTAINER_TOOLS_PLUGIN_ID)
