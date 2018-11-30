@@ -69,7 +69,7 @@ class GoogleFeedbackErrorReporterTest {
 
     @Test
     fun buildKeyValuesMap_returnsPopulatedMap() {
-        val result: Map<String, String> = GoogleFeedbackErrorReporter.buildKeyValuesMap(
+        val result: Map<String, String> = GoogleFeedbackErrorReporter().buildKeyValuesMap(
             event,
             description,
             lastActionId,

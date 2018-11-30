@@ -48,6 +48,36 @@ import java.awt.Component
  */
 class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
 
+    companion object {
+        @VisibleForTesting
+        const val NONE_STRING = "__NONE___"
+        @VisibleForTesting
+        const val ERROR_MESSAGE_KEY = "error.message"
+        private const val ERROR_STACKTRACE_KEY = "error.stacktrace"
+        @VisibleForTesting
+        const val ERROR_DESCRIPTION_KEY = "error.description"
+        @VisibleForTesting
+        const val LAST_ACTION_KEY = "last.action"
+        private const val OS_NAME_KEY = "os.name"
+        private const val JAVA_VERSION_KEY = "java.version"
+        private const val JAVA_VM_VENDOR_KEY = "java.vm.vendor"
+        @VisibleForTesting
+        const val APP_NAME_KEY = "app.name"
+        @VisibleForTesting
+        const val APP_CODE_KEY = "app.code"
+        @VisibleForTesting
+        const val APP_NAME_VERSION_KEY = "app.name.version"
+        @VisibleForTesting
+        const val APP_EAP_KEY = "app.eap"
+        @VisibleForTesting
+        const val APP_INTERNAL_KEY = "app.internal"
+        @VisibleForTesting
+        const val APP_VERSION_MAJOR_KEY = "app.version.major"
+        @VisibleForTesting
+        const val APP_VERSION_MINOR_KEY = "app.version.minor"
+        private const val PLUGIN_VERSION = "plugin.version"
+    }
+
     override fun getReportActionText(): String {
         return ErrorReporterBundle.message("error.googlefeedback.message")
     }
@@ -130,67 +160,37 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
         return true
     }
 
-    companion object {
-        @VisibleForTesting
-        const val NONE_STRING = "__NONE___"
-        @VisibleForTesting
-        const val ERROR_MESSAGE_KEY = "error.message"
-        private const val ERROR_STACKTRACE_KEY = "error.stacktrace"
-        @VisibleForTesting
-        const val ERROR_DESCRIPTION_KEY = "error.description"
-        @VisibleForTesting
-        const val LAST_ACTION_KEY = "last.action"
-        private const val OS_NAME_KEY = "os.name"
-        private const val JAVA_VERSION_KEY = "java.version"
-        private const val JAVA_VM_VENDOR_KEY = "java.vm.vendor"
-        @VisibleForTesting
-        const val APP_NAME_KEY = "app.name"
-        @VisibleForTesting
-        const val APP_CODE_KEY = "app.code"
-        @VisibleForTesting
-        const val APP_NAME_VERSION_KEY = "app.name.version"
-        @VisibleForTesting
-        const val APP_EAP_KEY = "app.eap"
-        @VisibleForTesting
-        const val APP_INTERNAL_KEY = "app.internal"
-        @VisibleForTesting
-        const val APP_VERSION_MAJOR_KEY = "app.version.major"
-        @VisibleForTesting
-        const val APP_VERSION_MINOR_KEY = "app.version.minor"
-        private const val PLUGIN_VERSION = "plugin.version"
+    @VisibleForTesting
+    fun buildKeyValuesMap(
+        event: IdeaLoggingEvent,
+        description: String?,
+        lastActionId: String,
+        intelliJAppNameInfo: ApplicationNamesInfo,
+        intelliJAppExtendedInfo: ApplicationInfoEx,
+        application: Application
+    ): Map<String, String> {
 
-        @VisibleForTesting
-        fun buildKeyValuesMap(
-            event: IdeaLoggingEvent,
-            description: String?,
-            lastActionId: String,
-            intelliJAppNameInfo: ApplicationNamesInfo,
-            intelliJAppExtendedInfo: ApplicationInfoEx,
-            application: Application
-        ): Map<String, String> {
-
-            return mapOf(
-                // required parameters
-                ERROR_MESSAGE_KEY to (event.message ?: NONE_STRING),
-                ERROR_STACKTRACE_KEY to (getStacktrace(event) ?: NONE_STRING),
-                // end or required parameters
-                ERROR_DESCRIPTION_KEY to (description ?: NONE_STRING),
-                LAST_ACTION_KEY to lastActionId,
-                OS_NAME_KEY to SystemInfo.OS_NAME,
-                JAVA_VERSION_KEY to SystemInfo.JAVA_VERSION,
-                JAVA_VM_VENDOR_KEY to SystemInfo.JAVA_VENDOR,
-                APP_NAME_KEY to intelliJAppNameInfo.fullProductName,
-                APP_CODE_KEY to (intelliJAppExtendedInfo.packageCode ?: NONE_STRING),
-                APP_NAME_VERSION_KEY to intelliJAppExtendedInfo.versionName,
-                APP_EAP_KEY to intelliJAppExtendedInfo.isEAP.toString(),
-                APP_INTERNAL_KEY to java.lang.Boolean.toString(application.isInternal),
-                APP_VERSION_MAJOR_KEY to intelliJAppExtendedInfo.majorVersion,
-                APP_VERSION_MINOR_KEY to intelliJAppExtendedInfo.minorVersion,
-                PLUGIN_VERSION to PluginInfo.instance.pluginVersion
-            )
-        }
-
-        private fun getStacktrace(event: IdeaLoggingEvent): String? =
-            event.throwable?.let { ExceptionUtil.getThrowableText(it) }
+        return mapOf(
+            // required parameters
+            ERROR_MESSAGE_KEY to (event.message ?: NONE_STRING),
+            ERROR_STACKTRACE_KEY to (getStacktrace(event) ?: NONE_STRING),
+            // end or required parameters
+            ERROR_DESCRIPTION_KEY to (description ?: NONE_STRING),
+            LAST_ACTION_KEY to lastActionId,
+            OS_NAME_KEY to SystemInfo.OS_NAME,
+            JAVA_VERSION_KEY to SystemInfo.JAVA_VERSION,
+            JAVA_VM_VENDOR_KEY to SystemInfo.JAVA_VENDOR,
+            APP_NAME_KEY to intelliJAppNameInfo.fullProductName,
+            APP_CODE_KEY to (intelliJAppExtendedInfo.packageCode ?: NONE_STRING),
+            APP_NAME_VERSION_KEY to intelliJAppExtendedInfo.versionName,
+            APP_EAP_KEY to intelliJAppExtendedInfo.isEAP.toString(),
+            APP_INTERNAL_KEY to java.lang.Boolean.toString(application.isInternal),
+            APP_VERSION_MAJOR_KEY to intelliJAppExtendedInfo.majorVersion,
+            APP_VERSION_MINOR_KEY to intelliJAppExtendedInfo.minorVersion,
+            PLUGIN_VERSION to PluginInfo.instance.pluginVersion
+        )
     }
+
+    private fun getStacktrace(event: IdeaLoggingEvent): String? =
+        event.throwable?.let { ExceptionUtil.getThrowableText(it) }
 }
