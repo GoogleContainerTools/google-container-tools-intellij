@@ -16,6 +16,7 @@
 
 package com.google.container.tools.diagnostics
 
+import com.android.tools.idea.diagnostics.error.AnonymousFeedback
 import com.google.common.annotations.VisibleForTesting
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
