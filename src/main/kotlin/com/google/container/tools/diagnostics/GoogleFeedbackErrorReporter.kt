@@ -86,6 +86,12 @@ class GoogleFeedbackErrorReporter : ErrorReportSubmitter() {
      * Builds the metadata for the feedback report and error / success callbacks. Invokes
      * [GoogleFeedbackTask] to send the report. Errors are handled via the error callback which
      * displays notifications, therefore this method always returns true.
+     *
+     * @param events The array of events that triggered this report; will always contain a single
+     * element
+     * @param additionalInfo Additional description about the even that the user can enter
+     * @param parentComponent The parent component of the component triggering the event
+     * @param callback A callback to be called after sending is finished (or failed)
      */
     override fun submit(
         events: Array<IdeaLoggingEvent>,
