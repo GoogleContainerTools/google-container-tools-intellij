@@ -16,7 +16,6 @@
 
 package com.google.container.tools.diagnostics
 
-import com.android.tools.idea.diagnostics.error.AnonymousFeedback
 import com.google.common.annotations.VisibleForTesting
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
@@ -75,10 +74,8 @@ class GoogleFeedbackTask(
                 params
             )
             callback(token)
-        } catch (ioe: IOException) {
-            errorCallback(ioe)
-        } catch (re: RuntimeException) {
-            errorCallback(re)
+        } catch (ex: Exception) {
+            errorCallback(ex)
         }
     }
 
