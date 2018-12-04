@@ -21,6 +21,8 @@
         <configurationType
                 implementation="com.google.container.tools.skaffold.run.SkaffoldRunConfigurationType"/>
 
+        <framework.detector implementation="com.google.container.tools.skaffold.SkaffoldDetector"/>
+
         <applicationService
                 serviceImplementation="com.google.container.tools.skaffold.SkaffoldFileService"/>
 
