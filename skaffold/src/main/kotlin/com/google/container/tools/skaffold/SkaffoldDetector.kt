@@ -16,32 +16,78 @@
 
 package com.google.container.tools.skaffold
 
-import com.intellij.framework.FrameworkType
-import com.intellij.framework.detection.DetectedFrameworkDescription
-import com.intellij.framework.detection.FileContentPattern
-import com.intellij.framework.detection.FrameworkDetectionContext
-import com.intellij.framework.detection.FrameworkDetector
-import com.intellij.openapi.fileTypes.FileType
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.patterns.ElementPattern
-import com.intellij.util.indexing.FileContent
-import org.jetbrains.yaml.YAMLFileType
+import com.google.container.tools.core.PLUGIN_NOTIFICATION_DISPLAY_GROUP_ID
+import com.google.container.tools.skaffold.run.AbstractSkaffoldRunConfiguration
+import com.google.container.tools.skaffold.run.SkaffoldDevConfiguration
+import com.google.container.tools.skaffold.run.SkaffoldDevConfigurationFactory
+import com.google.container.tools.skaffold.run.SkaffoldRunConfigurationType
+import com.intellij.execution.RunManager
+import com.intellij.execution.impl.RunManagerImpl
+import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl
+import com.intellij.notification.NotificationDisplayType
+import com.intellij.notification.NotificationGroup
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.components.ProjectComponent
+import com.intellij.openapi.project.Project
 
-private const val SKAFFOLD_DETECTOR_ID = "skaffold-detector-id"
+class SkaffoldDetector(val project: Project) : ProjectComponent {
+    private val NOTIFICATION_GROUP = NotificationGroup(
+        PLUGIN_NOTIFICATION_DISPLAY_GROUP_ID,
+        NotificationDisplayType.BALLOON,
+        true,
+        null,
+        SKAFFOLD_ICON
+    )
 
-class SkaffoldDetector : FrameworkDetector(SKAFFOLD_DETECTOR_ID) {
-    override fun createSuitableFilePattern(): ElementPattern<FileContent> =
-        FileContentPattern.fileContent().withName("skaffold.yaml")
-
-    override fun getFrameworkType(): FrameworkType? = null
-
-    override fun detect(
-        newFiles: MutableCollection<VirtualFile>,
-        context: FrameworkDetectionContext
-    ): MutableList<out DetectedFrameworkDescription> {
-        println(newFiles)
-        return mutableListOf()
+    override fun projectOpened() {
+        println("projectOpened: $project")
+        println(SkaffoldFileService.instance.findSkaffoldFiles(project))
+        val allConfigurationsList = RunManager.getInstance(project).allConfigurationsList
+        println("allConfigs: $allConfigurationsList")
+        print("skaffold list: ")
+        val skaffoldList = allConfigurationsList.filter { it is AbstractSkaffoldRunConfiguration }
+        println(skaffoldList)
+        if (skaffoldList.isEmpty()) {
+            showPromptForSkaffoldConfigurations(project)
+            val devSettings = SkaffoldDevConfiguration(
+                project,
+                SkaffoldDevConfigurationFactory(SkaffoldRunConfigurationType()),
+                "development on Kubernetes"
+            )
+            val settingsProfile = RunnerAndConfigurationSettingsImpl(
+                RunManagerImpl.getInstanceImpl(project),
+                devSettings
+            )
+            RunManager.getInstance(project).addConfiguration(settingsProfile)
+            RunManager.getInstance(project).selectedConfiguration = settingsProfile
+            println("added config for skaffold")
+        }
     }
 
-    override fun getFileType(): FileType = YAMLFileType.YML
+    private fun showPromptForSkaffoldConfigurations(project: Project) {
+        val notification = NOTIFICATION_GROUP.createNotification(
+            "Skaffold Configuration Detected", null,
+            "Skaffold configuration file(s) detected, would you like to create run configurations for it?",
+            NotificationType.INFORMATION
+        )
+        notification.notify(project)
+
+        notification.addAction(object : AnAction("Create development on Kubernetes configuration") {
+            override fun actionPerformed(e: AnActionEvent?) {
+            }
+        })
+
+        notification.addAction(object :
+            AnAction("Create single deploy to Kubernetes configuration") {
+            override fun actionPerformed(e: AnActionEvent?) {
+            }
+        })
+
+        notification.addAction(object : AnAction("Skip") {
+            override fun actionPerformed(e: AnActionEvent?) {
+            }
+        })
+    }
 }

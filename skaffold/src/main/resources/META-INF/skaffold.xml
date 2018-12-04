@@ -17,11 +17,18 @@
 <!-- Declares IDE extensions and components for Skaffold support in Container Tools -->
 <idea-plugin>
     <depends>org.jetbrains.plugins.yaml</depends>
+
+    <project-components>
+        <component>
+            <implementation-class>
+                com.google.container.tools.skaffold.SkaffoldDetector
+            </implementation-class>
+        </component>
+    </project-components>
+
     <extensions defaultExtensionNs="com.intellij">
         <configurationType
                 implementation="com.google.container.tools.skaffold.run.SkaffoldRunConfigurationType"/>
-
-        <framework.detector implementation="com.google.container.tools.skaffold.SkaffoldDetector"/>
 
         <applicationService
                 serviceImplementation="com.google.container.tools.skaffold.SkaffoldFileService"/>
