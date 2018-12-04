@@ -16,6 +16,7 @@
 
 package com.google.container.tools.skaffold
 
+import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.core.PLUGIN_NOTIFICATION_DISPLAY_GROUP_ID
 import com.google.container.tools.skaffold.run.AbstractSkaffoldRunConfiguration
 import com.google.container.tools.skaffold.run.SkaffoldDevConfiguration
@@ -27,6 +28,7 @@ import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.impl.RunManagerImpl
 import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl
+import com.intellij.notification.Notification
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationGroup
 import com.intellij.notification.NotificationType
@@ -53,12 +55,12 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
     )
 
     override fun projectOpened() {
-        val skaffoldFiles = SkaffoldFileService.instance.findSkaffoldFiles(project)
-        println(skaffoldFiles)
+        val skaffoldFiles: List<VirtualFile> =
+            SkaffoldFileService.instance.findSkaffoldFiles(project)
         if (skaffoldFiles.isNotEmpty()) {
-            val allRunConfigurations = RunManager.getInstance(project).allConfigurationsList
-            val skaffoldRunConfigList =
-                allRunConfigurations.filter { it is AbstractSkaffoldRunConfiguration }
+            val skaffoldRunConfigList: List<RunConfiguration> =
+                getRunManager(project)
+                    .allConfigurationsList.filter { it is AbstractSkaffoldRunConfiguration }
             if (skaffoldRunConfigList.isEmpty()) {
                 // existing Skaffold config files, but no skaffold configurations, prompt
                 showPromptForSkaffoldConfigurations(project, skaffoldFiles[0])
@@ -74,10 +76,9 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
         project: Project,
         skaffoldFile: VirtualFile
     ) {
-        val notification = NOTIFICATION_GROUP.createNotification(
-            message("skaffold.detect.notification.title"), null,
-            message("skaffold.detect.notification.message"),
-            NotificationType.INFORMATION
+        val notification: Notification = createNotification(
+            message("skaffold.detect.notification.title"),
+            message("skaffold.detect.notification.message")
         )
 
         notification.addAction(object :
@@ -138,5 +139,17 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
         )
         RunManager.getInstance(project).addConfiguration(runnerAndConfigSettings)
         RunManager.getInstance(project).selectedConfiguration = runnerAndConfigSettings
+    }
+
+    @VisibleForTesting
+    fun createNotification(title: String, message: String): Notification {
+        return NOTIFICATION_GROUP.createNotification(
+            title, null /* subtitle */, message, NotificationType.INFORMATION
+        )
+    }
+
+    @VisibleForTesting
+    fun getRunManager(project: Project) : RunManager {
+        return RunManager.getInstance(project)
     }
 }
