@@ -40,6 +40,8 @@ import com.intellij.openapi.vfs.VirtualFile
  * Detects if project has Skaffold configuration but no Skaffold run targets configured. Uses
  * [ProjectComponent] to watch project opening, and prompts to create dev/deploy configurations
  * if they don't exist yet.
+ *
+ * @param project IDE Project for which this component is created.
  */
 class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
     private val NOTIFICATION_GROUP = NotificationGroup(
@@ -55,7 +57,6 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
         println(skaffoldFiles)
         if (skaffoldFiles.isNotEmpty()) {
             val allRunConfigurations = RunManager.getInstance(project).allConfigurationsList
-            println("allConfigs: $allRunConfigurations")
             val skaffoldRunConfigList =
                 allRunConfigurations.filter { it is AbstractSkaffoldRunConfiguration }
             if (skaffoldRunConfigList.isEmpty()) {
@@ -65,18 +66,22 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
         }
     }
 
+    /**
+     * Prepares an IDE notification if no Skaffold configurations exist, adding actions to add
+     * both dev/deploy configuration, or only one of them.
+     */
     private fun showPromptForSkaffoldConfigurations(
         project: Project,
         skaffoldFile: VirtualFile
     ) {
         val notification = NOTIFICATION_GROUP.createNotification(
-            "Skaffold Configuration Detected", null,
-            "Skaffold configuration file(s) detected, would you like to create run configurations for it?",
+            message("skaffold.detect.notification.title"), null,
+            message("skaffold.detect.notification.message"),
             NotificationType.INFORMATION
         )
 
         notification.addAction(object :
-            AnAction("Create both development and deploy configurations") {
+            AnAction(message("skaffold.detect.notification.add.both.configs")) {
             override fun actionPerformed(e: AnActionEvent?) {
                 addSkaffoldRunConfiguration(skaffoldFile.path)
                 addSkaffoldDevConfiguration(skaffoldFile.path)
@@ -84,7 +89,8 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
             }
         })
 
-        notification.addAction(object : AnAction("Create development on Kubernetes configuration") {
+        notification.addAction(object :
+            AnAction(message("skaffold.detect.notification.add.dev.config")) {
             override fun actionPerformed(e: AnActionEvent?) {
                 addSkaffoldDevConfiguration(skaffoldFile.path)
                 notification.expire()
@@ -92,16 +98,9 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
         })
 
         notification.addAction(object :
-            AnAction("Create single deploy to Kubernetes configuration") {
+            AnAction(message("skaffold.detect.notification.add.run.config")) {
             override fun actionPerformed(e: AnActionEvent?) {
                 addSkaffoldRunConfiguration(skaffoldFile.path)
-                notification.expire()
-            }
-        })
-
-
-        notification.addAction(object : AnAction("Skip") {
-            override fun actionPerformed(e: AnActionEvent?) {
                 notification.expire()
             }
         })
@@ -113,26 +112,25 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
         val skaffoldDevSettings = SkaffoldDevConfiguration(
             project,
             SkaffoldDevConfigurationFactory(SkaffoldRunConfigurationType()),
-            "development on Kubernetes"
+            message("skaffold.run.config.dev.default.name")
         )
         skaffoldDevSettings.skaffoldConfigurationFilePath = skaffoldFilePath
 
         createRunConfigurationFromSettings(skaffoldDevSettings)
-        println("added dev config for skaffold")
     }
 
     private fun addSkaffoldRunConfiguration(skaffoldFilePath: String) {
         val skaffoldRunSettings = SkaffoldSingleRunConfiguration(
             project,
             SkaffoldSingleRunConfigurationFactory(SkaffoldRunConfigurationType()),
-            "deploy to Kubernetes"
+            message("skaffold.run.config.run.default.name")
         )
         skaffoldRunSettings.skaffoldConfigurationFilePath = skaffoldFilePath
 
         createRunConfigurationFromSettings(skaffoldRunSettings)
-        println("added run config for skaffold")
     }
 
+    /** Creates a run configuration from the given settings and selects it in run combobox */
     private fun createRunConfigurationFromSettings(runConfiguration: RunConfiguration) {
         val runnerAndConfigSettings = RunnerAndConfigurationSettingsImpl(
             RunManagerImpl.getInstanceImpl(project),
