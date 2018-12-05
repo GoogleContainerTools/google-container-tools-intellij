@@ -109,7 +109,8 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
         notification.notify(project)
     }
 
-    private fun addSkaffoldDevConfiguration(skaffoldFilePath: String) {
+    @VisibleForTesting
+    fun addSkaffoldDevConfiguration(skaffoldFilePath: String) {
         val skaffoldDevSettings = SkaffoldDevConfiguration(
             project,
             SkaffoldDevConfigurationFactory(SkaffoldRunConfigurationType()),
@@ -120,7 +121,8 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
         createRunConfigurationFromSettings(skaffoldDevSettings)
     }
 
-    private fun addSkaffoldRunConfiguration(skaffoldFilePath: String) {
+    @VisibleForTesting
+    fun addSkaffoldRunConfiguration(skaffoldFilePath: String) {
         val skaffoldRunSettings = SkaffoldSingleRunConfiguration(
             project,
             SkaffoldSingleRunConfigurationFactory(SkaffoldRunConfigurationType()),
@@ -137,8 +139,8 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
             RunManagerImpl.getInstanceImpl(project),
             runConfiguration
         )
-        RunManager.getInstance(project).addConfiguration(runnerAndConfigSettings)
-        RunManager.getInstance(project).selectedConfiguration = runnerAndConfigSettings
+        getRunManager(project).addConfiguration(runnerAndConfigSettings)
+        getRunManager(project).selectedConfiguration = runnerAndConfigSettings
     }
 
     @VisibleForTesting
@@ -149,7 +151,7 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
     }
 
     @VisibleForTesting
-    fun getRunManager(project: Project) : RunManager {
+    fun getRunManager(project: Project): RunManager {
         return RunManager.getInstance(project)
     }
 }

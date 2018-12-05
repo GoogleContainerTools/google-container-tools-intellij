@@ -16,14 +16,20 @@
 
 package com.google.container.tools.skaffold
 
+import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.skaffold.run.SkaffoldDevConfiguration
+import com.google.container.tools.skaffold.run.SkaffoldSingleRunConfiguration
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
 import com.intellij.execution.RunManager
+import com.intellij.execution.RunnerAndConfigurationSettings
+import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.mock.MockVirtualFile
 import com.intellij.notification.Notification
+import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.Before
@@ -42,6 +48,8 @@ class SkaffoldConfigurationDetectorTest {
     @MockK
     @TestService
     private lateinit var mockRunManager: RunManager
+
+    private val runManagerSettingsCapture: CapturingSlot<RunnerAndConfigurationSettings> = slot()
 
     private lateinit var skaffoldConfigurationDetector: SkaffoldConfigurationDetector
 
@@ -65,6 +73,7 @@ class SkaffoldConfigurationDetectorTest {
         } answers { mockNotification }
 
         every { skaffoldConfigurationDetector.getRunManager(any()) } answers { mockRunManager }
+        every { mockRunManager.addConfiguration(capture(runManagerSettingsCapture)) } returns Unit
     }
 
     @Test
@@ -95,5 +104,41 @@ class SkaffoldConfigurationDetectorTest {
         skaffoldConfigurationDetector.projectOpened()
 
         verify(exactly = 0) { skaffoldConfigurationDetector.createNotification(any(), any()) }
+    }
+
+    @Test
+    fun `add dev config action creates and adds valid skaffold dev config`() {
+        val skaffoldFile = MockVirtualFile.file("skaffold.yaml")
+        every { mockSkaffoldFileService.findSkaffoldFiles(any()) } answers { listOf(skaffoldFile) }
+
+        skaffoldConfigurationDetector.addSkaffoldDevConfiguration(skaffoldFile.path)
+
+        val runConfiguration: RunConfiguration = runManagerSettingsCapture.captured.configuration
+
+        assertThat(runConfiguration is SkaffoldDevConfiguration).isTrue()
+        assertThat(runConfiguration.name).isEqualTo("development on Kubernetes")
+        assertThat(
+            (runConfiguration as SkaffoldDevConfiguration).skaffoldConfigurationFilePath
+        ).isEqualTo(
+            skaffoldFile.path
+        )
+    }
+
+    @Test
+    fun `add run config action creates and adds valid skaffold run config`() {
+        val skaffoldFile = MockVirtualFile.file("skaffold.yaml")
+        every { mockSkaffoldFileService.findSkaffoldFiles(any()) } answers { listOf(skaffoldFile) }
+
+        skaffoldConfigurationDetector.addSkaffoldRunConfiguration(skaffoldFile.path)
+
+        val runConfiguration: RunConfiguration = runManagerSettingsCapture.captured.configuration
+
+        assertThat(runConfiguration is SkaffoldSingleRunConfiguration).isTrue()
+        assertThat(runConfiguration.name).isEqualTo("deploy to Kubernetes")
+        assertThat(
+            (runConfiguration as SkaffoldSingleRunConfiguration).skaffoldConfigurationFilePath
+        ).isEqualTo(
+            skaffoldFile.path
+        )
     }
 }
