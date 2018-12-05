@@ -17,6 +17,7 @@
 package com.google.container.tools.skaffold.run
 
 import com.google.container.tools.skaffold.message
+import javax.swing.JCheckBox
 
 /**
  * Settings editor that provides a UI for Skaffold single mode run configuration settings,
@@ -26,4 +27,19 @@ class SkaffoldSingleRunSettingsEditor :
     BaseSkaffoldSettingsEditor(
         editorTitle = message("skaffold.run.config.single.run.name"),
         helperText = message("skaffold.run.config.single.run.helperText")
-    )
+    ) {
+
+    private val tailLogsCheckbox = JCheckBox()
+
+    init {
+        addExtensionComponents(mapOf(message("skaffold.tail.logs.label") to tailLogsCheckbox))
+    }
+
+    override fun applyEditorTo(runConfig: AbstractSkaffoldRunConfiguration) {
+        super.applyEditorTo(runConfig)
+    }
+
+    override fun resetEditorFrom(runConfig: AbstractSkaffoldRunConfiguration) {
+        super.resetEditorFrom(runConfig)
+    }
+}

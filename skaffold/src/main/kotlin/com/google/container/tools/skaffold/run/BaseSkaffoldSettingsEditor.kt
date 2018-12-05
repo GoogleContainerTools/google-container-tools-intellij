@@ -28,6 +28,7 @@ import com.intellij.ui.layout.panel
 import com.intellij.util.ui.UIUtil
 import java.awt.Insets
 import javax.swing.JComponent
+import javax.swing.JPanel
 
 /**
  * Base settings editor for both Skaffold single run and continunous run configurations. Includes
@@ -37,21 +38,40 @@ import javax.swing.JComponent
  * @param editorTitle title for the settings editor
  * @param helperText additional helper text for the settings editor
  */
-open class BaseSkaffoldSettingsEditor(val editorTitle: String, val helperText: String = "") :
+open class BaseSkaffoldSettingsEditor(
+    val editorTitle: String,
+    val helperText: String = ""
+) :
     SettingsEditor<AbstractSkaffoldRunConfiguration>() {
 
     @VisibleForTesting
     val skaffoldFilesComboBox = SkaffoldFilesComboBox()
 
-    val basePanel = panel {
-        row {
-            label(helperText, 0, UIUtil.ComponentStyle.SMALL)
-        }
+    lateinit var basePanel: JPanel
 
-        row(message("skaffold.configuration.label")) { skaffoldFilesComboBox(grow) }
+    val extensionComponents: MutableMap<String, JComponent> = mutableMapOf()
+
+    /**
+     * Registers additional custom components for Skaffold configuration UI.
+     * @param newExtensionComponents extension components mapped to their label text
+     */
+    protected fun addExtensionComponents(newExtensionComponents: Map<String, JComponent>) {
+        extensionComponents.putAll(newExtensionComponents)
     }
 
     override fun createEditor(): JComponent {
+        basePanel = panel {
+            row {
+                label(helperText, 0, UIUtil.ComponentStyle.SMALL)
+            }
+
+            row(message("skaffold.configuration.label")) { skaffoldFilesComboBox(grow) }
+
+            extensionComponents.forEach {
+                row(it.key) { it.value(grow) }
+            }
+        }
+
         basePanel.border = IdeaTitledBorder(editorTitle, 0, Insets(0, 0, 0, 0))
 
         return basePanel
