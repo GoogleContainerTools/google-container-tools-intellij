@@ -128,14 +128,12 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
     }
 
     @VisibleForTesting
-    fun createNotification(title: String, message: String): Notification {
-        return NOTIFICATION_GROUP.createNotification(
+    fun createNotification(title: String, message: String): Notification =
+        NOTIFICATION_GROUP.createNotification(
             title, null /* subtitle */, message, NotificationType.INFORMATION
         )
-    }
 
     @VisibleForTesting
-    fun getRunManager(project: Project): RunManager {
-        return RunManager.getInstance(project)
-    }
+    fun getRunManager(project: Project): RunManager =
+        RunManager.getInstance(project)
 }
