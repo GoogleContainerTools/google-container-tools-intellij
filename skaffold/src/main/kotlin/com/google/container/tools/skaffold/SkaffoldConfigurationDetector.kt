@@ -90,22 +90,6 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
             }
         })
 
-        notification.addAction(object :
-            AnAction(message("skaffold.detect.notification.add.run.config")) {
-            override fun actionPerformed(e: AnActionEvent?) {
-                addSkaffoldRunConfiguration(skaffoldFile.path)
-                notification.expire()
-            }
-        })
-
-        notification.addAction(object :
-            AnAction(message("skaffold.detect.notification.add.dev.config")) {
-            override fun actionPerformed(e: AnActionEvent?) {
-                addSkaffoldDevConfiguration(skaffoldFile.path)
-                notification.expire()
-            }
-        })
-
         notification.notify(project)
     }
 
