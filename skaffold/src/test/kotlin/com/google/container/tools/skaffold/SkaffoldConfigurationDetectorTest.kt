@@ -116,7 +116,7 @@ class SkaffoldConfigurationDetectorTest {
         val runConfiguration: RunConfiguration = runManagerSettingsCapture.captured.configuration
 
         assertThat(runConfiguration is SkaffoldDevConfiguration).isTrue()
-        assertThat(runConfiguration.name).isEqualTo("development on Kubernetes")
+        assertThat(runConfiguration.name).isEqualTo("develop on Kubernetes")
         assertThat(
             (runConfiguration as SkaffoldDevConfiguration).skaffoldConfigurationFilePath
         ).isEqualTo(
