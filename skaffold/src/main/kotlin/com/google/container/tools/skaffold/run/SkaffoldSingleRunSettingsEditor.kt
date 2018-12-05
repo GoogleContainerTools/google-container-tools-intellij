@@ -37,9 +37,17 @@ class SkaffoldSingleRunSettingsEditor :
 
     override fun applyEditorTo(runConfig: AbstractSkaffoldRunConfiguration) {
         super.applyEditorTo(runConfig)
+
+        if (runConfig is SkaffoldSingleRunConfiguration) {
+            runConfig.tailDeploymentLogs = tailLogsCheckbox.isSelected
+        }
     }
 
     override fun resetEditorFrom(runConfig: AbstractSkaffoldRunConfiguration) {
         super.resetEditorFrom(runConfig)
+
+        if (runConfig is SkaffoldSingleRunConfiguration) {
+            tailLogsCheckbox.isSelected = runConfig.tailDeploymentLogs
+        }
     }
 }
