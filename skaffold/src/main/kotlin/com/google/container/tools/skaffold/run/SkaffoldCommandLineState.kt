@@ -67,8 +67,7 @@ class SkaffoldCommandLineState(
             configFile, projectBaseDir
         )
 
-        val workingDirectory: File? = environment.project.guessProjectDir()
-            ?.let { File(environment.project.guessProjectDir()!!.path) }
+        val workingDirectory: File? = File(projectBaseDir.path)
 
         val skaffoldProcess = SkaffoldExecutorService.instance.executeSkaffold(
             SkaffoldExecutorSettings(
