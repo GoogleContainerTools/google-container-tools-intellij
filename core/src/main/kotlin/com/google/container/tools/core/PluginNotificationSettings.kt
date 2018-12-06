@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-dependencies {
-    // required for container tools rule not in the test code.
-    compile("io.mockk:mockk:+") {
-        // this ensures kotlin plugin/version takes precedence, mockk updates less often
-        exclude(group = "org.jetbrains.kotlin", module = "kotlin-reflect")
-    }
-}
+package com.google.container.tools.core
+
+/**
+ * Single notification ID that should be used in any Notifications explicitly
+ * produced by the plugin.
+ */
+const val PLUGIN_NOTIFICATION_DISPLAY_GROUP_ID = "Google container tools plugin"
