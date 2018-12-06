@@ -66,7 +66,7 @@ class SkaffoldCommandLineState(
         val skaffoldConfigurationFilePath: String? = VfsUtilCore.getRelativeLocation(
             configFile, projectBaseDir
         )
-        
+
         val skaffoldProcess = SkaffoldExecutorService.instance.executeSkaffold(
             SkaffoldExecutorSettings(
                 executionMode,
