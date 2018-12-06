@@ -26,6 +26,7 @@ import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.process.KillableProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
@@ -47,7 +48,7 @@ class SkaffoldCommandLineState(
     public override fun startProcess(): ProcessHandler {
         val runConfiguration: RunConfiguration? =
             environment.runnerAndConfigurationSettings?.configuration
-        val projectBaseDir: VirtualFile? = environment.project.baseDir
+        val projectBaseDir: VirtualFile? = environment.project.guessProjectDir()
         // ensure the configuration is valid for execution - settings are of supported type,
         // project is valid and Skaffold file is present.
         if (runConfiguration == null || runConfiguration !is AbstractSkaffoldRunConfiguration ||
@@ -66,11 +67,14 @@ class SkaffoldCommandLineState(
             configFile, projectBaseDir
         )
 
+        val workingDirectory: File? = environment.project.guessProjectDir()
+            ?.let { File(environment.project.guessProjectDir()!!.path) }
+
         val skaffoldProcess = SkaffoldExecutorService.instance.executeSkaffold(
             SkaffoldExecutorSettings(
                 executionMode,
                 skaffoldConfigurationFilePath,
-                workingDirectory = File(environment.project.basePath),
+                workingDirectory = workingDirectory,
                 skaffoldLabels = SkaffoldLabels.defaultLabels
             )
         )
