@@ -64,8 +64,8 @@ abstract class SkaffoldExecutorService {
                     }
             }
 
-            settings.tailLogsAfterDeploy?.let {
-                if (it == true) add("--tail")
+            settings.tailLogsAfterDeploy?.let { tailLogs ->
+                if (tailLogs) add("--tail")
             }
         }
 
