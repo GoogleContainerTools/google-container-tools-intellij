@@ -38,11 +38,11 @@ import javax.swing.JPanel
  * @param editorTitle title for the settings editor
  * @param helperText additional helper text for the settings editor
  */
-open class BaseSkaffoldSettingsEditor(
+open class BaseSkaffoldSettingsEditor<C : AbstractSkaffoldRunConfiguration>(
     val editorTitle: String,
     val helperText: String = ""
 ) :
-    SettingsEditor<AbstractSkaffoldRunConfiguration>() {
+    SettingsEditor<C>() {
 
     @VisibleForTesting
     val skaffoldFilesComboBox = SkaffoldFilesComboBox()
@@ -77,7 +77,7 @@ open class BaseSkaffoldSettingsEditor(
         return basePanel
     }
 
-    override fun applyEditorTo(runConfig: AbstractSkaffoldRunConfiguration) {
+    override fun applyEditorTo(runConfig: C) {
         val selectedSkaffoldFile: VirtualFile =
             skaffoldFilesComboBox.getItemAt(skaffoldFilesComboBox.selectedIndex)
                 ?: throw ConfigurationException(message("skaffold.no.file.selected.error"))
@@ -90,7 +90,7 @@ open class BaseSkaffoldSettingsEditor(
         runConfig.skaffoldConfigurationFilePath = selectedSkaffoldFile.path
     }
 
-    override fun resetEditorFrom(runConfig: AbstractSkaffoldRunConfiguration) {
+    override fun resetEditorFrom(runConfig: C) {
         skaffoldFilesComboBox.setProject(runConfig.project)
         runConfig.skaffoldConfigurationFilePath?.let {
             LocalFileSystem.getInstance().findFileByPath(it)

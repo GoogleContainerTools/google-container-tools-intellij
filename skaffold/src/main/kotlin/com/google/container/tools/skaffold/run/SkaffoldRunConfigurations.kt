@@ -39,7 +39,7 @@ class SkaffoldSingleRunConfiguration(
     name: String
 ) : AbstractSkaffoldRunConfiguration(project, factory, name) {
 
-    /** Single run tail logs option to stream logs are deployment until stopped. */
+    /** Single run tail logs option to stream logs after deployment until stopped. */
     var tailDeploymentLogs: Boolean = false
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? =

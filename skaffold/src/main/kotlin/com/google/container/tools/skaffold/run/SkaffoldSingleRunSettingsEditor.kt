@@ -24,7 +24,7 @@ import javax.swing.JCheckBox
  * also saves and retrieves the settings from the project state.
  */
 class SkaffoldSingleRunSettingsEditor :
-    BaseSkaffoldSettingsEditor(
+    BaseSkaffoldSettingsEditor<SkaffoldSingleRunConfiguration>(
         editorTitle = message("skaffold.run.config.single.run.name"),
         helperText = message("skaffold.run.config.single.run.helperText")
     ) {
@@ -35,19 +35,15 @@ class SkaffoldSingleRunSettingsEditor :
         addExtensionComponents(mapOf(message("skaffold.tail.logs.label") to tailLogsCheckbox))
     }
 
-    override fun applyEditorTo(runConfig: AbstractSkaffoldRunConfiguration) {
+    override fun applyEditorTo(runConfig: SkaffoldSingleRunConfiguration) {
         super.applyEditorTo(runConfig)
 
-        if (runConfig is SkaffoldSingleRunConfiguration) {
-            runConfig.tailDeploymentLogs = tailLogsCheckbox.isSelected
-        }
+        runConfig.tailDeploymentLogs = tailLogsCheckbox.isSelected
     }
 
-    override fun resetEditorFrom(runConfig: AbstractSkaffoldRunConfiguration) {
+    override fun resetEditorFrom(runConfig: SkaffoldSingleRunConfiguration) {
         super.resetEditorFrom(runConfig)
 
-        if (runConfig is SkaffoldSingleRunConfiguration) {
-            tailLogsCheckbox.isSelected = runConfig.tailDeploymentLogs
-        }
+        tailLogsCheckbox.isSelected = runConfig.tailDeploymentLogs
     }
 }
