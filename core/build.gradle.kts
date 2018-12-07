@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 
+project.logger.lifecycle("JUST A TEST------------------------------------------------------------")
+
 dependencies {
     testCompile(project(":common-test-lib"))
+
+    compile(files("../lib/ide-analytics-common-0.1.0-SNAPSHOT.jar"))
+}
+
+// Processes the analytics id environment variable value into the analyticsId property
+// in config.properties
+val processResources by tasks.getting(ProcessResources::class) {
+    val analyticsId: String? = System.getenv("ANALYTICS_ID")
+    inputs.property("analyticsId", analyticsId)
+    filesMatching("**/config.properties") {
+        // todo
+//        expand(mapOf("analyticsId" to analyticsId))
+//        expand "usageTrackerProperty": trackerProperty
+        expand(project.properties)
+    }
 }
