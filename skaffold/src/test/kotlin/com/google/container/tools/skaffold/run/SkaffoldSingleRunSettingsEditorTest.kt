@@ -92,4 +92,24 @@ class SkaffoldSingleRunSettingsEditorTest {
 
         assertThat(skaffoldSingleRunConfiguration.tailDeploymentLogs).isFalse()
     }
+
+    @Test
+    @UiTest
+    fun `tail logs checkbox is unselected by default`() {
+        singleRunSettingsEditor.resetFrom(skaffoldSingleRunConfiguration)
+        singleRunSettingsEditor.skaffoldFilesComboBox.setSelectedSkaffoldFile(skaffoldFile)
+
+        assertThat(singleRunSettingsEditor.tailLogsCheckbox.isSelected).isFalse()
+    }
+
+    @Test
+    @UiTest
+    fun `tail logs option is not enabled by default settings`() {
+        singleRunSettingsEditor.resetFrom(skaffoldSingleRunConfiguration)
+        singleRunSettingsEditor.skaffoldFilesComboBox.setSelectedSkaffoldFile(skaffoldFile)
+
+        singleRunSettingsEditor.applyTo(skaffoldSingleRunConfiguration)
+
+        assertThat(skaffoldSingleRunConfiguration.tailDeploymentLogs).isFalse()
+    }
 }
