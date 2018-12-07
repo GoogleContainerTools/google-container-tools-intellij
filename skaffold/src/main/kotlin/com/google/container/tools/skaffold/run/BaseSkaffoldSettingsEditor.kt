@@ -47,9 +47,9 @@ open class BaseSkaffoldSettingsEditor<C : AbstractSkaffoldRunConfiguration>(
     @VisibleForTesting
     val skaffoldFilesComboBox = SkaffoldFilesComboBox()
 
-    lateinit var basePanel: JPanel
+    protected lateinit var basePanel: JPanel
 
-    val extensionComponents: MutableMap<String, JComponent> = mutableMapOf()
+    private val extensionComponents: MutableMap<String, JComponent> = mutableMapOf()
 
     /**
      * Registers additional custom components for Skaffold configuration UI.

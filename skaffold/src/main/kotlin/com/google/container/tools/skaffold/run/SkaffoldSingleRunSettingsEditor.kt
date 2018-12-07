@@ -16,6 +16,7 @@
 
 package com.google.container.tools.skaffold.run
 
+import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.skaffold.message
 import javax.swing.JCheckBox
 
@@ -29,7 +30,8 @@ class SkaffoldSingleRunSettingsEditor :
         helperText = message("skaffold.run.config.single.run.helperText")
     ) {
 
-    private val tailLogsCheckbox = JCheckBox()
+    @VisibleForTesting
+    val tailLogsCheckbox = JCheckBox()
 
     init {
         addExtensionComponents(mapOf(message("skaffold.tail.logs.label") to tailLogsCheckbox))
