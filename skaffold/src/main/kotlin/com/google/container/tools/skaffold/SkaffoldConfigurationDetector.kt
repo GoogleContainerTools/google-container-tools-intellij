@@ -33,6 +33,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.ProjectComponent
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
@@ -118,18 +119,16 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
 
         val factory = findConfigurationFactoryById(factoryId)
         if (factory == null) {
+            Logger.getInstance(SkaffoldConfigurationDetector::class.java)
+                .warn("Skaffold configuration factory not found, plugin install is corrupted.")
             return
         }
 
         val runnerAndConfigSettings = getRunManager(project).createConfiguration(name, factory)
-        if (runnerAndConfigSettings.configuration is AbstractSkaffoldRunConfiguration) {
-            (runnerAndConfigSettings.configuration as AbstractSkaffoldRunConfiguration)
-                .skaffoldConfigurationFilePath = skaffoldFilePath
-            getRunManager(project).addConfiguration(runnerAndConfigSettings)
-            getRunManager(project).selectedConfiguration = runnerAndConfigSettings
-        } else {
-            println("error ${runnerAndConfigSettings.configuration}")
-        }
+        (runnerAndConfigSettings.configuration as AbstractSkaffoldRunConfiguration)
+            .skaffoldConfigurationFilePath = skaffoldFilePath
+        getRunManager(project).addConfiguration(runnerAndConfigSettings)
+        getRunManager(project).selectedConfiguration = runnerAndConfigSettings
     }
 
     @VisibleForTesting
@@ -142,9 +141,13 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
     }
 
     @VisibleForTesting
-    fun createNotification(title: String, message: String): Notification =
+    fun createNotification(
+        title: String,
+        message: String,
+        type: NotificationType = NotificationType.INFORMATION
+    ): Notification =
         NOTIFICATION_GROUP.createNotification(
-            title, null /* subtitle */, message, NotificationType.INFORMATION
+            title, null /* subtitle */, message, type
         )
 
     @VisibleForTesting

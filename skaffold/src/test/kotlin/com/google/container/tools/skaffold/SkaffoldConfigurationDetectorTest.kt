@@ -68,6 +68,7 @@ class SkaffoldConfigurationDetectorTest {
         every {
             skaffoldConfigurationDetector.createNotification(
                 any(),
+                any(),
                 any()
             )
         } answers { mockNotification }
@@ -124,7 +125,7 @@ class SkaffoldConfigurationDetectorTest {
         } answers { mockRunnerAndConfigurationSettings }
 
         every { mockRunnerAndConfigurationSettings.getConfiguration() } answers {
-            mockk()
+            mockSkaffoldDevConfiguration
         }
 
         skaffoldConfigurationDetector.addSkaffoldDevConfiguration(skaffoldFile.path)
@@ -147,7 +148,7 @@ class SkaffoldConfigurationDetectorTest {
         } answers { mockRunnerAndConfigurationSettings }
 
         every { mockRunnerAndConfigurationSettings.getConfiguration() } answers {
-            mockk()
+            mockSkaffoldDevConfiguration
         }
 
         skaffoldConfigurationDetector.addSkaffoldRunConfiguration(skaffoldFile.path)
