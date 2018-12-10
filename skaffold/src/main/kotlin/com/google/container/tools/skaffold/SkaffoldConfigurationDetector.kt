@@ -24,6 +24,7 @@ import com.google.container.tools.skaffold.run.SkaffoldRunConfigurationType
 import com.google.container.tools.skaffold.run.SkaffoldSingleRunConfigurationFactory
 import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.ConfigurationFactory
+import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationDisplayType
@@ -92,50 +93,51 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
 
     @VisibleForTesting
     fun addSkaffoldDevConfiguration(skaffoldFilePath: String) {
-/*        val skaffoldDevSettings = SkaffoldDevConfiguration(
-            project,
-            SkaffoldDevConfigurationFactory(SkaffoldRunConfigurationType()),
-            message("skaffold.run.config.dev.default.name")
-        )
-        skaffoldDevSettings.skaffoldConfigurationFilePath = skaffoldFilePath*/
-
         createRunConfigurationFromSettings(
-            SkaffoldDevConfigurationFactory(
-                SkaffoldRunConfigurationType()
-            ), message("skaffold.run.config.dev.default.name"), skaffoldFilePath
+            SkaffoldDevConfigurationFactory.DEV_ID,
+            message("skaffold.run.config.dev.default.name"),
+            skaffoldFilePath
         )
     }
 
     @VisibleForTesting
     fun addSkaffoldRunConfiguration(skaffoldFilePath: String) {
-/*        val skaffoldRunSettings = SkaffoldSingleRunConfiguration(
-            project,
-            SkaffoldSingleRunConfigurationFactory(SkaffoldRunConfigurationType()),
-            message("skaffold.run.config.run.default.name")
-        )
-        skaffoldRunSettings.skaffoldConfigurationFilePath = skaffoldFilePath*/
-
         createRunConfigurationFromSettings(
-            SkaffoldSingleRunConfigurationFactory(
-                SkaffoldRunConfigurationType()
-            ), message("skaffold.run.config.run.default.name"), skaffoldFilePath
+            SkaffoldSingleRunConfigurationFactory.RUN_ID,
+            message("skaffold.run.config.run.default.name"),
+            skaffoldFilePath
         )
     }
 
     /** Creates a run configuration from the given settings and selects it in run combobox */
     private fun createRunConfigurationFromSettings(
-        factory: ConfigurationFactory,
+        factoryId: String,
         name: String,
         skaffoldFilePath: String
     ) {
+
+        val factory = findConfigurationFactoryById(factoryId)
+        if (factory == null) {
+            return
+        }
+
         val runnerAndConfigSettings = getRunManager(project).createConfiguration(name, factory)
         if (runnerAndConfigSettings.configuration is AbstractSkaffoldRunConfiguration) {
-            (runnerAndConfigSettings.configuration as AbstractSkaffoldRunConfiguration).skaffoldConfigurationFilePath =
-                skaffoldFilePath
+            (runnerAndConfigSettings.configuration as AbstractSkaffoldRunConfiguration)
+                .skaffoldConfigurationFilePath = skaffoldFilePath
             getRunManager(project).addConfiguration(runnerAndConfigSettings)
             getRunManager(project).selectedConfiguration = runnerAndConfigSettings
         } else {
             println("error ${runnerAndConfigSettings.configuration}")
+        }
+    }
+
+    @VisibleForTesting
+    fun findConfigurationFactoryById(factoryId: String): ConfigurationFactory? {
+        val configurationType =
+            ConfigurationTypeUtil.findConfigurationType(SkaffoldRunConfigurationType.ID)
+        return configurationType?.let {
+            it.configurationFactories.filter { it.id == factoryId }[0]
         }
     }
 
