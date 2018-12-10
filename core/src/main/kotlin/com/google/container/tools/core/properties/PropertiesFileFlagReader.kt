@@ -45,7 +45,5 @@ class PropertiesFileFlagReader(
     /**
      * Return the property value given the passed in name.
      */
-    fun getFlagString(propertyName: String): String? {
-        return properties.getProperty(propertyName)
-    }
+    fun getFlagString(propertyName: String): String? = properties.getProperty(propertyName)
 }
