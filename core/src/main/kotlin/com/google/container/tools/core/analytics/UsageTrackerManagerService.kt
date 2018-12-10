@@ -37,9 +37,9 @@ class UsageTrackerManagerService(
     }
 
     /**
-     * Returns if usage tracking is enabled or not. Usage tracking is enabled if the Analytics ID is
-     * configured and we are not running from unit test mode (we don't want to send pings from unit
-     * tests).
+     * Returns true if usage tracking is enabled, and false otherwise. Usage tracking is enabled if
+     * the Analytics ID is configured and we are not running from unit test mode (we don't want to
+     * send pings from unit tests).
      *
      * TODO (next PR): add in bit that checks if the user has not opted out of tracking
      */
