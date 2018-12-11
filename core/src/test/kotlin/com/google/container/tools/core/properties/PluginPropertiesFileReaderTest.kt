@@ -21,11 +21,11 @@ import org.junit.Test
 import kotlin.test.fail
 
 /**
- * Tests for [PropertiesFileReader].
+ * Tests for [PluginPropertiesFileReader].
  */
-class PropertiesFileReaderTest {
+class PluginPropertiesFileReaderTest {
 
-    private val propertiesFileReader = PropertiesFileReader("/test-config.properties")
+    private val propertiesFileReader = PluginPropertiesFileReader("/test-config.properties")
 
     @Test
     fun `existing properties flag returns value`() {
@@ -46,7 +46,7 @@ class PropertiesFileReaderTest {
     @Test
     fun `invalid config path throws exception`() {
         try {
-            PropertiesFileReader("/invalid/path")
+            PluginPropertiesFileReader("/invalid/path")
             fail("Exception expected")
         } catch (ex: Exception) {
             // do nothing, exception expected

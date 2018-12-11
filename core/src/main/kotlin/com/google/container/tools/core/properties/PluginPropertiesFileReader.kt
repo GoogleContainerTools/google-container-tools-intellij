@@ -19,12 +19,12 @@ package com.google.container.tools.core.properties
 import java.util.Properties
 
 /**
- * Reads property values from the specified properties file.
+ * Reads property values from the specified properties file supplied to the plugin.
  *
  * @param propertyFilePath the path to the properties file; defaults to 'config.properties' located
  * in the root of the module's resources
  */
-class PropertiesFileReader(
+class PluginPropertiesFileReader(
     propertyFilePath: String = DEFAULT_PROPERTIES_FILE_NAME
 ) {
 

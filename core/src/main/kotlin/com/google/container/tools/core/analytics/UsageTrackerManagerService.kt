@@ -17,7 +17,7 @@
 package com.google.container.tools.core.analytics
 
 import com.google.common.annotations.VisibleForTesting
-import com.google.container.tools.core.properties.PropertiesFileReader
+import com.google.container.tools.core.properties.PluginPropertiesFileReader
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ServiceManager
 
@@ -25,7 +25,7 @@ import com.intellij.openapi.components.ServiceManager
  * Application service that manages the status of usage tracking in the plugin.
  */
 class UsageTrackerManagerService(
-    private val propertyReader: PropertiesFileReader = PropertiesFileReader()
+    private val propertyReader: PluginPropertiesFileReader = PluginPropertiesFileReader()
 ) {
 
     companion object {
