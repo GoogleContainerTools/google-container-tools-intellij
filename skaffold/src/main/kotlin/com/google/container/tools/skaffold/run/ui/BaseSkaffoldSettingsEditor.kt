@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.google.container.tools.skaffold.run
+package com.google.container.tools.skaffold.run.ui
 
 import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.skaffold.SkaffoldFileService
 import com.google.container.tools.skaffold.message
+import com.google.container.tools.skaffold.run.AbstractSkaffoldRunConfiguration
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.vfs.LocalFileSystem

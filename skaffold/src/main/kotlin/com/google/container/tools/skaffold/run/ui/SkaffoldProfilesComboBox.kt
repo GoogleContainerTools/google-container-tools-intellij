@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.google.container.tools.skaffold.run
+package com.google.container.tools.skaffold.run.ui
 
 import javax.swing.JComboBox
 
 class SkaffoldProfilesComboBox : JComboBox<String>() {
-    
+
 }

@@ -18,6 +18,7 @@ package com.google.container.tools.skaffold.run
 
 import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.skaffold.SkaffoldFileService
+import com.google.container.tools.skaffold.run.ui.SkaffoldSingleRunSettingsEditor
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
 import com.google.container.tools.test.UiTest
@@ -53,7 +54,8 @@ class SkaffoldSingleRunSettingsEditorTest {
     @Before
     fun setUp() {
         EdtTestUtil.runInEdtAndWait(ThrowableRunnable {
-            singleRunSettingsEditor = SkaffoldSingleRunSettingsEditor()
+            singleRunSettingsEditor =
+                SkaffoldSingleRunSettingsEditor()
             // calls getComponent() to initialize UI first, IDE flow.
             singleRunSettingsEditor.component
         })
