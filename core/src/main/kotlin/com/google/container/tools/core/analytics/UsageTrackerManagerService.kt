@@ -17,7 +17,7 @@
 package com.google.container.tools.core.analytics
 
 import com.google.common.annotations.VisibleForTesting
-import com.google.container.tools.core.properties.PropertiesFileFlagReader
+import com.google.container.tools.core.properties.PropertiesFileReader
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ServiceManager
 
@@ -25,7 +25,7 @@ import com.intellij.openapi.components.ServiceManager
  * Application service that manages the status of usage tracking in the plugin.
  */
 class UsageTrackerManagerService(
-    private val propertyReader: PropertiesFileFlagReader = PropertiesFileFlagReader()
+    private val propertyReader: PropertiesFileReader = PropertiesFileReader()
 ) {
 
     companion object {
@@ -52,7 +52,7 @@ class UsageTrackerManagerService(
      */
     @VisibleForTesting
     fun getAnalyticsId(): String? {
-        val analyticsId: String? = propertyReader.getFlagString(ANALYTICS_ID_KEY)
+        val analyticsId: String? = propertyReader.getPropertyValue(ANALYTICS_ID_KEY)
 
         return if (ANALYTICS_ID_PLACEHOLDER_VAL != analyticsId) analyticsId else null
     }

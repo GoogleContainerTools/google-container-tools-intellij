@@ -21,32 +21,32 @@ import org.junit.Test
 import kotlin.test.fail
 
 /**
- * Tests for [PropertiesFileFlagReader].
+ * Tests for [PropertiesFileReader].
  */
-class PropertiesFileFlagReaderTest {
+class PropertiesFileReaderTest {
 
-    private val propertiesFileFlagReader = PropertiesFileFlagReader("/test-config.properties")
+    private val propertiesFileReader = PropertiesFileReader("/test-config.properties")
 
     @Test
     fun `existing properties flag returns value`() {
-        Truth.assertThat(propertiesFileFlagReader.getFlagString("test.prop"))
+        Truth.assertThat(propertiesFileReader.getPropertyValue("test.prop"))
             .isEqualTo("testPropValue")
     }
 
     @Test
     fun `non existing properties flag returns null`() {
-        Truth.assertThat(propertiesFileFlagReader.getFlagString("test.missing.prop")).isNull()
+        Truth.assertThat(propertiesFileReader.getPropertyValue("test.missing.prop")).isNull()
     }
 
     @Test
     fun `empty properties flag returns empty string`() {
-        Truth.assertThat(propertiesFileFlagReader.getFlagString("test.empty.prop")).isEmpty()
+        Truth.assertThat(propertiesFileReader.getPropertyValue("test.empty.prop")).isEmpty()
     }
 
     @Test
     fun `invalid config path throws exception`() {
         try {
-            PropertiesFileFlagReader("/invalid/path")
+            PropertiesFileReader("/invalid/path")
             fail("Exception expected")
         } catch (ex: Exception) {
             // do nothing, exception expected

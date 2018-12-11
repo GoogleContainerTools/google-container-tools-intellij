@@ -24,7 +24,7 @@ import java.util.Properties
  * @param propertyFilePath the path to the properties file; defaults to 'config.properties' located
  * in the root of the module's resources
  */
-class PropertiesFileFlagReader(
+class PropertiesFileReader(
     propertyFilePath: String = DEFAULT_PROPERTIES_FILE_NAME
 ) {
 
@@ -45,5 +45,5 @@ class PropertiesFileFlagReader(
     /**
      * Return the property value given the passed in name.
      */
-    fun getFlagString(propertyName: String): String? = properties.getProperty(propertyName)
+    fun getPropertyValue(propertyKey: String): String? = properties.getProperty(propertyKey)
 }

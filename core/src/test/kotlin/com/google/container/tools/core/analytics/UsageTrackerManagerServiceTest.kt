@@ -17,7 +17,7 @@
 package com.google.container.tools.core.analytics
 
 import com.google.common.truth.Truth
-import com.google.container.tools.core.properties.PropertiesFileFlagReader
+import com.google.container.tools.core.properties.PropertiesFileReader
 import com.google.container.tools.test.ContainerToolsRule
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -33,7 +33,7 @@ class UsageTrackerManagerServiceTest {
     val containerToolsRule = ContainerToolsRule(this)
 
     @MockK
-    private lateinit var propertyReader: PropertiesFileFlagReader
+    private lateinit var propertyReader: PropertiesFileReader
 
     private lateinit var usageTrackerManagerService: UsageTrackerManagerService
 
@@ -62,12 +62,12 @@ class UsageTrackerManagerServiceTest {
     @Test
     fun `get analytics ID when property placeholder has not been substituted returns null`() {
         val analyticsIdPlaceholder = "\${analyticsId}"
-        every { propertyReader.getFlagString("analytics.id") } answers { analyticsIdPlaceholder }
+        every { propertyReader.getPropertyValue("analytics.id") } answers { analyticsIdPlaceholder }
 
         Truth.assertThat(usageTrackerManagerService.getAnalyticsId()).isNull()
     }
 
     private fun mockAnalyticsId(analyticsId: String) {
-        every { propertyReader.getFlagString("analytics.id") } answers { analyticsId }
+        every { propertyReader.getPropertyValue("analytics.id") } answers { analyticsId }
     }
 }
