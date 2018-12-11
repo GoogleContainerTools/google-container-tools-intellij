@@ -80,7 +80,7 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
 
     override fun applyEditorTo(runConfig: T) {
         val selectedSkaffoldFile: VirtualFile =
-            skaffoldFilesComboBox.getItemAt(skaffoldFilesComboBox.selectedIndex)
+            skaffoldFilesComboBox.getSelectedSkaffoldFile()
                 ?: throw ConfigurationException(message("skaffold.no.file.selected.error"))
 
         if (!SkaffoldFileService.instance.isSkaffoldFile(selectedSkaffoldFile)) {
