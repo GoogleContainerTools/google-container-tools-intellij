@@ -26,6 +26,11 @@ import com.intellij.openapi.components.ServiceManager
 /**
  * Application service that initializes the [UsageTracker] for analytics. Sets up core components
  * of analytics collection such as the analytics ID, user agent, client ID etc.
+ *
+ * Example usage:
+ * ```
+ * UsageTrackerProvider.instance.usageTracker.trackEvent("event-name").ping()
+ * ```
  */
 class UsageTrackerProvider {
 
