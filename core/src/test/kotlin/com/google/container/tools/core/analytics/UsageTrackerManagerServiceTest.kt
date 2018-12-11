@@ -19,6 +19,7 @@ package com.google.container.tools.core.analytics
 import com.google.common.truth.Truth
 import com.google.container.tools.core.properties.PluginPropertiesFileReader
 import com.google.container.tools.test.ContainerToolsRule
+import com.google.container.tools.test.TestService
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
@@ -32,6 +33,7 @@ class UsageTrackerManagerServiceTest {
     @get:Rule
     val containerToolsRule = ContainerToolsRule(this)
 
+    @TestService
     @MockK
     private lateinit var propertyReader: PluginPropertiesFileReader
 
@@ -39,7 +41,7 @@ class UsageTrackerManagerServiceTest {
 
     @Before
     fun setUp() {
-        usageTrackerManagerService = UsageTrackerManagerService(propertyReader)
+        usageTrackerManagerService = UsageTrackerManagerService()
     }
 
     @Test

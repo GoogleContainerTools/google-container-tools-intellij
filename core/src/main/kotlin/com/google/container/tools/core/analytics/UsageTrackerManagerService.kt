@@ -24,9 +24,7 @@ import com.intellij.openapi.components.ServiceManager
 /**
  * Application service that manages the status of usage tracking in the plugin.
  */
-class UsageTrackerManagerService(
-    private val propertyReader: PluginPropertiesFileReader = PluginPropertiesFileReader()
-) {
+class UsageTrackerManagerService {
 
     companion object {
         private const val ANALYTICS_ID_KEY = "analytics.id"
@@ -52,7 +50,8 @@ class UsageTrackerManagerService(
      */
     @VisibleForTesting
     fun getAnalyticsId(): String? {
-        val analyticsId: String? = propertyReader.getPropertyValue(ANALYTICS_ID_KEY)
+        val analyticsId: String? =
+            PluginPropertiesFileReader.instance.getPropertyValue(ANALYTICS_ID_KEY)
 
         return if (ANALYTICS_ID_PLACEHOLDER_VAL != analyticsId) analyticsId else null
     }

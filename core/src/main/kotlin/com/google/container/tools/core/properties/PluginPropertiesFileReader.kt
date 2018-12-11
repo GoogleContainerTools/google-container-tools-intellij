@@ -16,6 +16,7 @@
 
 package com.google.container.tools.core.properties
 
+import com.intellij.openapi.components.ServiceManager
 import java.util.Properties
 
 /**
@@ -32,6 +33,9 @@ class PluginPropertiesFileReader(
 
     companion object {
         private const val DEFAULT_PROPERTIES_FILE_NAME = "/config.properties"
+
+        val instance
+            get() = ServiceManager.getService(PluginPropertiesFileReader::class.java)!!
     }
 
     init {
