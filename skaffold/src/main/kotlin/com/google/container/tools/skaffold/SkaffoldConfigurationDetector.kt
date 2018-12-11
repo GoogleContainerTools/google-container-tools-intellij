@@ -45,6 +45,9 @@ import com.intellij.openapi.vfs.VirtualFile
  * @param project IDE Project for which this component is created.
  */
 class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
+
+    private val logger = Logger.getInstance(SkaffoldConfigurationDetector::class.java)
+
     private val NOTIFICATION_GROUP = NotificationGroup(
         PLUGIN_NOTIFICATION_DISPLAY_GROUP_ID,
         NotificationDisplayType.BALLOON,
@@ -119,8 +122,7 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
 
         val factory = findConfigurationFactoryById(factoryId)
         if (factory == null) {
-            Logger.getInstance(SkaffoldConfigurationDetector::class.java)
-                .warn("Skaffold configuration factory not found, plugin install is corrupted.")
+            logger.error("Skaffold configuration factory not found, plugin install is corrupted.")
             return
         }
 

@@ -56,7 +56,7 @@ class SkaffoldRunConfigurationType : ConfigurationType {
  */
 class SkaffoldSingleRunConfigurationFactory(type: ConfigurationType) : ConfigurationFactory(type) {
     companion object {
-        val RUN_ID = "google-container-tools-skaffold-run-config-run"
+        const val RUN_ID = "google-container-tools-skaffold-run-config-run"
     }
 
     override fun createTemplateConfiguration(project: Project): RunConfiguration =
@@ -73,7 +73,7 @@ class SkaffoldSingleRunConfigurationFactory(type: ConfigurationType) : Configura
  */
 class SkaffoldDevConfigurationFactory(type: ConfigurationType) : ConfigurationFactory(type) {
     companion object {
-        val DEV_ID = "google-container-tools-skaffold-run-config-dev"
+        const val DEV_ID = "google-container-tools-skaffold-run-config-dev"
     }
 
     override fun createTemplateConfiguration(project: Project): RunConfiguration =
