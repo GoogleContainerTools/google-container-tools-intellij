@@ -17,7 +17,6 @@
 package com.google.container.tools.skaffold
 
 import com.google.common.annotations.VisibleForTesting
-import com.google.container.tools.core.analytics.UsageTrackerProvider
 import com.google.container.tools.skaffold.SkaffoldExecutorSettings.ExecutionMode
 import com.intellij.openapi.components.ServiceManager
 import java.io.File
@@ -69,9 +68,6 @@ abstract class SkaffoldExecutorService {
                 if (tailLogs) add("--tail")
             }
         }
-
-        // test analytics ping
-        UsageTrackerProvider.instance.usageTracker.trackEvent("test.skaffold.execute").ping()
 
         return SkaffoldProcess(
             createProcess(settings.workingDirectory, commandList),
