@@ -64,6 +64,10 @@ abstract class SkaffoldExecutorService {
                         add("${label.key}=${label.value}")
                     }
             }
+
+            settings.tailLogsAfterDeploy?.let { tailLogs ->
+                if (tailLogs) add("--tail")
+            }
         }
 
         // test analytics ping
@@ -101,7 +105,8 @@ data class SkaffoldExecutorSettings(
     val executionMode: ExecutionMode,
     val skaffoldConfigurationFilePath: String? = null,
     val workingDirectory: File? = null,
-    val skaffoldLabels: SkaffoldLabels? = null
+    val skaffoldLabels: SkaffoldLabels? = null,
+    val tailLogsAfterDeploy: Boolean? = null
 ) {
 
     /** Execution mode for Skaffold, single run, continuous development, etc. */

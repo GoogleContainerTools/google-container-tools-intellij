@@ -17,28 +17,27 @@
 package com.google.container.tools.core.analytics
 
 import com.google.cloud.tools.ide.analytics.UsageTracker
-import com.google.cloud.tools.ide.analytics.UsageTrackerManager
 import com.google.cloud.tools.ide.analytics.UsageTrackerSettings
 import com.google.container.tools.core.PluginInfo
-import com.google.container.tools.core.properties.PropertiesFileFlagReader
 import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.openapi.application.PermanentInstallationID
 import com.intellij.openapi.components.ServiceManager
 
+/**
+ * Application service that initializes the [UsageTracker] for analytics. Sets up core components
+ * of analytics collection such as the analytics ID, user agent, client ID etc.
+ */
 class UsageTrackerProvider {
 
     val usageTracker: UsageTracker
-    private val propertyReader = PropertiesFileFlagReader()
 
     init {
-        val analyticsId = getAnalyticsId()
-
-        val manager =
-            UsageTrackerManager { analyticsId != null } // todo also test opt-in and unit-testmode
+        val usageTrackerManagerService: UsageTrackerManagerService =
+            UsageTrackerManagerService.instance
 
         val settings: UsageTrackerSettings = UsageTrackerSettings.Builder()
-            .manager(manager)
-            .analyticsId(analyticsId)
+            .manager { usageTrackerManagerService.isUsageTrackingEnabled() }
+            .analyticsId(usageTrackerManagerService.getAnalyticsId())
             .pageHost(PAGE_HOST)
             .platformName(PluginInfo.instance.platformPrefix)
             .platformVersion(ApplicationInfo.getInstance().strictVersion)
@@ -54,16 +53,7 @@ class UsageTrackerProvider {
     companion object {
         private const val PAGE_HOST = "virtual.intellij"
 
-        private const val ANALYTICS_ID_KEY = "analytics.id"
-        private const val ANALYTICS_ID_PLACEHOLDER_VAL = "\${analyticsId}"
-
         val instance
             get() = ServiceManager.getService(UsageTrackerProvider::class.java)!!
-    }
-
-    private fun getAnalyticsId(): String? {
-        val analyticsId: String? = propertyReader.getFlagString(ANALYTICS_ID_KEY)
-
-        return if (ANALYTICS_ID_PLACEHOLDER_VAL != analyticsId) analyticsId else null
     }
 }

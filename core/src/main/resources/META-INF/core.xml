@@ -21,5 +21,7 @@
 
         <applicationService
                 serviceImplementation="com.google.container.tools.core.analytics.UsageTrackerProvider"/>
+         <applicationService
+                serviceImplementation="com.google.container.tools.core.analytics.UsageTrackerManagerService"/>
     </extensions>
 </idea-plugin>

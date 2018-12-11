@@ -18,6 +18,12 @@ package com.google.container.tools.core.properties
 
 import java.util.Properties
 
+/**
+ * Reads property values from the specified properties file.
+ *
+ * @param propertyFilePath the path to the properties file; defaults to 'config.properties' located
+ * in the root of the module's resources
+ */
 class PropertiesFileFlagReader(
     propertyFilePath: String = DEFAULT_PROPERTIES_FILE_NAME
 ) {
@@ -29,13 +35,15 @@ class PropertiesFileFlagReader(
     }
 
     init {
-        // todo throw exception if its not loaded properly so we are notified?
         this.javaClass.getResourceAsStream(propertyFilePath)?.use {
             properties.load(it)
-        }
+        } ?: throw IllegalArgumentException(
+            "Failed to load plugin property configuration file: $propertyFilePath"
+        )
     }
 
-    fun getFlagString(propertyName: String): String? {
-        return properties.getProperty(propertyName)
-    }
+    /**
+     * Return the property value given the passed in name.
+     */
+    fun getFlagString(propertyName: String): String? = properties.getProperty(propertyName)
 }
