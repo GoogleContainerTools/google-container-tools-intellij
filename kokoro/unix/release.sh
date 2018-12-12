@@ -36,9 +36,9 @@
     echo "ERROR: Releasing requires the ANALYTICS_ID environment variable" && exit 1;
 [ -z "$GITHUB_TOKEN" ] && \
     echo "ERROR: Releasing requires the GITHUB_TOKEN environment variable" && exit 1;
-[ -z "$IJ_REPO_USERNAME" ] && \
+[ -z "$CONTAINER_TOOLS_REPO_USERNAME" ] && \
     echo "ERROR: Releasing requires the CONTAINER_TOOLS_REPO_USERNAME environment variable" && exit 1;
-[ -z "$IJ_REPO_PASSWORD" ] && \
+[ -z "$CONTAINER_TOOLS_REPO_PASSWORD" ] && \
     echo "ERROR: Releasing requires the CONTAINER_TOOLS_REPO_PASSWORD environment variable" && exit 1;
 
 cd github/google-container-tools-intellij
