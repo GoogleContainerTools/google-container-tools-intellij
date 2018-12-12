@@ -30,12 +30,9 @@
 
 ## Release script that publishes our plugins to Github and Jetbrains plugin repository
 
-## Assert required environment variables
-
-[ -z "$ANALYTICS_ID" ] && \
-    echo "ERROR: Releasing requires the ANALYTICS_ID environment variable" && exit 1;
-[ -z "$GITHUB_TOKEN" ] && \
-    echo "ERROR: Releasing requires the GITHUB_TOKEN environment variable" && exit 1;
+## Export required environment variables
+export ANALYTICS_ID=${KOKORO_KEYSTORE_DIR}/72743_analytics_id
+export GITHUB_TOKEN=${KOKORO_KEYSTORE_DIR}/72743_paflynn_github_token
 
 cd github/google-container-tools-intellij
 
