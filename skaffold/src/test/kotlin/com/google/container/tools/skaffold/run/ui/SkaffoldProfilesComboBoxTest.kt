@@ -19,6 +19,7 @@ package com.google.container.tools.skaffold.run.ui
 import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.UiTest
+import com.intellij.mock.MockVirtualFile
 import org.junit.Rule
 import org.junit.Test
 
@@ -42,5 +43,178 @@ class SkaffoldProfilesComboBoxTest {
         val profilesComboBox = SkaffoldProfilesComboBox()
 
         assertThat(profilesComboBox.getSelectedProfile()).isNull()
+    }
+
+    @Test
+    @UiTest
+    fun `skaffold yaml without profiles results in disabled combobox with default profile`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText(
+            """
+            apiVersion: skaffold/v1beta1
+            kind: Config
+            build:
+                artifact:
+                - image: docker.io/local-image
+
+        """
+        )
+        val profilesComboBox = SkaffoldProfilesComboBox()
+
+        profilesComboBox.skaffoldFileUpdated(skaffoldYamlFile)
+
+        assertThat(profilesComboBox.model.size).isEqualTo(1)
+        assertThat(profilesComboBox.model.getElementAt(0)).isEqualTo("default")
+        assertThat(profilesComboBox.isEnabled).isFalse()
+    }
+
+    @Test
+    @UiTest
+    fun `skaffold yaml without profiles results in null profile selection`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText(
+            """
+            apiVersion: skaffold/v1beta1
+            kind: Config
+            build:
+                artifact:
+                - image: docker.io/local-image
+
+        """
+        )
+        val profilesComboBox = SkaffoldProfilesComboBox()
+
+        profilesComboBox.skaffoldFileUpdated(skaffoldYamlFile)
+
+        assertThat(profilesComboBox.getSelectedProfile()).isNull()
+    }
+
+    @Test
+    @UiTest
+    fun `skaffold yaml with profiles results in combobox with valid profile selection`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText(
+            """
+            apiVersion: skaffold/v1beta1
+            kind: Config
+            profiles:
+              - name: localImage
+                build:
+                  artifact:
+                  - image: docker.io/local-image
+              - name: gcb
+                build:
+                  googleCloudBuild:
+                    projectId: k8s-skaffold
+        """
+        )
+        val profilesComboBox = SkaffoldProfilesComboBox()
+
+        profilesComboBox.skaffoldFileUpdated(skaffoldYamlFile)
+
+        assertThat(profilesComboBox.model.size).isEqualTo(3)
+        assertThat(profilesComboBox.model.getElementAt(0)).isEqualTo("default")
+        assertThat(profilesComboBox.model.getElementAt(1)).isEqualTo("localImage")
+        assertThat(profilesComboBox.model.getElementAt(2)).isEqualTo("gcb")
+        assertThat(profilesComboBox.isEnabled).isTrue()
+    }
+
+    @Test
+    @UiTest
+    fun `given list of profiles combobox allows selecting existing profile`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText(
+            """
+            apiVersion: skaffold/v1beta1
+            kind: Config
+            profiles:
+              - name: localImage
+                build:
+                  artifact:
+                  - image: docker.io/local-image
+              - name: gcb
+                build:
+                  googleCloudBuild:
+                    projectId: k8s-skaffold
+        """
+        )
+        val profilesComboBox = SkaffoldProfilesComboBox()
+
+        profilesComboBox.skaffoldFileUpdated(skaffoldYamlFile)
+        profilesComboBox.setSelectedProfile("gcb")
+
+        assertThat(profilesComboBox.getSelectedProfile()).isEqualTo("gcb")
+    }
+
+    @Test
+    @UiTest
+    fun `given list of profiles combobox does not allow selecting non-existing profile`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText(
+            """
+            apiVersion: skaffold/v1beta1
+            kind: Config
+            profiles:
+              - name: localImage
+                build:
+                  artifact:
+                  - image: docker.io/local-image
+              - name: gcb
+                build:
+                  googleCloudBuild:
+                    projectId: k8s-skaffold
+        """
+        )
+        val profilesComboBox = SkaffoldProfilesComboBox()
+
+        profilesComboBox.skaffoldFileUpdated(skaffoldYamlFile)
+        profilesComboBox.setSelectedProfile("localImage")
+        profilesComboBox.setSelectedProfile("does-not-exist")
+
+        assertThat(profilesComboBox.getSelectedProfile()).isEqualTo("localImage")
+    }
+
+    @Test
+    @UiTest
+    fun `with list of profiles selectedProfile() returns null for unmodified profile selection`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText(
+            """
+            apiVersion: skaffold/v1beta1
+            kind: Config
+            profiles:
+              - name: localImage
+                build:
+                  artifact:
+                  - image: docker.io/local-image
+              - name: gcb
+                build:
+                  googleCloudBuild:
+                    projectId: k8s-skaffold
+        """
+        )
+        val profilesComboBox = SkaffoldProfilesComboBox()
+
+        profilesComboBox.skaffoldFileUpdated(skaffoldYamlFile)
+
+        assertThat(profilesComboBox.getSelectedProfile()).isNull()
+    }
+
+    @Test
+    @UiTest
+    fun `malformed skaffold yaml results in disabled empty combobox`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText(
+            """
+            `apiVersion~ skaffold/v1beta1
+            kind: Config
+        """
+        )
+        val profilesComboBox = SkaffoldProfilesComboBox()
+
+        profilesComboBox.skaffoldFileUpdated(skaffoldYamlFile)
+
+        assertThat(profilesComboBox.model.size).isEqualTo(0)
+        assertThat(profilesComboBox.isEnabled).isFalse()
     }
 }

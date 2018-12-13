@@ -17,23 +17,27 @@
 package com.google.container.tools.skaffold
 
 import com.google.common.truth.Truth.assertThat
+import com.google.container.tools.test.expectThrows
 import com.intellij.mock.MockVirtualFile
+import com.intellij.util.ThrowableRunnable
 import org.junit.Test
 
 /** Unit tests for [SkaffoldYamlConfiguration] */
 class SkaffoldYamlConfigurationTest {
 
     @Test
-    fun `valid skaffold yaml with no profiles correctly loads and maps to empty profile map`() {
+    fun `valid skaffold yaml with no profiles correctly loads and maps to empty profile set`() {
         val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
-        skaffoldYamlFile.setText("""
+        skaffoldYamlFile.setText(
+            """
             apiVersion: skaffold/v1beta1
             kind: Config
             build:
                 artifact:
                 - image: docker.io/local-image
 
-        """)
+        """
+        )
 
         val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldYamlFile)
 
@@ -41,9 +45,10 @@ class SkaffoldYamlConfigurationTest {
     }
 
     @Test
-    fun `single skaffold yaml profile correctly loads and maps to profile map`() {
+    fun `single skaffold yaml profile correctly loads and maps to profile set`() {
         val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
-        skaffoldYamlFile.setText("""
+        skaffoldYamlFile.setText(
+            """
             apiVersion: skaffold/v1beta1
             kind: Config
             profiles:
@@ -51,7 +56,8 @@ class SkaffoldYamlConfigurationTest {
                 build:
                   googleCloudBuild:
                     projectId: k8s-skaffold
-        """)
+        """
+        )
 
         val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldYamlFile)
 
@@ -60,9 +66,10 @@ class SkaffoldYamlConfigurationTest {
     }
 
     @Test
-    fun `many skaffold yaml profiles correctly load and map to profile map`() {
+    fun `many skaffold yaml profiles correctly load and map to profile set`() {
         val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
-        skaffoldYamlFile.setText("""
+        skaffoldYamlFile.setText(
+            """
             apiVersion: skaffold/v1beta1
             kind: Config
             profiles:
@@ -74,11 +81,27 @@ class SkaffoldYamlConfigurationTest {
                 build:
                   googleCloudBuild:
                     projectId: k8s-skaffold
-        """)
+        """
+        )
 
         val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldYamlFile)
 
         assertThat(skaffoldYamlConfiguration.profiles).isNotEmpty()
         assertThat(skaffoldYamlConfiguration.profiles.keys).isEqualTo(setOf("localImage", "gcb"))
+    }
+
+    @Test
+    fun `invalid yaml file results in an exception`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText(
+            """
+            `apiVersion~ skaffold/v1beta1
+            kind: Config
+        """
+        )
+
+        expectThrows(
+            Exception::class,
+            ThrowableRunnable { SkaffoldYamlConfiguration(skaffoldYamlFile) })
     }
 }

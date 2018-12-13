@@ -19,11 +19,18 @@ package com.google.container.tools.skaffold.run.ui
 import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.skaffold.SkaffoldYamlConfiguration
 import com.google.container.tools.skaffold.message
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.vfs.VirtualFile
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComboBox
 
+/**
+ * Combobox for selecting Skaffold profiles. Default profile is assumed to be always present for a
+ * valid Skaffold file. On Skaffold file change parses the YAML with [SkaffoldYamlConfiguration]
+ * and refreshes profiles list. Disabled when only default profile is present.
+ */
 class SkaffoldProfilesComboBox : JComboBox<String>() {
+    private val log = Logger.getInstance(this::class.java)
 
     @VisibleForTesting
     internal val model: DefaultComboBoxModel<String> = DefaultComboBoxModel()
@@ -37,8 +44,9 @@ class SkaffoldProfilesComboBox : JComboBox<String>() {
         return if (selectedIndex <= 0) null else model.getElementAt(selectedIndex)
     }
 
+    /** Selects profile if it exists in the profile list. Non existing profile is ignored. */
     fun setSelectedProfile(profile: String) {
-        for (i in 0..model.size) {
+        for (i in 0 until model.size) {
             if (model.getElementAt(i).equals(profile)) {
                 model.selectedItem = profile
                 break
@@ -46,11 +54,20 @@ class SkaffoldProfilesComboBox : JComboBox<String>() {
         }
     }
 
-    internal fun skaffoldFileUpdated(skaffoldFile: VirtualFile?) {
-        val profileSet = skaffoldFile?.let {
-            val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldFile)
-            skaffoldYamlConfiguration.profiles.keys
+    fun skaffoldFileUpdated(skaffoldFile: VirtualFile?) {
+        val profileSet: Set<String> = skaffoldFile?.let {
+            try {
+                val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldFile)
+                skaffoldYamlConfiguration.profiles.keys
+            } catch (e: Exception) {
+                // malformed YAML - clear and disable profiles selection.
+                log.warn("invalid skaffold file, unable to load profiles", e)
+                model.removeAllElements()
+                isEnabled = false
+                return
+            }
         } ?: setOf()
+
         updateModel(profileSet)
     }
 

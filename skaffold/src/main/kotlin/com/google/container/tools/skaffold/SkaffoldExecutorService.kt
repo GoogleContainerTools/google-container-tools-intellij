@@ -97,7 +97,7 @@ abstract class SkaffoldExecutorService {
  * @property executionMode Mandatory execution mode for Skaffold, see [ExecutionMode].
  * @property skaffoldConfigurationFilePath Optional, location of the Skaffold YAML
  *           configuration file. If not provided, default `skaffold.yaml` used.
- * @property skaffoldProfile
+ * @property skaffoldProfile Skaffold profile name, optional.
  * @property workingDirectory Optional, working directory where Skaffold needs to be launched.
  *           This is usually set to project working directory.
  * @property skaffoldLabels Kubernetes style labels to pass to Skaffold execution.
