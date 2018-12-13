@@ -16,8 +16,32 @@
 
 package com.google.container.tools.skaffold.run.ui
 
+import com.google.container.tools.skaffold.SkaffoldYamlConfiguration
+import com.google.container.tools.skaffold.message
+import com.intellij.openapi.vfs.VirtualFile
+import javax.swing.DefaultComboBoxModel
 import javax.swing.JComboBox
 
 class SkaffoldProfilesComboBox : JComboBox<String>() {
 
+    private val model: DefaultComboBoxModel<String> = DefaultComboBoxModel()
+
+    init {
+        setModel(model)
+    }
+
+    fun skaffoldFileUpdated(skaffoldFile: VirtualFile?) {
+        skaffoldFile?.let {
+            val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldFile)
+        }
+        updateModel(listOf())
+    }
+
+    private fun updateModel(profiles: List<String>) {
+        model.removeAllElements()
+        model.addElement(message("skaffold.default.profile.name"))
+        profiles.forEach { model.addElement(it) }
+        // disable selection in case only default profile is available
+        isEnabled = profiles.size > 0
+    }
 }

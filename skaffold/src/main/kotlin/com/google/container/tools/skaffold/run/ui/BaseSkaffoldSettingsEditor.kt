@@ -49,6 +49,8 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
     @VisibleForTesting
     val skaffoldFilesComboBox = SkaffoldFilesComboBox()
 
+    private val profilesComboBox = SkaffoldProfilesComboBox()
+
     protected lateinit var basePanel: JPanel
 
     private val extensionComponents: MutableMap<String, JComponent> = mutableMapOf()
@@ -69,12 +71,18 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
 
             row(message("skaffold.configuration.label")) { skaffoldFilesComboBox(grow) }
 
+            row(message("skaffold.profile.label")) { profilesComboBox(grow) }
+
             extensionComponents.forEach {
                 row(it.key) { it.value(grow) }
             }
         }
 
         basePanel.border = IdeaTitledBorder(editorTitle, 0, Insets(0, 0, 0, 0))
+
+        skaffoldFilesComboBox.addActionListener {
+            profilesComboBox.skaffoldFileUpdated(skaffoldFilesComboBox.getSelectedSkaffoldFile())
+        }
 
         return basePanel
     }
