@@ -24,7 +24,24 @@ import org.junit.Test
 class SkaffoldYamlConfigurationTest {
 
     @Test
-    fun `skaffold yaml profile names correctly load and map to profile objects`() {
+    fun `valid skaffold yaml with no profiles correctly loads and maps to empty profile map`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText("""
+            apiVersion: skaffold/v1beta1
+            kind: Config
+            build:
+                artifact:
+                - image: docker.io/local-image
+
+        """)
+
+        val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldYamlFile)
+
+        assertThat(skaffoldYamlConfiguration.profiles).isEmpty()
+    }
+
+    @Test
+    fun `single skaffold yaml profile correctly loads and maps to profile map`() {
         val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
         skaffoldYamlFile.setText("""
             apiVersion: skaffold/v1beta1
@@ -38,7 +55,30 @@ class SkaffoldYamlConfigurationTest {
 
         val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldYamlFile)
 
-        println(skaffoldYamlConfiguration.profiles)
         assertThat(skaffoldYamlConfiguration.profiles).isNotEmpty()
+        assertThat(skaffoldYamlConfiguration.profiles.keys).isEqualTo(setOf("gcb"))
+    }
+
+    @Test
+    fun `many skaffold yaml profiles correctly load and map to profile map`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText("""
+            apiVersion: skaffold/v1beta1
+            kind: Config
+            profiles:
+              - name: localImage
+                build:
+                  artifact:
+                  - image: docker.io/local-image
+              - name: gcb
+                build:
+                  googleCloudBuild:
+                    projectId: k8s-skaffold
+        """)
+
+        val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldYamlFile)
+
+        assertThat(skaffoldYamlConfiguration.profiles).isNotEmpty()
+        assertThat(skaffoldYamlConfiguration.profiles.keys).isEqualTo(setOf("localImage", "gcb"))
     }
 }
