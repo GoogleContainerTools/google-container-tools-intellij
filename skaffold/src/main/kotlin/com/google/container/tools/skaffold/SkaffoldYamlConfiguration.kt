@@ -18,13 +18,14 @@ package com.google.container.tools.skaffold
 
 import com.intellij.openapi.vfs.VirtualFile
 import org.yaml.snakeyaml.Yaml
+import java.io.ByteArrayInputStream
 
 class SkaffoldYamlConfiguration(skaffoldYamlFile: VirtualFile) {
     private val skaffoldYamlMap = mutableMapOf<Any, Any>()
 
     init {
         val yamlLoader = Yaml()
-        skaffoldYamlMap.putAll(yamlLoader.load(skaffoldYamlFile.inputStream))
+        skaffoldYamlMap.putAll(yamlLoader.load(ByteArrayInputStream(skaffoldYamlFile.contentsToByteArray())))
     }
 
     val profiles: List<String>
