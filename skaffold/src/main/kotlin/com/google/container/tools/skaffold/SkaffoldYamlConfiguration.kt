@@ -28,8 +28,19 @@ class SkaffoldYamlConfiguration(skaffoldYamlFile: VirtualFile) {
         skaffoldYamlMap.putAll(yamlLoader.load(ByteArrayInputStream(skaffoldYamlFile.contentsToByteArray())))
     }
 
-    val profiles: List<String>
+    val profiles: Map<String, Any>
         get() {
-            if (skaffoldYamlMap["profiles"] is List<*>) return skaffoldYamlMap["profiles"] as List<String> else return listOf()
+            val profilesMap = mutableMapOf<String, Any>()
+            if (skaffoldYamlMap["profiles"] is List<*>) {
+                (skaffoldYamlMap["profiles"] as List<*>).forEach { profileObject ->
+                    if (profileObject is Map<*, *>) {
+                        profileObject["name"]?.let { profileName ->
+                            profilesMap[profileName.toString()] = profileObject
+                        }
+                    }
+                }
+            }
+
+            return profilesMap.toMap()
         }
 }

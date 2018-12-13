@@ -30,14 +30,28 @@ class SkaffoldProfilesComboBox : JComboBox<String>() {
         setModel(model)
     }
 
-    fun skaffoldFileUpdated(skaffoldFile: VirtualFile?) {
-        skaffoldFile?.let {
-            val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldFile)
-        }
-        updateModel(listOf())
+    fun getSelectedProfile() : String? {
+        return if (selectedIndex <= 0) null else model.getElementAt(selectedIndex)
     }
 
-    private fun updateModel(profiles: List<String>) {
+    fun setSelectedProfile(profile: String) {
+        for (i in 0..model.size) {
+            if (model.getElementAt(i).equals(profile)) {
+                model.selectedItem = profile
+                break
+            }
+        }
+    }
+
+    fun skaffoldFileUpdated(skaffoldFile: VirtualFile?) {
+        val profileSet = skaffoldFile?.let {
+            val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldFile)
+            skaffoldYamlConfiguration.profiles.keys
+        } ?: setOf()
+        updateModel(profileSet)
+    }
+
+    private fun updateModel(profiles: Set<String>) {
         model.removeAllElements()
         model.addElement(message("skaffold.default.profile.name"))
         profiles.forEach { model.addElement(it) }

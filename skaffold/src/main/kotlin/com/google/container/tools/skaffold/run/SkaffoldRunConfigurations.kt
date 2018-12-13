@@ -85,6 +85,8 @@ abstract class AbstractSkaffoldRunConfiguration(
      */
     var skaffoldConfigurationFilePath: String? = null
 
+    var skaffoldProfile: String? = null
+
     override fun readExternal(element: Element) {
         super.readExternal(element)
 
