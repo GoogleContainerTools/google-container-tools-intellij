@@ -49,7 +49,8 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
     @VisibleForTesting
     val skaffoldFilesComboBox = SkaffoldFilesComboBox()
 
-    private val skaffoldProfilesComboBox = SkaffoldProfilesComboBox()
+    @VisibleForTesting
+    val skaffoldProfilesComboBox = SkaffoldProfilesComboBox()
 
     protected lateinit var basePanel: JPanel
 
