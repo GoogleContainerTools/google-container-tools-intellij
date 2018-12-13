@@ -31,8 +31,10 @@
 ## Release script that publishes our plugins to Github and Jetbrains plugin repository
 
 ## Export required environment variables
-export ANALYTICS_ID=${KOKORO_KEYSTORE_DIR}/72743_analytics_id
-export GITHUB_TOKEN=${KOKORO_KEYSTORE_DIR}/72743_paflynn_github_token
+ANALYTICS_ID_PATH=${KOKORO_KEYSTORE_DIR}/72743_analytics_id
+GITHUB_TOKEN_PATH=${KOKORO_KEYSTORE_DIR}/72743_paflynn_github_token
+export ANALYTICS_ID=$(cat ANALYTICS_ID_PATH)
+export GITHUB_TOKEN=$(cat GITHUB_TOKEN_PATH)
 
 cd github/google-container-tools-intellij
 
