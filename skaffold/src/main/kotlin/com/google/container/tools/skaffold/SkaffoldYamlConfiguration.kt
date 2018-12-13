@@ -25,7 +25,8 @@ class SkaffoldYamlConfiguration(skaffoldYamlFile: VirtualFile) {
 
     init {
         val yamlLoader = Yaml()
-        skaffoldYamlMap.putAll(yamlLoader.load(ByteArrayInputStream(skaffoldYamlFile.contentsToByteArray())))
+        skaffoldYamlMap.putAll(
+            yamlLoader.load(ByteArrayInputStream(skaffoldYamlFile.contentsToByteArray())))
     }
 
     val profiles: Map<String, Any>

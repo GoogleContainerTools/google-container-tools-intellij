@@ -16,6 +16,7 @@
 
 package com.google.container.tools.skaffold.run.ui
 
+import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.skaffold.SkaffoldYamlConfiguration
 import com.google.container.tools.skaffold.message
 import com.intellij.openapi.vfs.VirtualFile
@@ -24,13 +25,15 @@ import javax.swing.JComboBox
 
 class SkaffoldProfilesComboBox : JComboBox<String>() {
 
-    private val model: DefaultComboBoxModel<String> = DefaultComboBoxModel()
+    @VisibleForTesting
+    internal val model: DefaultComboBoxModel<String> = DefaultComboBoxModel()
 
     init {
         setModel(model)
+        isEnabled = false
     }
 
-    fun getSelectedProfile() : String? {
+    fun getSelectedProfile(): String? {
         return if (selectedIndex <= 0) null else model.getElementAt(selectedIndex)
     }
 
@@ -43,7 +46,7 @@ class SkaffoldProfilesComboBox : JComboBox<String>() {
         }
     }
 
-    fun skaffoldFileUpdated(skaffoldFile: VirtualFile?) {
+    internal fun skaffoldFileUpdated(skaffoldFile: VirtualFile?) {
         val profileSet = skaffoldFile?.let {
             val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldFile)
             skaffoldYamlConfiguration.profiles.keys

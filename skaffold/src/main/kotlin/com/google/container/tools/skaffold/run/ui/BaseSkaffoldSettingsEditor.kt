@@ -49,7 +49,7 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
     @VisibleForTesting
     val skaffoldFilesComboBox = SkaffoldFilesComboBox()
 
-    private val profilesComboBox = SkaffoldProfilesComboBox()
+    private val skaffoldProfilesComboBox = SkaffoldProfilesComboBox()
 
     protected lateinit var basePanel: JPanel
 
@@ -71,7 +71,7 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
 
             row(message("skaffold.configuration.label")) { skaffoldFilesComboBox(grow) }
 
-            row(message("skaffold.profile.label")) { profilesComboBox(grow) }
+            row(message("skaffold.profile.label")) { skaffoldProfilesComboBox(grow) }
 
             extensionComponents.forEach {
                 row(it.key) { it.value(grow) }
@@ -81,7 +81,9 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
         basePanel.border = IdeaTitledBorder(editorTitle, 0, Insets(0, 0, 0, 0))
 
         skaffoldFilesComboBox.addActionListener {
-            profilesComboBox.skaffoldFileUpdated(skaffoldFilesComboBox.getSelectedSkaffoldFile())
+            skaffoldProfilesComboBox.skaffoldFileUpdated(
+                skaffoldFilesComboBox.getSelectedSkaffoldFile()
+            )
         }
 
         return basePanel
@@ -98,7 +100,7 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
 
         // save properties
         runConfig.skaffoldConfigurationFilePath = selectedSkaffoldFile.path
-        runConfig.skaffoldProfile = profilesComboBox.getSelectedProfile()
+        runConfig.skaffoldProfile = skaffoldProfilesComboBox.getSelectedProfile()
     }
 
     override fun resetEditorFrom(runConfig: T) {
@@ -108,7 +110,7 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
         }?.let { skaffoldFilesComboBox.setSelectedSkaffoldFile(it) }
 
         runConfig.skaffoldProfile?.let {
-            profilesComboBox.setSelectedProfile(it)
+            skaffoldProfilesComboBox.setSelectedProfile(it)
         }
     }
 }
