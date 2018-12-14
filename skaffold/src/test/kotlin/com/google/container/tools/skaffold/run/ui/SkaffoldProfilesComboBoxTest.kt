@@ -91,7 +91,7 @@ class SkaffoldProfilesComboBoxTest {
 
     @Test
     @UiTest
-    fun `skaffold yaml with profiles results in combobox with valid profile selection`() {
+    fun `skaffold yaml with profiles produces valid list of profiles to select from`() {
         val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
         skaffoldYamlFile.setText(
             """
@@ -117,6 +117,32 @@ class SkaffoldProfilesComboBoxTest {
         assertThat(profilesComboBox.model.getElementAt(1)).isEqualTo("localImage")
         assertThat(profilesComboBox.model.getElementAt(2)).isEqualTo("gcb")
         assertThat(profilesComboBox.isEnabled).isTrue()
+    }
+
+    @Test
+    @UiTest
+    fun `given skaffold yaml with profiles getSelectedProfile returns default profile`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText(
+            """
+            apiVersion: skaffold/v1beta1
+            kind: Config
+            profiles:
+              - name: localImage
+                build:
+                  artifact:
+                  - image: docker.io/local-image
+              - name: gcb
+                build:
+                  googleCloudBuild:
+                    projectId: k8s-skaffold
+        """
+        )
+        val profilesComboBox = SkaffoldProfilesComboBox()
+
+        profilesComboBox.skaffoldFileUpdated(skaffoldYamlFile)
+
+        assertThat(profilesComboBox.getSelectedProfile()).isNull()
     }
 
     @Test
