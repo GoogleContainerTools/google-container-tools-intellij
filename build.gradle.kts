@@ -86,8 +86,8 @@ dependencies {
 val intellijRepoChannel: String by project
 val publishPlugin: PublishTask by tasks
 publishPlugin {
-    username(System.getenv("CONTAINER_TOOLS_REPO_USERNAME"))
-    password(System.getenv("CONTAINER_TOOLS_REPO_PASSWORD"))
+    username(System.getenv("IJ_REPO_USERNAME"))
+    password(System.getenv("IJ_REPO_PASSWORD"))
     channels(intellijRepoChannel)
 }
 
@@ -95,7 +95,7 @@ release {
     tagTemplate = "v\${version}"
 
     val git: GitAdapter.GitConfig = getProperty("git") as GitAdapter.GitConfig
-    git.requireBranch = "/^release_v\\d+.*$/"
+    git.requireBranch = "^release_v\\d+.*$"
 }
 
 inline operator fun <T : Task> T.invoke(a: T.() -> Unit): T = apply(a)
