@@ -25,9 +25,12 @@ import javax.swing.DefaultComboBoxModel
 import javax.swing.JComboBox
 
 /**
- * Combobox for selecting Skaffold profiles. Default profile is assumed to be always present for a
- * valid Skaffold file. On Skaffold file change parses the YAML with [SkaffoldYamlConfiguration]
- * and refreshes profiles list. Disabled when only default profile is present.
+ * Combobox for selecting Skaffold profiles. Valid Skaffold file configuration always has "default"
+ * profile, with build and deploy settings in the root of the YAML. Additional profiles can be
+ * defined under arbitrary names.
+ *
+ * Combobox parses the YAML with [SkaffoldYamlConfiguration] on Skaffold file change
+ * and refreshes profiles list. Disabled when no additional profiles are defined.
  */
 class SkaffoldProfilesComboBox : JComboBox<String>() {
     private val log = Logger.getInstance(this::class.java)
@@ -54,6 +57,12 @@ class SkaffoldProfilesComboBox : JComboBox<String>() {
         }
     }
 
+    /**
+     * Receives Skaffold file this profiles combobox works with. Parses it and refreshes the list of
+     * profiles for a user selection.
+     * @param skaffoldFile Optional Skaffold file. If file is null or invalid, combobox becomes
+     *        empty and disabled.
+     */
     fun skaffoldFileUpdated(skaffoldFile: VirtualFile?) {
         val profileSet: Set<String> = skaffoldFile?.let {
             try {
