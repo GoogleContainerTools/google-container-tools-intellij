@@ -16,6 +16,7 @@
 
 package com.google.container.tools.skaffold
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -66,6 +67,9 @@ class SkaffoldFileService {
      * @return List of Skaffold configuration files in the project.
      */
     fun findSkaffoldFiles(project: Project): List<VirtualFile> {
+        with(ApplicationManager.getApplication()) {
+            invokeAndWait { saveAll() }
+        }
         return FileTypeIndex.getFiles(YAMLFileType.YML, GlobalSearchScope.allScope(project))
             .filter { isSkaffoldFile(it) }
     }
