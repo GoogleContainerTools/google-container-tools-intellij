@@ -54,8 +54,7 @@ class SkaffoldSingleRunSettingsEditorTest {
     @Before
     fun setUp() {
         EdtTestUtil.runInEdtAndWait(ThrowableRunnable {
-            singleRunSettingsEditor =
-                SkaffoldSingleRunSettingsEditor()
+            singleRunSettingsEditor = SkaffoldSingleRunSettingsEditor()
             // calls getComponent() to initialize UI first, IDE flow.
             singleRunSettingsEditor.component
         })

@@ -43,9 +43,12 @@ class SkaffoldProfilesComboBox : JComboBox<String>() {
         isEnabled = false
     }
 
-    fun getSelectedProfile(): String? {
-        return if (selectedIndex <= 0) null else model.getElementAt(selectedIndex)
-    }
+    /**
+     * Returns selected profile name if other than default profile selected,
+     * null if default profile invalid Skaffold YAML file.
+     */
+    fun getSelectedProfile(): String? =
+        if (selectedIndex <= 0) null else model.getElementAt(selectedIndex)
 
     /** Selects profile if it exists in the profile list. Non existing profile is ignored. */
     fun setSelectedProfile(profile: String) {

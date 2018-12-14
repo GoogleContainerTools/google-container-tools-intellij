@@ -104,4 +104,14 @@ class SkaffoldYamlConfigurationTest {
             Exception::class,
             ThrowableRunnable { SkaffoldYamlConfiguration(skaffoldYamlFile) })
     }
+
+    @Test
+    fun `empty yaml file results in an exception`() {
+        val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
+        skaffoldYamlFile.setText("")
+
+        expectThrows(
+            Exception::class,
+            ThrowableRunnable { SkaffoldYamlConfiguration(skaffoldYamlFile) })
+    }
 }

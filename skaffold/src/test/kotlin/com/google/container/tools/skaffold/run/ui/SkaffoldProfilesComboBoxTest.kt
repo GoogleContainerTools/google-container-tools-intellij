@@ -70,7 +70,7 @@ class SkaffoldProfilesComboBoxTest {
 
     @Test
     @UiTest
-    fun `skaffold yaml without profiles results in null profile selection`() {
+    fun `skaffold yaml without profiles results in default profile selection`() {
         val skaffoldYamlFile = MockVirtualFile.file("skaffold.yaml")
         skaffoldYamlFile.setText(
             """
