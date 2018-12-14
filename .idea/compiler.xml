@@ -6,6 +6,16 @@
       <module name="common-test-lib_test" target="1.8" />
       <module name="core_main" target="1.8" />
       <module name="core_test" target="1.8" />
+      <module name="google-container-tools-intellij.common-test-lib.main" target="1.8" />
+      <module name="google-container-tools-intellij.common-test-lib.test" target="1.8" />
+      <module name="google-container-tools-intellij.core.main" target="1.8" />
+      <module name="google-container-tools-intellij.core.test" target="1.8" />
+      <module name="google-container-tools-intellij.main" target="1.8" />
+      <module name="google-container-tools-intellij.skaffold-editing.main" target="1.8" />
+      <module name="google-container-tools-intellij.skaffold-editing.test" target="1.8" />
+      <module name="google-container-tools-intellij.skaffold.main" target="1.8" />
+      <module name="google-container-tools-intellij.skaffold.test" target="1.8" />
+      <module name="google-container-tools-intellij.test" target="1.8" />
       <module name="google-container-tools-intellij_main" target="1.8" />
       <module name="google-container-tools-intellij_test" target="1.8" />
       <module name="skaffold-editing_main" target="1.8" />
