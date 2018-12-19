@@ -44,6 +44,8 @@ class SkaffoldFileService {
                     val skaffoldYaml = SkaffoldYamlConfiguration(this)
                     return skaffoldYaml.apiVersion?.startsWith(SKAFFOLD_API_HEADER) == true
                 } catch (ex: Exception) {
+                    // We don't care about I/O or scan exceptions here since we only need to know if
+                    // the YAML file was in the proper format.
                     return false
                 }
             }

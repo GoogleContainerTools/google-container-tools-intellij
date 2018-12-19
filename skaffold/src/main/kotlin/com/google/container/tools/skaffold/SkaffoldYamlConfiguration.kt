@@ -38,7 +38,7 @@ class SkaffoldYamlConfiguration(skaffoldYamlFile: VirtualFile) {
     }
 
     /** apiVersion of Skaffold configuration file, in the form of skaffold/v{number} */
-    val apiVersion: String? = skaffoldYamlMap["apiVersion"].toString()
+    val apiVersion: String? = skaffoldYamlMap["apiVersion"]?.toString()
 
     /**
      * Skaffold profiles: map of profile name to a list of profile objects, each represented by
