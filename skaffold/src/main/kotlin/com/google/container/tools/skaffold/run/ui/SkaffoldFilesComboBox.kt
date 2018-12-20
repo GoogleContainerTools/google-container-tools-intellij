@@ -17,12 +17,11 @@
 package com.google.container.tools.skaffold.run.ui
 
 import com.google.container.tools.skaffold.SkaffoldFileService
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiManager
 import java.awt.Component
 import javax.swing.DefaultComboBoxModel
 import javax.swing.DefaultListCellRenderer
@@ -43,15 +42,19 @@ class SkaffoldFilesComboBox : JComboBox<VirtualFile>() {
      */
     fun setProject(project: Project) {
         setRenderer(VirtualFileRenderer(project.guessProjectDir()))
-        // save all edited project files to account for changes in Skaffold configuration that
-        // are not in the file system yet.
-        with(ApplicationManager.getApplication()) {
-            invokeAndWait { FileDocumentManager.getInstance().saveAllDocuments() }
-        }
+
+        val items = SkaffoldFileService.instance.findSkaffoldFiles(project).toTypedArray()
         skaffoldFilesMutableModel =
             DefaultComboBoxModel<VirtualFile>(
-                SkaffoldFileService.instance.findSkaffoldFiles(project).toTypedArray()
+                items
             )
+        items.forEach { vf: VirtualFile ->
+            val psiFile = PsiManager.getInstance(project).findFile(vf)
+            psiFile?.let {
+                println("psiFile ${it.name} content: ${it.text}")
+                println("vFile ${vf.name} content: ${String(vf.contentsToByteArray())}")
+            }
+        }
         model = skaffoldFilesMutableModel
         if (model.size > 0) selectedIndex = 0
     }
