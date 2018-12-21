@@ -21,7 +21,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiManager
 import java.awt.Component
 import javax.swing.DefaultComboBoxModel
 import javax.swing.DefaultListCellRenderer
@@ -48,16 +47,6 @@ class SkaffoldFilesComboBox : JComboBox<VirtualFile>() {
             DefaultComboBoxModel<VirtualFile>(
                 items
             )
-        items.forEach { vf: VirtualFile ->
-            val psiFile = PsiManager.getInstance(project).findFile(vf)
-            psiFile?.let {
-                println("psiFile ${it.name} ${it.fileType} ${it.children} content: ${it.text}")
-                it.children.forEach { child ->
-                    println("child node ${child.node}, text ${child.node.text}")
-                }
-                println("vFile ${vf.name} content: ${String(vf.contentsToByteArray())}")
-            }
-        }
         model = skaffoldFilesMutableModel
         if (model.size > 0) selectedIndex = 0
     }

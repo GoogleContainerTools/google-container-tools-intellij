@@ -36,7 +36,7 @@ import javax.swing.JComboBox
 class SkaffoldProfilesComboBox : JComboBox<String>() {
     private val log = Logger.getInstance(this::class.java)
 
-    internal lateinit var project: Project
+    internal var project: Project? = null
 
     @VisibleForTesting
     internal val model: DefaultComboBoxModel<String> = DefaultComboBoxModel()
@@ -72,7 +72,7 @@ class SkaffoldProfilesComboBox : JComboBox<String>() {
     fun skaffoldFileUpdated(skaffoldFile: VirtualFile?) {
         val profileSet: Set<String> = skaffoldFile?.let {
             try {
-                val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldFile)
+                val skaffoldYamlConfiguration = SkaffoldYamlConfiguration(skaffoldFile, project)
                 skaffoldYamlConfiguration.profiles.keys
             } catch (e: Exception) {
                 // malformed YAML - clear and disable profiles selection.
