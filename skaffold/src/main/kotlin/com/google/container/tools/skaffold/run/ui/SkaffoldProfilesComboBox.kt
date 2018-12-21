@@ -20,6 +20,7 @@ import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.skaffold.SkaffoldYamlConfiguration
 import com.google.container.tools.skaffold.message
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComboBox
@@ -34,6 +35,8 @@ import javax.swing.JComboBox
  */
 class SkaffoldProfilesComboBox : JComboBox<String>() {
     private val log = Logger.getInstance(this::class.java)
+
+    internal lateinit var project: Project
 
     @VisibleForTesting
     internal val model: DefaultComboBoxModel<String> = DefaultComboBoxModel()

@@ -51,7 +51,10 @@ class SkaffoldFilesComboBox : JComboBox<VirtualFile>() {
         items.forEach { vf: VirtualFile ->
             val psiFile = PsiManager.getInstance(project).findFile(vf)
             psiFile?.let {
-                println("psiFile ${it.name} content: ${it.text}")
+                println("psiFile ${it.name} ${it.fileType} ${it.children} content: ${it.text}")
+                it.children.forEach { child ->
+                    println("child node ${child.node}, text ${child.node.text}")
+                }
                 println("vFile ${vf.name} content: ${String(vf.contentsToByteArray())}")
             }
         }
