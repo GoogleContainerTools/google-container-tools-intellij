@@ -44,18 +44,16 @@ class UsageTrackerConfigurable : Configurable {
     private val usageTrackerCheckbox =
         JCheckBox(UsageTrackerBundle.message("usage.tracking.preference.checkbox.text"))
 
-    override fun getDisplayName(): String {
-        return UsageTrackerBundle.message("usage.tracking.settings.menu.item.text")
-    }
+    override fun getDisplayName(): String =
+        UsageTrackerBundle.message("usage.tracking.settings.menu.item.text")
 
     /**
      * The panel is considered modified if the stored tracking preference does not match the current
      * value in the checkbox.
      */
-    override fun isModified(): Boolean {
-        return UsageTrackerManagerService.instance.isTrackingOptedIn() !=
+    override fun isModified(): Boolean =
+        UsageTrackerManagerService.instance.isTrackingOptedIn() !=
             usageTrackerCheckbox.isSelected
-    }
 
     /**
      * Stores the user preference via the [UsageTrackerManagerService] which persists the setting.

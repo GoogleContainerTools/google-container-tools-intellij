@@ -34,7 +34,5 @@ object CoreBundle {
     fun message(
         @PropertyKey(resourceBundle = BUNDLE_NAME) key: String,
         vararg params: String
-    ): String {
-        return CommonBundle.message(ResourceBundle.getBundle(BUNDLE_NAME), key, params)
-    }
+    ): String = CommonBundle.message(ResourceBundle.getBundle(BUNDLE_NAME), key, params)
 }

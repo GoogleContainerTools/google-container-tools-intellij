@@ -25,9 +25,8 @@ import com.intellij.openapi.options.ConfigurableProvider
  * top-level "Google" menu item.
  */
 class UsageTrackerConfigurableProvider : ConfigurableProvider() {
-    override fun createConfigurable(): Configurable? {
-        return UsageTrackerConfigurable()
-    }
+
+    override fun createConfigurable(): Configurable? = UsageTrackerConfigurable()
 
     /**
      * Only create the menu item if usage tracking is available. For example, if running in dev
