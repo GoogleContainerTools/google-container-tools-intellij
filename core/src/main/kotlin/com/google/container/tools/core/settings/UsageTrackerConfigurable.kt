@@ -16,8 +16,9 @@
 
 package com.google.container.tools.core.settings
 
-import com.google.container.tools.core.util.UsageTrackerBundle
+import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.core.analytics.UsageTrackerManagerService
+import com.google.container.tools.core.util.UsageTrackerBundle
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.options.Configurable
 import com.intellij.ui.border.IdeaTitledBorder
@@ -41,7 +42,8 @@ import javax.swing.JComponent
  */
 class UsageTrackerConfigurable : Configurable {
 
-    private val usageTrackerCheckbox =
+    @VisibleForTesting
+    val usageTrackerCheckbox =
         JCheckBox(UsageTrackerBundle.message("usage.tracking.preference.checkbox.text"))
 
     override fun getDisplayName(): String =
