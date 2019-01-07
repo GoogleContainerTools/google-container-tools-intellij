@@ -81,7 +81,6 @@ class UsageTrackerConfigurable : Configurable {
             }
         }
 
-
         usageTrackingPanel.border = IdeaTitledBorder(
             UsageTrackerBundle.message("usage.tracking.panel.title"),
             0,
