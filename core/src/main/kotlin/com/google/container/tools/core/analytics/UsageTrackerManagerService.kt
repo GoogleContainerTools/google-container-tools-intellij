@@ -45,14 +45,14 @@ class UsageTrackerManagerService(
      * Tracking is considered "available" if it can be collected. This occurs when there is a
      * retrievable Analytics ID, and we are not in unit test mode.
      */
-    fun isUsageTrackingAvailable() =
+    fun isUsageTrackingAvailable(): Boolean =
         getAnalyticsId() != null && !ApplicationManager.getApplication().isUnitTestMode
 
     /**
      * Tracking is considered "enabled" if [isUsageTrackingAvailable] is true AND the user has
      * opted into tracking.
      */
-    fun isUsageTrackingEnabled() = isUsageTrackingAvailable() && isTrackingOptedIn()
+    fun isUsageTrackingEnabled(): Boolean = isUsageTrackingAvailable() && isTrackingOptedIn()
 
     /**
      * Returns the analytics ID as configured in the properties file. If the analytics ID
