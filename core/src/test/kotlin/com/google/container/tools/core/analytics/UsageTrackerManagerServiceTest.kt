@@ -20,6 +20,7 @@ import com.google.common.truth.Truth
 import com.google.container.tools.core.properties.PluginPropertiesFileReader
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
+import com.intellij.ide.util.PropertiesComponent
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
@@ -37,20 +38,48 @@ class UsageTrackerManagerServiceTest {
     @MockK
     private lateinit var propertyReader: PluginPropertiesFileReader
 
+    @MockK
+    private lateinit var trackingPreferenceProperty: PropertiesComponent
+
     private lateinit var usageTrackerManagerService: UsageTrackerManagerService
 
     @Before
     fun setUp() {
-        usageTrackerManagerService = UsageTrackerManagerService()
+        usageTrackerManagerService = UsageTrackerManagerService(trackingPreferenceProperty)
     }
 
     @Test
-    fun `usage tracking is disabled in unit test mode`() {
+    fun `usage tracking is not available and not enabled in unit test mode`() {
         // Set the analytics ID to a proper value
         val analyticsId = "UA-12345"
         mockAnalyticsId(analyticsId)
 
+        Truth.assertThat(usageTrackerManagerService.isUsageTrackingAvailable()).isFalse()
         Truth.assertThat(usageTrackerManagerService.isUsageTrackingEnabled()).isFalse()
+    }
+
+    @Test
+    fun `when user data tracking preference is stored true then tracking is opted in`() {
+        every {
+            trackingPreferenceProperty.getBoolean(
+                "GOOGLE_CLOUD_TOOLS_USAGE_TRACKER_OPT_IN",
+                false
+            )
+        } answers { true }
+
+        Truth.assertThat(usageTrackerManagerService.isTrackingOptedIn()).isTrue()
+    }
+
+    @Test
+    fun `when user data tracking preference is stored false then tracking is not opted in`() {
+        every {
+            trackingPreferenceProperty.getBoolean(
+                "GOOGLE_CLOUD_TOOLS_USAGE_TRACKER_OPT_IN",
+                false
+            )
+        } answers { false }
+
+        Truth.assertThat(usageTrackerManagerService.isTrackingOptedIn()).isFalse()
     }
 
     @Test

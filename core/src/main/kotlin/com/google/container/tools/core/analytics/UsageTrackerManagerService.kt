@@ -25,7 +25,9 @@ import com.intellij.openapi.components.ServiceManager
 /**
  * Application service that manages the status of usage tracking in the plugin.
  */
-class UsageTrackerManagerService {
+class UsageTrackerManagerService(
+    private val trackingPreferenceProperty: PropertiesComponent = PropertiesComponent.getInstance()
+) {
 
     companion object {
         private const val ANALYTICS_ID_KEY = "analytics.id"
@@ -34,8 +36,6 @@ class UsageTrackerManagerService {
         // This key needs to match the key used by the Google Cloud Tools plugin. Do not change
         // unless certain.
         private const val USAGE_TRACKING_PREFERENCE_KEY = "GOOGLE_CLOUD_TOOLS_USAGE_TRACKER_OPT_IN"
-        private val trackingPreferenceProperty: PropertiesComponent =
-            PropertiesComponent.getInstance()
 
         val instance
             get() = ServiceManager.getService(UsageTrackerManagerService::class.java)!!
