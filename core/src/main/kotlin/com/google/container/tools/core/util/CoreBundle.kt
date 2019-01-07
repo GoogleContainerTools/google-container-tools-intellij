@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package com.google.container.tools.core
+package com.google.container.tools.core.util
 
 import com.intellij.CommonBundle
 import org.jetbrains.annotations.PropertyKey
 import java.util.ResourceBundle
 
-private const val BUNDLE_NAME = "messages.UsageTrackerBundle"
+private const val BUNDLE_NAME = "messages.CoreBundle"
 
 /**
- * Message bundle manager for usage tracking related featured.
+ * Message bundle manager for core module.
  */
-object UsageTrackerBundle {
+object CoreBundle {
 
     /**
-     * Returns messages for the given key from the UsageTrackerBundle message bundle with optional
+     * Returns messages for the given key from the CoreBundle message bundle with optional
      * parameters.
      */
     fun message(

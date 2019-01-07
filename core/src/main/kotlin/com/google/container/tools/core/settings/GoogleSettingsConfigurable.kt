@@ -16,7 +16,7 @@
 
 package com.google.container.tools.core.settings
 
-import com.google.container.tools.core.CoreBundle
+import com.google.container.tools.core.util.CoreBundle
 import com.intellij.openapi.options.Configurable
 import javax.swing.JComponent
 

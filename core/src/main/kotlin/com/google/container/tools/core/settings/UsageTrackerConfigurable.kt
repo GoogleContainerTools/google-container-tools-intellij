@@ -16,7 +16,7 @@
 
 package com.google.container.tools.core.settings
 
-import com.google.container.tools.core.UsageTrackerBundle
+import com.google.container.tools.core.util.UsageTrackerBundle
 import com.google.container.tools.core.analytics.UsageTrackerManagerService
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.options.Configurable
