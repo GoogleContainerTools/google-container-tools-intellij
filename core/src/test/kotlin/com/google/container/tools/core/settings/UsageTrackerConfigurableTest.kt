@@ -20,6 +20,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.core.analytics.UsageTrackerManagerService
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
+import com.google.container.tools.test.UiTest
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
@@ -46,6 +47,7 @@ class UsageTrackerConfigurableTest {
     }
 
     @Test
+    @UiTest
     fun `isModified is true when stored preference does not match checkbox selection`() {
         // stored value is false
         every { usageTrackerManagerService.isTrackingOptedIn() } answers { false }
@@ -56,6 +58,7 @@ class UsageTrackerConfigurableTest {
     }
 
     @Test
+    @UiTest
     fun `isModified is false when stored preference matches checkbox selection`() {
         // stored value is true
         every { usageTrackerManagerService.isTrackingOptedIn() } answers { true }
@@ -66,6 +69,7 @@ class UsageTrackerConfigurableTest {
     }
 
     @Test
+    @UiTest
     fun `when preference checkbox is selected apply stores the tracking selection`() {
         usageTrackerConfigurable.usageTrackerCheckbox.isSelected = true
         usageTrackerConfigurable.apply()
@@ -74,6 +78,7 @@ class UsageTrackerConfigurableTest {
     }
 
     @Test
+    @UiTest
     fun `reset restores the persisted tracking preference to the checkbox selection`() {
         // First set the checkbox to unselected
         usageTrackerConfigurable.usageTrackerCheckbox.isSelected = false
