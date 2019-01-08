@@ -16,7 +16,7 @@
 
 package com.google.container.tools.core.analytics
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.core.PluginInfo
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
@@ -41,6 +41,6 @@ class UsageTrackerProviderTest {
 
     @Test
     fun `usage tracker provides initializes usage tracker`() {
-        Truth.assertThat(UsageTrackerProvider().usageTracker).isNotNull()
+        assertThat(UsageTrackerProvider().usageTracker).isNotNull()
     }
 }

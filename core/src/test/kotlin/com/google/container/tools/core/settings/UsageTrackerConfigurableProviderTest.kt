@@ -16,7 +16,7 @@
 
 package com.google.container.tools.core.settings
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.core.properties.PluginPropertiesFileReader
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
@@ -49,6 +49,6 @@ class UsageTrackerConfigurableProviderTest {
         // Set a valid looking analytics ID so that we are only testing the unit test mode part
         every { propertyReader.getPropertyValue("analytics.id") } answers { "UA-12345" }
 
-        Truth.assertThat(usageTrackerConfigurableProvider.canCreateConfigurable()).isFalse()
+        assertThat(usageTrackerConfigurableProvider.canCreateConfigurable()).isFalse()
     }
 }

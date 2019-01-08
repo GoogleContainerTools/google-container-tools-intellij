@@ -16,7 +16,7 @@
 
 package com.google.container.tools.core.analytics
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.core.properties.PluginPropertiesFileReader
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
@@ -54,8 +54,8 @@ class UsageTrackerManagerServiceTest {
         val analyticsId = "UA-12345"
         mockAnalyticsId(analyticsId)
 
-        Truth.assertThat(usageTrackerManagerService.isUsageTrackingAvailable()).isFalse()
-        Truth.assertThat(usageTrackerManagerService.isUsageTrackingEnabled()).isFalse()
+        assertThat(usageTrackerManagerService.isUsageTrackingAvailable()).isFalse()
+        assertThat(usageTrackerManagerService.isUsageTrackingEnabled()).isFalse()
     }
 
     @Test
@@ -67,7 +67,7 @@ class UsageTrackerManagerServiceTest {
             )
         } answers { true }
 
-        Truth.assertThat(usageTrackerManagerService.isTrackingOptedIn()).isTrue()
+        assertThat(usageTrackerManagerService.isTrackingOptedIn()).isTrue()
     }
 
     @Test
@@ -79,7 +79,7 @@ class UsageTrackerManagerServiceTest {
             )
         } answers { false }
 
-        Truth.assertThat(usageTrackerManagerService.isTrackingOptedIn()).isFalse()
+        assertThat(usageTrackerManagerService.isTrackingOptedIn()).isFalse()
     }
 
     @Test
@@ -87,7 +87,7 @@ class UsageTrackerManagerServiceTest {
         val analyticsId = "UA-12345"
         mockAnalyticsId(analyticsId)
 
-        Truth.assertThat(usageTrackerManagerService.getAnalyticsId()).isEqualTo(analyticsId)
+        assertThat(usageTrackerManagerService.getAnalyticsId()).isEqualTo(analyticsId)
     }
 
     @Test
@@ -95,7 +95,7 @@ class UsageTrackerManagerServiceTest {
         val analyticsIdPlaceholder = "\${analyticsId}"
         every { propertyReader.getPropertyValue("analytics.id") } answers { analyticsIdPlaceholder }
 
-        Truth.assertThat(usageTrackerManagerService.getAnalyticsId()).isNull()
+        assertThat(usageTrackerManagerService.getAnalyticsId()).isNull()
     }
 
     private fun mockAnalyticsId(analyticsId: String) {

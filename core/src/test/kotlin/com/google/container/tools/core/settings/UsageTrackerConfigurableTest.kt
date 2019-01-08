@@ -16,7 +16,7 @@
 
 package com.google.container.tools.core.settings
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.core.analytics.UsageTrackerManagerService
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
@@ -52,7 +52,7 @@ class UsageTrackerConfigurableTest {
         // preference is selected
         usageTrackerConfigurable.usageTrackerCheckbox.isSelected = true
 
-        Truth.assertThat(usageTrackerConfigurable.isModified).isTrue()
+        assertThat(usageTrackerConfigurable.isModified).isTrue()
     }
 
     @Test
@@ -62,7 +62,7 @@ class UsageTrackerConfigurableTest {
         // preference is selected
         usageTrackerConfigurable.usageTrackerCheckbox.isSelected = true
 
-        Truth.assertThat(usageTrackerConfigurable.isModified).isFalse()
+        assertThat(usageTrackerConfigurable.isModified).isFalse()
     }
 
     @Test
@@ -83,6 +83,6 @@ class UsageTrackerConfigurableTest {
 
         usageTrackerConfigurable.reset()
 
-        Truth.assertThat(usageTrackerConfigurable.usageTrackerCheckbox.isSelected).isTrue()
+        assertThat(usageTrackerConfigurable.usageTrackerCheckbox.isSelected).isTrue()
     }
 }
