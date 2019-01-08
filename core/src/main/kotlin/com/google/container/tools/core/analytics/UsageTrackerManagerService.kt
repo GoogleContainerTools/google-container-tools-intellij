@@ -24,6 +24,9 @@ import com.intellij.openapi.components.ServiceManager
 
 /**
  * Application service that manages the status of usage tracking in the plugin.
+ *
+ * @param trackingPreferenceProperty the [PropertiesComponent] used for persistence. Useful for
+ *  swapping out mocks for unit testing.
  */
 class UsageTrackerManagerService(
     private val trackingPreferenceProperty: PropertiesComponent = PropertiesComponent.getInstance()
