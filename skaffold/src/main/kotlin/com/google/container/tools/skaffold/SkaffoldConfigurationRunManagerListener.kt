@@ -26,6 +26,11 @@ import com.intellij.execution.RunnerAndConfigurationSettings
 import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.project.Project
 
+/**
+ * Project component that connects itself to project message bus when any project opens and uses
+ * [RunManagerListener] events to catch additions of new Skaffold run configurations to send
+ * client side pings.
+ */
 class SkaffoldConfigurationRunManagerListener(val project: Project) : ProjectComponent {
     override fun projectOpened() {
         project.messageBus.connect().subscribe(RunManagerListener.TOPIC,
