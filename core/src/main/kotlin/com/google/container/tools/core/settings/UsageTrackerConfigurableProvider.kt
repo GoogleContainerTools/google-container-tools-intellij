@@ -20,6 +20,8 @@ import com.google.container.tools.core.analytics.UsageTrackerManagerService
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.options.ConfigurableProvider
 
+private const val USAGE_TRACKER_PROVIDER_NAME = "UsageTrackerConfigurableProvider"
+
 /**
  * Class that provides the configurable which creates the "Usage Tracking" menu item under the
  * top-level "Google" menu item.
@@ -43,7 +45,7 @@ class UsageTrackerConfigurableProvider : ConfigurableProvider() {
         val canCreateConfigurable: Boolean =
             Configurable.APPLICATION_CONFIGURABLE.extensionList.filter {
                 it?.providerClass != null &&
-                    it.providerClass.endsWith(this.javaClass.simpleName)
+                    it.providerClass.endsWith(USAGE_TRACKER_PROVIDER_NAME)
             }.size == 1
 
         return canCreateConfigurable &&
