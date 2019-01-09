@@ -42,10 +42,11 @@ class UsageTrackerConfigurableProvider : ConfigurableProvider() {
          */
         val canCreateConfigurable: Boolean =
             Configurable.APPLICATION_CONFIGURABLE.extensionList.filter {
-                it?.providerClass != null
-                    && it.providerClass.endsWith("UsageTrackerConfigurableProvider")
+                it?.providerClass != null &&
+                    it.providerClass.endsWith("UsageTrackerConfigurableProvider")
             }.size == 1
 
-        return canCreateConfigurable && UsageTrackerManagerService.instance.isUsageTrackingAvailable()
+        return canCreateConfigurable &&
+            UsageTrackerManagerService.instance.isUsageTrackingAvailable()
     }
 }
