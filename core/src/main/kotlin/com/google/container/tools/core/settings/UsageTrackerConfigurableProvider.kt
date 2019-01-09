@@ -38,12 +38,12 @@ class UsageTrackerConfigurableProvider : ConfigurableProvider() {
          * have an ID configured for this panel. Since we only want a single instance of this panel
          * to appear for all installed Google plugins, this checks to ensure that it was not already
          * registered by the GCT plugin. Once all users migrate to newer versions of the GCT plugin,
-         * we can remove this.
+         * we can remove this. For this to work, both provider classes have to have the same name.
          */
         val canCreateConfigurable: Boolean =
             Configurable.APPLICATION_CONFIGURABLE.extensionList.filter {
                 it?.providerClass != null &&
-                    it.providerClass.endsWith("UsageTrackerConfigurableProvider")
+                    it.providerClass.endsWith(this.javaClass.simpleName)
             }.size == 1
 
         return canCreateConfigurable &&
