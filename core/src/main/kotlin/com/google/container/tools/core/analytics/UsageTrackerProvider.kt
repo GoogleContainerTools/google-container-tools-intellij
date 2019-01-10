@@ -19,6 +19,7 @@ package com.google.container.tools.core.analytics
 import com.google.cloud.tools.ide.analytics.UsageTracker
 import com.google.cloud.tools.ide.analytics.UsageTrackerManager
 import com.google.cloud.tools.ide.analytics.UsageTrackerSettings
+import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.core.PluginInfo
 import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.openapi.application.PermanentInstallationID
@@ -35,7 +36,8 @@ import com.intellij.openapi.components.ServiceManager
  */
 class UsageTrackerProvider {
 
-    private val usageTrackerSettings: UsageTrackerSettings
+    @VisibleForTesting
+    var usageTrackerSettings: UsageTrackerSettings
 
     init {
         val usageTrackerManagerService: UsageTrackerManagerService =
