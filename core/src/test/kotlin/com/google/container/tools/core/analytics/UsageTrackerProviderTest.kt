@@ -43,8 +43,7 @@ class UsageTrackerProviderTest {
 
     @Test
     fun `usage tracker provides initializes usage tracker`() {
-        val usageTracker: UsageTracker = UsageTrackerProvider().usageTracker
-        assertThat(usageTracker).isNotNull()
+        assertThat(UsageTrackerProvider().usageTracker).isNotNull()
     }
 
     @Test
