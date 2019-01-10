@@ -34,13 +34,13 @@ import com.intellij.openapi.components.ServiceManager
  */
 class UsageTrackerProvider {
 
-    val usageTracker: UsageTracker
+    private val usageTrackerSettings: UsageTrackerSettings
 
     init {
         val usageTrackerManagerService: UsageTrackerManagerService =
             UsageTrackerManagerService.instance
 
-        val settings: UsageTrackerSettings = UsageTrackerSettings.Builder()
+        usageTrackerSettings = UsageTrackerSettings.Builder()
             .manager { usageTrackerManagerService.isUsageTrackingEnabled() }
             .analyticsId(usageTrackerManagerService.getAnalyticsId())
             .pageHost(PAGE_HOST)
@@ -51,9 +51,10 @@ class UsageTrackerProvider {
             .clientId(PermanentInstallationID.get())
             .userAgent(PluginInfo.PLUGIN_USER_AGENT)
             .build()
-
-        usageTracker = UsageTracker.create(settings)
     }
+
+    val usageTracker: UsageTracker
+        get() = UsageTracker.create(usageTrackerSettings)
 
     companion object {
         private const val PAGE_HOST = "virtual.intellij"
