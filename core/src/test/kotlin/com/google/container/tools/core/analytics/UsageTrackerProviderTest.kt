@@ -16,7 +16,6 @@
 
 package com.google.container.tools.core.analytics
 
-import com.google.cloud.tools.ide.analytics.UsageTracker
 import com.google.cloud.tools.ide.analytics.UsageTrackerSettings
 import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.core.PluginInfo
