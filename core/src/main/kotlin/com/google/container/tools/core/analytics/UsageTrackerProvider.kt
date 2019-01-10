@@ -17,6 +17,7 @@
 package com.google.container.tools.core.analytics
 
 import com.google.cloud.tools.ide.analytics.UsageTracker
+import com.google.cloud.tools.ide.analytics.UsageTrackerManager
 import com.google.cloud.tools.ide.analytics.UsageTrackerSettings
 import com.google.container.tools.core.PluginInfo
 import com.intellij.openapi.application.ApplicationInfo
@@ -53,6 +54,12 @@ class UsageTrackerProvider {
             .build()
     }
 
+    /**
+     * Returns the appropriate implementation of [UsageTracker]. The implementation will change -
+     * from either a noop version, or the real version - depending on the value returned by the
+     * [UsageTrackerManager] callback which will depend on the current user selected tracking
+     * preference.
+     */
     val usageTracker: UsageTracker get() = UsageTracker.create(usageTrackerSettings)
 
     companion object {
