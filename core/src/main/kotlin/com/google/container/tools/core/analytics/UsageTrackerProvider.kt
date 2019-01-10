@@ -53,8 +53,7 @@ class UsageTrackerProvider {
             .build()
     }
 
-    val usageTracker: UsageTracker
-        get() = UsageTracker.create(usageTrackerSettings)
+    val usageTracker: UsageTracker get() = UsageTracker.create(usageTrackerSettings)
 
     companion object {
         private const val PAGE_HOST = "virtual.intellij"
