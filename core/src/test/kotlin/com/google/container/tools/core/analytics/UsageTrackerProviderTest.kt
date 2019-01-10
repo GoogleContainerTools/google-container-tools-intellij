@@ -49,7 +49,8 @@ class UsageTrackerProviderTest {
     @Test
     fun `usage tracker with tracking not enabled returns no-op tracker`() {
         val usageTrackerProvider = UsageTrackerProvider()
-        usageTrackerProvider.usageTrackerSettings = createUsageTrackerSettings(false)
+        usageTrackerProvider.usageTrackerSettings =
+            createUsageTrackerSettings(isTrackingEnabled = false)
 
         assertThat(usageTrackerProvider.usageTracker.javaClass.simpleName)
             .isEqualTo("NoOpUsageTracker")
@@ -58,7 +59,8 @@ class UsageTrackerProviderTest {
     @Test
     fun `usage tracker with tracking enabled returns google tracker`() {
         val usageTrackerProvider = UsageTrackerProvider()
-        usageTrackerProvider.usageTrackerSettings = createUsageTrackerSettings(true)
+        usageTrackerProvider.usageTrackerSettings =
+            createUsageTrackerSettings(isTrackingEnabled = true)
 
         assertThat(usageTrackerProvider.usageTracker.javaClass.simpleName)
             .isEqualTo("GoogleUsageTracker")
