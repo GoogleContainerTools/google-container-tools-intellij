@@ -25,7 +25,6 @@ import com.intellij.openapi.extensions.PluginId
 /**
  * Performs initialization tasks when the plugin is loaded.
  */
-
 class PluginInitComponent : BaseComponent {
 
     override fun initComponent() {
