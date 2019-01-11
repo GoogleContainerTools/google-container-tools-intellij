@@ -27,7 +27,6 @@ import com.google.container.tools.skaffold.run.SkaffoldSingleRunConfigurationFac
 import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationTypeUtil
-import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationGroup
@@ -39,6 +38,10 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileEvent
+import com.intellij.openapi.vfs.VirtualFileListener
+import com.intellij.openapi.vfs.VirtualFileManager
+import org.jetbrains.yaml.YAMLFileType
 
 /**
  * Detects if project has Skaffold configuration but no Skaffold run targets configured. Uses
@@ -59,6 +62,23 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
         SKAFFOLD_ICON
     )
 
+    init {
+        // add VFS listener to ensure we track YAML file changes when no Skaffold configurations
+        // exist yet to show prompt for configurations once Skaffold file is created.
+        VirtualFileManager.getInstance().addVirtualFileListener(object : VirtualFileListener {
+            override fun contentsChanged(event: VirtualFileEvent) {
+                if (event.file.fileType is YAMLFileType &&
+                    SkaffoldFileService.instance.isSkaffoldFile(
+                        event.file
+                    ) && !hasExistingSkaffoldConfigurations()
+                ) {
+                    // content changed to be a valid Skaffold file, no configurations, prompt
+                    showPromptForSkaffoldConfigurations(project, event.file)
+                }
+            }
+        }, project /* project used as a disposable to remove listener when project closes */)
+    }
+
     override fun projectOpened() {
         // on project open there may be a lot of indexing and other preparation and files still
         // not available, wait for "smart" mode for configuration identification
@@ -66,16 +86,21 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
             val skaffoldFiles: List<VirtualFile> =
                 SkaffoldFileService.instance.findSkaffoldFiles(project)
             if (skaffoldFiles.isNotEmpty()) {
-                val skaffoldRunConfigList: List<RunConfiguration> =
-                    getRunManager(project)
-                        .allConfigurationsList.filter { it is AbstractSkaffoldRunConfiguration }
-                if (skaffoldRunConfigList.isEmpty()) {
+                if (!hasExistingSkaffoldConfigurations()) {
                     // existing Skaffold config files, but no skaffold configurations, prompt
                     showPromptForSkaffoldConfigurations(project, skaffoldFiles[0])
                 }
             }
         }
     }
+
+    /**
+     * Checks if the project has existing Skaffold run configurations. Project is current, one
+     * per created component, passed a parameter.
+     */
+    private fun hasExistingSkaffoldConfigurations() =
+        getRunManager(project)
+            .allConfigurationsList.filter { it is AbstractSkaffoldRunConfiguration }.isNotEmpty()
 
     /**
      * Prepares an IDE notification if no Skaffold configurations exist, adding actions to add
