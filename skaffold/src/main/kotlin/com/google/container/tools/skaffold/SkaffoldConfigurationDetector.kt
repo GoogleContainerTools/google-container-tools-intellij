@@ -89,7 +89,8 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
                             event.file
                         ) && !hasExistingSkaffoldConfigurations()
                     ) {
-                        // content changed to be a valid Skaffold file, no configurations, prompt
+                        // content changed to be a valid Skaffold file,
+                        // and no Skaffold configurations exist, prompt
                         showPromptForSkaffoldConfigurations(project, event.file)
                     }
                 }
@@ -198,6 +199,10 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
     fun getRunManager(project: Project): RunManager =
         RunManager.getInstance(project)
 
+    /**
+     * Adds [VirtualFileListener] to [VirtualFileManager] to track project's file system changes
+     * and detect new file and content changes.
+     */
     @VisibleForTesting
     fun addVirtualFileListener(listener: VirtualFileListener) {
         VirtualFileManager.getInstance().addVirtualFileListener(
