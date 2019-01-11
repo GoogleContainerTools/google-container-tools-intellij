@@ -124,7 +124,7 @@ class SkaffoldConfigurationDetectorTest {
 
     @Test
     @UiTest
-    fun `non-Skaffold yaml file created in the project doesnt ask to add configs`() {
+    fun `non-Skaffold yaml file modified in the project doesnt ask to add configs`() {
         val nonSkaffoldFile = MockVirtualFile.file("pod.yaml")
         every { mockSkaffoldFileService.isSkaffoldFile(nonSkaffoldFile) } returns false
         every { mockSkaffoldFileService.findSkaffoldFiles(any()) } answers { listOf() }
@@ -138,7 +138,7 @@ class SkaffoldConfigurationDetectorTest {
 
     @Test
     @UiTest
-    fun `Skaffold yaml file created in the project prompts to add run configs`() {
+    fun `Skaffold yaml file modified in the project prompts to add run configs`() {
         val skaffoldFile = MockVirtualFile.file("skaffold.yaml")
         every { mockSkaffoldFileService.isSkaffoldFile(skaffoldFile) } returns true
         every { mockSkaffoldFileService.findSkaffoldFiles(any()) } answers { listOf() }
@@ -146,6 +146,34 @@ class SkaffoldConfigurationDetectorTest {
 
         skaffoldConfigurationDetector.projectOpened()
         fileListenerCapture.captured.contentsChanged(virtualFileEvent)
+
+        verify(exactly = 1) { skaffoldConfigurationDetector.createNotification(any(), any()) }
+    }
+
+    @Test
+    @UiTest
+    fun `non-Skaffold yaml file copied or created in the project doesnt ask to add configs`() {
+        val nonSkaffoldFile = MockVirtualFile.file("pod.yaml")
+        every { mockSkaffoldFileService.isSkaffoldFile(nonSkaffoldFile) } returns false
+        every { mockSkaffoldFileService.findSkaffoldFiles(any()) } answers { listOf() }
+        val virtualFileEvent = VirtualFileEvent(null, nonSkaffoldFile, nonSkaffoldFile.name, null)
+
+        skaffoldConfigurationDetector.projectOpened()
+        fileListenerCapture.captured.fileCreated(virtualFileEvent)
+
+        verify(exactly = 0) { skaffoldConfigurationDetector.createNotification(any(), any()) }
+    }
+
+    @Test
+    @UiTest
+    fun `Skaffold yaml file copied or created  in the project prompts to add run configs`() {
+        val skaffoldFile = MockVirtualFile.file("skaffold.yaml")
+        every { mockSkaffoldFileService.isSkaffoldFile(skaffoldFile) } returns true
+        every { mockSkaffoldFileService.findSkaffoldFiles(any()) } answers { listOf() }
+        val virtualFileEvent = VirtualFileEvent(null, skaffoldFile, skaffoldFile.name, null)
+
+        skaffoldConfigurationDetector.projectOpened()
+        fileListenerCapture.captured.fileCreated(virtualFileEvent)
 
         verify(exactly = 1) { skaffoldConfigurationDetector.createNotification(any(), any()) }
     }

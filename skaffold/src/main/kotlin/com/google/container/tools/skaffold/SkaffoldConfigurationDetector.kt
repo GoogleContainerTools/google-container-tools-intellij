@@ -83,15 +83,23 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
         // exist yet to show prompt for configurations once Skaffold file is created.
         addVirtualFileListener(object : VirtualFileListener {
             override fun contentsChanged(event: VirtualFileEvent) {
+                checkForSkaffoldFile(event.file)
+            }
+
+            override fun fileCreated(event: VirtualFileEvent) {
+                checkForSkaffoldFile(event.file)
+            }
+
+            private fun checkForSkaffoldFile(file: VirtualFile) {
                 DumbService.getInstance(project).runWhenSmart {
-                    if (event.file.fileType is YAMLFileType &&
+                    if (file.fileType is YAMLFileType &&
                         SkaffoldFileService.instance.isSkaffoldFile(
-                            event.file
+                            file
                         ) && !hasExistingSkaffoldConfigurations()
                     ) {
                         // content changed to be a valid Skaffold file,
                         // and no Skaffold configurations exist, prompt
-                        showPromptForSkaffoldConfigurations(project, event.file)
+                        showPromptForSkaffoldConfigurations(project, file)
                     }
                 }
             }
