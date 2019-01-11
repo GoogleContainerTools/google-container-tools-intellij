@@ -48,6 +48,9 @@ import org.jetbrains.yaml.YAMLFileType
  * [ProjectComponent] to watch project opening, and prompts to create dev/deploy configurations
  * if they don't exist yet.
  *
+ * Uses [VirtualFileManager] and [VirtualFileListener] to track new YAML files in already opened
+ * project to prompt creating new configurations when Skaffold YAML is created.
+ *
  * @param project IDE Project for which this component is created.
  */
 class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
@@ -62,23 +65,6 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
         SKAFFOLD_ICON
     )
 
-    init {
-        // add VFS listener to ensure we track YAML file changes when no Skaffold configurations
-        // exist yet to show prompt for configurations once Skaffold file is created.
-        VirtualFileManager.getInstance().addVirtualFileListener(object : VirtualFileListener {
-            override fun contentsChanged(event: VirtualFileEvent) {
-                if (event.file.fileType is YAMLFileType &&
-                    SkaffoldFileService.instance.isSkaffoldFile(
-                        event.file
-                    ) && !hasExistingSkaffoldConfigurations()
-                ) {
-                    // content changed to be a valid Skaffold file, no configurations, prompt
-                    showPromptForSkaffoldConfigurations(project, event.file)
-                }
-            }
-        }, project /* project used as a disposable to remove listener when project closes */)
-    }
-
     override fun projectOpened() {
         // on project open there may be a lot of indexing and other preparation and files still
         // not available, wait for "smart" mode for configuration identification
@@ -92,6 +78,23 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
                 }
             }
         }
+
+        // add VFS listener to ensure we track YAML file changes when no Skaffold configurations
+        // exist yet to show prompt for configurations once Skaffold file is created.
+        addVirtualFileListener(object : VirtualFileListener {
+            override fun contentsChanged(event: VirtualFileEvent) {
+                DumbService.getInstance(project).runWhenSmart {
+                    if (event.file.fileType is YAMLFileType &&
+                        SkaffoldFileService.instance.isSkaffoldFile(
+                            event.file
+                        ) && !hasExistingSkaffoldConfigurations()
+                    ) {
+                        // content changed to be a valid Skaffold file, no configurations, prompt
+                        showPromptForSkaffoldConfigurations(project, event.file)
+                    }
+                }
+            }
+        })
     }
 
     /**
@@ -194,4 +197,12 @@ class SkaffoldConfigurationDetector(val project: Project) : ProjectComponent {
     @VisibleForTesting
     fun getRunManager(project: Project): RunManager =
         RunManager.getInstance(project)
+
+    @VisibleForTesting
+    fun addVirtualFileListener(listener: VirtualFileListener) {
+        VirtualFileManager.getInstance().addVirtualFileListener(
+            listener,
+            project /* project used as a disposable to remove listener when project closes */
+        )
+    }
 }
