@@ -54,7 +54,8 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
     @VisibleForTesting
     val skaffoldProfilesComboBox = SkaffoldProfilesComboBox()
 
-    private val overrideImageRepoTextField = JBTextField()
+    @VisibleForTesting
+    val overrideImageRepoTextField = JBTextField()
 
     protected lateinit var basePanel: JPanel
 
