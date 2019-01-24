@@ -91,7 +91,8 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
 
         basePanel.border = IdeaTitledBorder(editorTitle, 0, Insets(0, 0, 0, 0))
 
-        overrideImageRepoTextField.emptyText.text = "docker.io/{username} or gcr.io/{project-id}"
+        overrideImageRepoTextField.emptyText.text = "e.g. docker.io, gcr.io"
+        overrideImageRepoTextField.toolTipText = message("skaffold.override.image.repo.tooltip")
 
         skaffoldFilesComboBox.addActionListener {
             skaffoldProfilesComboBox.skaffoldFileUpdated(
