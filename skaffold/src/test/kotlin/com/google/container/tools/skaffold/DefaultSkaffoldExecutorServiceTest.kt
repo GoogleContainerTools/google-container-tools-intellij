@@ -200,12 +200,12 @@ class DefaultSkaffoldExecutorServiceTest {
     }
 
     @Test
-    fun `added image repo override name generates valid command line`() {
+    fun `added default image repo name generates valid command line`() {
         val result = defaultSkaffoldExecutorService.executeSkaffold(
             SkaffoldExecutorSettings(
                 SkaffoldExecutorSettings.ExecutionMode.DEV,
                 skaffoldConfigurationFilePath = "skaffold.yaml",
-                imageRepoOverride = "gcr.io/k8s-tests"
+                defaultImageRepo = "gcr.io/k8s-tests"
             )
         )
 
@@ -216,7 +216,7 @@ class DefaultSkaffoldExecutorServiceTest {
     }
 
     @Test
-    fun `null image repo override name generates valid command line without repo override`() {
+    fun `null default image repo name generates valid command line without repo override`() {
         val result = defaultSkaffoldExecutorService.executeSkaffold(
             SkaffoldExecutorSettings(
                 SkaffoldExecutorSettings.ExecutionMode.DEV,
