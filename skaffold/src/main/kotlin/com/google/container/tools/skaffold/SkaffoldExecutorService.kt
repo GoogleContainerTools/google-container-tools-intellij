@@ -77,6 +77,11 @@ abstract class SkaffoldExecutorService {
             settings.tailLogsAfterDeploy?.let { tailLogs ->
                 if (tailLogs) add("--tail")
             }
+
+            settings.imageRepoOverride?.let {
+                add("--default-repo")
+                add(it)
+            }
         }
 
         try {
@@ -140,7 +145,8 @@ data class SkaffoldExecutorSettings(
     val skaffoldProfile: String? = null,
     val workingDirectory: File? = null,
     val skaffoldLabels: SkaffoldLabels? = null,
-    val tailLogsAfterDeploy: Boolean? = null
+    val tailLogsAfterDeploy: Boolean? = null,
+    val imageRepoOverride: String? = null
 ) {
 
     /** Execution mode for Skaffold, single run, continuous development, etc. */
