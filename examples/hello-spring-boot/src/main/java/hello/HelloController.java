@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HelloController {
     @RequestMapping("/")
     public String index() {
-        return "Hello, World!";
+        return "Hello, World of Kubernetes with IntelliJ!";
     }
 }
