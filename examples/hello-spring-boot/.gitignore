@@ -3,5 +3,6 @@ target
 .project
 .settings
 .vscode
-.idea
-!*/.idea/externalDependencies.xml
+.idea/*
+!.idea/
+!.idea/externalDependencies.xml
