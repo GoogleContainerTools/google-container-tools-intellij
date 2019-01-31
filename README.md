@@ -5,7 +5,7 @@
 
 # Google Container Tools for IntelliJ
 
-This plugin adds support for [Kubernetes](https://www.kubernetes.io) development into [JetBrains family of IDEs](https://www.jetbrains.com/products.html), including IntelliJ (both Community and Ultimate editions), GoLand, PyCharm, WebStorm (and others).
+This plugin adds support for [Kubernetes](https://www.kubernetes.io) development into the [JetBrains family of IDEs](https://www.jetbrains.com/products.html), including IntelliJ (both Community and Ultimate editions), GoLand, PyCharm, WebStorm (and others).
 
 **Note**: This plugin is still in development.
 
