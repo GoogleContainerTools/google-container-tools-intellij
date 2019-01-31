@@ -5,7 +5,7 @@
 
 # Google Container Tools for IntelliJ
 
-This plugin integrates continuous development on [Kubernetes](https://www.kubernetes.io) into [Jetbrains family of IDEs](https://www.jetbrains.com/products.html), including IntelliJ (both Community and Ultimate editions), GoLand, PyCharm, WebStorm (and others).
+This plugin adds support for [Kubernetes](https://www.kubernetes.io) development into [Jetbrains family of IDEs](https://www.jetbrains.com/products.html), including IntelliJ (both Community and Ultimate editions), GoLand, PyCharm, WebStorm (and others).
 
 **Note**: This plugin is still in development.
 
@@ -14,11 +14,11 @@ This plugin integrates continuous development on [Kubernetes](https://www.kubern
 * One click deployment to Kubernetes clusters right from your IDE using [Skaffold](https://skaffold.dev/docs/getting-started/). Configure Skaffold to use your desired build and deployment strategies: works with kubectl, Helm, Google Cloud Build (for remote builds), Jib and Kanico.
 * Continuous development on Kubernetes. Watches the dependencies of your docker image or Jib Java project for changes, so that on any change, Skaffold builds and deploys your application to a Kubernetes cluster.
 * Automatic discovery and support for project with existing Skaffold configuration, in any language supported by your preferred Jetbrains IDE.
-* Initial support for Skaffold configuration files editing and smart templates.
+* Initial support for Skaffold configuration file editing and smart templates.
 
 ## Prerequisites and required dependencies
 
-This plugin relies on existing Kubernetes and container tools and libraries to provide rich Kubernetes experience built into your IntelliJ or other Jetbrains IDE. At the minimum, the following tools are expected to be installed and setup on your system and available in the system path:
+This plugin uses familiar Kubernetes and container tools to bring you a rich Kubernetes experience in IntelliJ and other JetBrains IDEs. At the minimum, the following tools are expected to be installed and setup on your system and available in the system path:
 
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for working with Kubernetes clusters and managing Kubernetes deployments.
 * [Skaffold](https://skaffold.dev/docs/getting-started/) to support continuous development on a Kubernetes cluster, smart image building and tagging, and an array of supported deployment and build types.
