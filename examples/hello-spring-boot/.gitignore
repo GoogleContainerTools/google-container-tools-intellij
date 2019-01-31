@@ -4,5 +4,5 @@ target
 .settings
 .vscode
 .idea/*
-!.idea/
 !.idea/externalDependencies.xml
+
