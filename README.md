@@ -35,7 +35,7 @@ If you'd like to try out the plugin pre-release, you can build it from source an
 3) Find the `.zip` binary in the root of the repository under: <br />
    `build/distributions/google-container-tools-intellij.zip`
 4) Install the plugin into your JetBrains IDE:
-   1) Go to `Preferenes > Plugins`
+   1) Go to `Preferences > Plugins`
    2) Select the settings gear icon and then `Install Plugin From Disk`
    3) Select the zip from `step 3`
 
