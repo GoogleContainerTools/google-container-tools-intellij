@@ -30,7 +30,7 @@ This plugin uses familiar Kubernetes and container tools to bring you a rich Kub
 If you'd like to try out the plugin pre-release, you can build it from source and install it into your IDE:
 
 1) Clone this repository to your machine.
-2) Build the plugin:
+2) Build the plugin from the root of the repository:
    `./gradlew buildPlugin`
 3) Find the `.zip` binary in the root of the repository under:
    `build/distributions/google-container-tools-intellij.zip`
