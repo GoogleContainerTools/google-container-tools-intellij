@@ -31,8 +31,8 @@
 cd github/google-container-tools-intellij
 
 # build the distribution and copy to the pre-release folder
-mkdir -p prereleases
+mkdir -p prerelease
 ./gradlew buildPlugin
-cp build/distributions/*.zip prereleases
+cp build/distributions/*.zip prerelease
 
 ./gradlew check --stacktrace
