@@ -1,0 +1,1 @@
+This folder contains pre-releases of Container Tools for IntelliJ 
