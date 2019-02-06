@@ -53,29 +53,29 @@ git clone https://github.com/GoogleContainerTools/google-container-tools-intelli
 
 Open the `hello-spring-boot` example from `google-container-tools/examples` directory with your IntelliJ IDE. You can either point to the directory or to the Maven build file (`pom.xml`). The project opens and loads:
 
-![opened Spring Boot hello world project](docs/images/)
+![opened Spring Boot hello world project](docs/images/sb-hello-world-project.png)
 
 This project is a very simple web application created with [the popular Spring Boot framework](https://spring.io/projects/spring-boot).
 
 Once the project loads, the plugin will detect it is preconfigured with Skaffold YAML configuration to build image and deploy to Kubernetes. A notification shows:
 
-![Kubernetes with Skaffold notification](docs/images/)
+![Kubernetes with Skaffold notification](docs/images/k8s-skaffold-notification.png)
 
 Click `Create run configurations for Kubernetes with Skaffold` link to automatically create Kubernetes deployment and continuous development IDE run targets for the project:
 
-![Kubernetes with Skaffold pre-configured run targets](docs/images/)
+![Kubernetes with Skaffold pre-configured run targets](docs/images/k8s-skaffold-run-targets.png)
 
 Now new run targets can be used to build the project and deploy it to Kubernetes or develop on Kubernetes cluster continuously. 
 
 However, before we can deploy and develop, we need to make sure we have access to the image repository where the project image is about to be pushed. By default project is configured to use [Google Container Registry](https://cloud.google.com/container-registry/) and a development project for the plugin which you probably don’t have access to. Once you have your repository set up ([Google Container Registry](https://cloud.google.com/container-registry/), [DockerHub](https://hub.docker.com/), private repository, etc.), you can edit run targets and specify it as a *default image repository* in run target settings:
 
-![specify your repository in run target settings](docs/images/)
+![specify your repository in run target settings](docs/images/default-image-repo-settings.png)
 
 *Note*: this step is not required when you work with your own Kubernetes manifests and Skaffold configuration where you specify a repository and an image name that are accessible to you.
 
 Now it is time to deploy the project to Kubernetes or develop on Kubernetes cluster from your IDE! Before we start, make sure [all required dependencies](dependencies) are available on your machine. Click run action for `Develop on Kubernetes` to start development cycle on your Kubernetes cluster:
 
-![run target click](docs/images/)
+![run target click](docs/images/k8s-develop-run-icon.png)
 
 The development cycle initiates and console window with the logs opens. The plugin uses Skaffold to build an image for the project, tag it, push it to the configured repository, and then uses `kubectl` to deploy the project Kubernetes manifests:
 
@@ -87,11 +87,11 @@ Once the build completes, the image is pushed and deployment starts, the console
 
 As you can see, Spring Boot application initializes and launches built-in web server. Be default, Spring Boot web server uses port 8080 to serve the content. The plugin and Skaffold make sure you don’t have to worry about accessing the deployment via remote addresses - all declared container ports are port-forwarded automatically!
 
-![automatic port-forwarding](docs/images/)
+![automatic port-forwarding](docs/images/auto-port-forward-hello-world.png)
 
 Navigate your browser to `localhost:8080` to access the Spring Boot application running on your Kubernetes cluster. Alternatively, use `curl` command to interact with the application:
 
-![browser showing root page of the application](docs/images/)
+![browser showing root page of the application](docs/images/browser-root.png)
 
 ```
 $ curl localhost:8080
