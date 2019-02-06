@@ -43,6 +43,7 @@ If you'd like to try out the plugin pre-release, you can build it from source an
 
 ## Getting started
 
+
 The plugin can work in any of the  [JetBrains family of IDEs](https://www.jetbrains.com/products.html), let’s try the first example with Kubernetes and Java in IntelliJ IDE (the plugin supports both Community and Ultimate editions). Follow the installation steps above to install the plugin. Restart your IDE if prompted to activate the plugin.
 
 Clone the repository to your local machine to get your copy of the repository:
@@ -53,6 +54,8 @@ git clone https://github.com/GoogleContainerTools/google-container-tools-intelli
 Open the `hello-spring-boot` example from `google-container-tools/examples` directory with your IntelliJ IDE. You can either point to the directory or to the Maven build file (`pom.xml`). The project opens and loads:
 
 ![opened Spring Boot hello world project](docs/images/)
+
+This project is a very simple web application created with [the popular Spring Boot framework](https://spring.io/projects/spring-boot).
 
 Once the project loads, the plugin will detect it is preconfigured with Skaffold YAML configuration to build image and deploy to Kubernetes. A notification shows:
 
@@ -70,6 +73,28 @@ However, before we can deploy and develop, we need to make sure we have access t
 
 *Note*: this step is not required when you work with your own Kubernetes manifests and Skaffold configuration where you specify a repository and an image name that are accessible to you.
 
-Now it is time to deploy the project to Kubernetes or develop on Kubernetes cluster from your IDE!
+Now it is time to deploy the project to Kubernetes or develop on Kubernetes cluster from your IDE! Before we start, make sure [all required dependencies](dependencies) are available on your machine. Click run action for `Develop on Kubernetes` to start development cycle on your Kubernetes cluster:
 
+![run target click](docs/images/)
+
+The development cycle initiates and console window with the logs opens. The plugin uses Skaffold to build an image for the project, tag it, push it to the configured repository, and then uses `kubectl` to deploy the project Kubernetes manifests:
+
+![develop on Kubernetes console window](docs/images/)
+
+Once the build completes, the image is pushed and deployment starts, the console begins to stream logs from your Kubernetes deployment:
+
+![Spring Boot logs from Kubernetes deployment](docs/images/)
+
+As you can see, Spring Boot application initializes and launches built-in web server. Be default, Spring Boot web server uses port 8080 to serve the content. The plugin and Skaffold make sure you don’t have to worry about accessing the deployment via remote addresses - all declared container ports are port-forwarded automatically!
+
+![automatic port-forwarding](docs/images/)
+
+Navigate your browser to `localhost:8080` to access the Spring Boot application running on your Kubernetes cluster. Alternatively, use `curl` command to interact with the application:
+
+![browser showing root page of the application](docs/images/)
+
+```
+$ curl localhost:8080
+Hello, World of Kubernetes with IntelliJ!
+```
 
