@@ -59,11 +59,11 @@ This project is a very simple web application created with [the popular Spring B
 
 Once the project loads, the plugin will detect it is preconfigured with Skaffold YAML configuration to build image and deploy to Kubernetes. A notification shows:
 
-![Kubernetes with Skaffold notification](docs/images/k8s-skaffold-notification.png)
+<img src="docs/images/k8s-skaffold-notification.png" alt="Kubernetes with Skaffold notification" width="400"/> 
 
 Click `Create run configurations for Kubernetes with Skaffold` link to automatically create Kubernetes deployment and continuous development IDE run targets for the project:
 
-![Kubernetes with Skaffold pre-configured run targets](docs/images/k8s-skaffold-run-targets.png)
+<img src="docs/images/k8s-skaffold-run-targets.png" alt="Kubernetes with Skaffold pre-configured run targets" width="400"/> 
 
 Now new run targets can be used to build the project and deploy it to Kubernetes or develop on Kubernetes cluster continuously. 
 
@@ -75,7 +75,7 @@ However, before we can deploy and develop, we need to make sure we have access t
 
 Now it is time to deploy the project to Kubernetes or develop on Kubernetes cluster from your IDE! Before we start, make sure [all required dependencies](dependencies) are available on your machine. Click run action for `Develop on Kubernetes` to start development cycle on your Kubernetes cluster:
 
-![run target click](docs/images/k8s-develop-run-icon.png)
+<img src="docs/images/k8s-develop-run-icon.png" alt="run target click" width="400"/> 
 
 The development cycle initiates and console window with the logs opens. The plugin uses Skaffold to build an image for the project, tag it, push it to the configured repository, and then uses `kubectl` to deploy the project Kubernetes manifests:
 
