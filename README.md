@@ -98,3 +98,26 @@ $ curl localhost:8080
 Hello, World of Kubernetes with IntelliJ!
 ```
 
+Now, let’s add more features to our Spring Boot project and see how they get deployed to your Kubernetes cluster without stopping and removing the deployment, manually building and tagging the image, and updating the cluster. Open `HelloController.java` file from `src` and add new HTTP request mapping:
+
+```java
+   @RequestMapping("/greeting")
+    public String greeting(@RequestParam(value="name", defaultValue="World") String name) {
+        return String.format("Hello from Kubernetes with IntelliJ, %s!", name);
+    }
+```
+
+Save the changes (`Ctrl-S`) or build the project (use `Build -> Build Project` menu or the toolbar icon). The plugin and Skaffold pick up the changes, re-build the project, image and deploy the updated image to your Kubernetes cluster. You can watch the progress and deployment logs in the console window. Once our updated Spring Boot application initializes, we can test our application running on Kubernetes is still accessible and the new feature is immediately available:
+
+![browser showing new greeting page of the application](docs/images/browser-greeting.png)
+
+```
+$ curl localhost:8080/greeting?name=User
+Hello from Kubernetes with IntelliJ, User!
+```
+
+You can continue adding and debugging new features and have them built as an image and deployed to your Kubernetes cluster from your IDE on every change. Once you are finished, click stop to finish continuous development on Kubernetes session. The plugin and Skaffold delete all Kubernetes resources used for the development session.
+
+You can use the other Kubernetes run target to build the image and deploy the project to your Kubernetes cluster. Unlike continuous development, your project sources and dependencies are not watched, and the Skaffold process finishes once the image and deployment are complete.
+
+![deploy run target click](docs/images/)
