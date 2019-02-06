@@ -43,7 +43,6 @@ If you'd like to try out the plugin pre-release, you can build it from source an
 
 ## Getting started
 
-
 The plugin can work in any of the  [JetBrains family of IDEs](https://www.jetbrains.com/products.html), let’s try the first example with Kubernetes and Java in IntelliJ IDE (the plugin supports both Community and Ultimate editions). Follow the installation steps above to install the plugin. Restart your IDE if prompted to activate the plugin.
 
 Clone the repository to your local machine to get your copy of the repository:
@@ -55,7 +54,7 @@ Open the `hello-spring-boot` example from `google-container-tools/examples` dire
 
 ![opened Spring Boot hello world project](docs/images/sb-hello-world-project.png)
 
-This project is a very simple web application created with [the popular Spring Boot framework](https://spring.io/projects/spring-boot).
+This project is a very simple web application created with [the popular Spring Boot framework](https://spring.io/projects/spring-boot). It uses [Jib Maven plugin](https://github.com/GoogleContainerTools/jib) to build a container image for the project, instead of a Dockerfile. Jib is supported by the plugin and Skaffold and recommended as the best way to build optimized Java container images.
 
 Once the project loads, the plugin will detect it is preconfigured with Skaffold YAML configuration to build image and deploy to Kubernetes. A notification shows:
 
@@ -91,7 +90,7 @@ As you can see, Spring Boot application initializes and launches built-in web se
 
 Navigate your browser to `localhost:8080` to access the Spring Boot application running on your Kubernetes cluster. Alternatively, use `curl` command to interact with the application:
 
-![browser showing root page of the application](docs/images/browser-root.png)
+<img src="docs/images/browser-root.png" alt="browser showing root page of the application" width="300"/> 
 
 ```
 $ curl localhost:8080
@@ -121,3 +120,7 @@ You can continue adding and debugging new features and have them built as an ima
 You can use the other Kubernetes run target to build the image and deploy the project to your Kubernetes cluster. Unlike continuous development, your project sources and dependencies are not watched, and the Skaffold process finishes once the image and deployment are complete.
 
 ![deploy run target click](docs/images/)
+
+## Using existing Kubernetes projects with the plugin
+
+(coming soon)
