@@ -72,7 +72,7 @@ However, before we can deploy and develop, we need to make sure we have access t
 
 *Note*: this step is not required when you work with your own Kubernetes manifests and Skaffold configuration where you specify a repository and an image name that are accessible to you.
 
-Now it is time to deploy the project to Kubernetes or develop on Kubernetes cluster from your IDE! Before we start, make sure [all required dependencies](dependencies) are available on your machine. Click run action for `Develop on Kubernetes` to start development cycle on your Kubernetes cluster:
+Now it is time to deploy the project to Kubernetes or develop on Kubernetes cluster from your IDE! Before we start, make sure [all required dependencies](https://github.com/GoogleContainerTools/google-container-tools-intellij#prerequisites-and-required-dependencies) are available on your machine. Click run action for `Develop on Kubernetes` to start development cycle on your Kubernetes cluster:
 
 <img src="docs/images/k8s-develop-run-icon.png" alt="run target click" width="400"/> 
 
