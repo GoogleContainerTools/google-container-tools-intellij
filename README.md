@@ -43,4 +43,33 @@ If you'd like to try out the plugin pre-release, you can build it from source an
 
 ## Getting started
 
-(coming soon)
+The plugin can work in any of the  [JetBrains family of IDEs](https://www.jetbrains.com/products.html), let’s try the first example with Kubernetes and Java in IntelliJ IDE (the plugin supports both Community and Ultimate editions). Follow the installation steps above to install the plugin. Restart your IDE if prompted to activate the plugin.
+
+Clone the repository to your local machine to get your copy of the repository:
+```
+git clone https://github.com/GoogleContainerTools/google-container-tools-intellij.git
+```
+
+Open the `hello-spring-boot` example from `google-container-tools/examples` directory with your IntelliJ IDE. You can either point to the directory or to the Maven build file (`pom.xml`). The project opens and loads:
+
+![opened Spring Boot hello world project](docs/images/)
+
+Once the project loads, the plugin will detect it is preconfigured with Skaffold YAML configuration to build image and deploy to Kubernetes. A notification shows:
+
+![Kubernetes with Skaffold notification](docs/images/)
+
+Click `Create run configurations for Kubernetes with Skaffold` link to automatically create Kubernetes deployment and continuous development IDE run targets for the project:
+
+![Kubernetes with Skaffold pre-configured run targets](docs/images/)
+
+Now new run targets can be used to build the project and deploy it to Kubernetes or develop on Kubernetes cluster continuously. 
+
+However, before we can deploy and develop, we need to make sure we have access to the image repository where the project image is about to be pushed. By default project is configured to use [Google Container Registry](https://cloud.google.com/container-registry/) and a development project for the plugin which you probably don’t have access to. Once you have your repository set up ([Google Container Registry](https://cloud.google.com/container-registry/), [DockerHub](https://hub.docker.com/), private repository, etc.), you can edit run targets and specify it as a *default image repository* in run target settings:
+
+![specify your repository in run target settings](docs/images/)
+
+*Note*: this step is not required when you work with your own Kubernetes manifests and Skaffold configuration where you specify a repository and an image name that are accessible to you.
+
+Now it is time to deploy the project to Kubernetes or develop on Kubernetes cluster from your IDE!
+
+
