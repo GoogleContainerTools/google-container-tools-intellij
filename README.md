@@ -52,7 +52,7 @@ git clone https://github.com/GoogleContainerTools/google-container-tools-intelli
 
 Open the `hello-spring-boot` example from `google-container-tools/examples` directory with your IntelliJ IDE. You can either point to the directory or to the Maven build file (`pom.xml`). The project opens and loads:
 
-![opened Spring Boot hello world project](docs/images/sb-hello-world-project.png)
+<img src="docs/images/sb-hello-world-project.png" alt="opened Spring Boot hello world project" width="500"/> 
 
 This project is a very simple web application created with [the popular Spring Boot framework](https://spring.io/projects/spring-boot). It uses [Jib Maven plugin](https://github.com/GoogleContainerTools/jib) to build a container image for the project, instead of a Dockerfile. Jib is supported by the plugin and Skaffold and recommended as the best way to build optimized Java container images.
 
@@ -90,14 +90,16 @@ As you can see, Spring Boot application initializes and launches built-in web se
 
 Navigate your browser to `localhost:8080` to access the Spring Boot application running on your Kubernetes cluster. Alternatively, use `curl` command to interact with the application:
 
-<img src="docs/images/browser-root.png" alt="browser showing root page of the application" width="300"/> 
+<img src="docs/images/browser-root.png" alt="browser showing root page of the application" width="350"/> 
 
 ```
 $ curl localhost:8080
 Hello, World of Kubernetes with IntelliJ!
 ```
 
-Now, let’s add more features to our Spring Boot project and see how they get deployed to your Kubernetes cluster without stopping and removing the deployment, manually building and tagging the image, and updating the cluster. Open `HelloController.java` file from `src` and add new HTTP request mapping:
+You can check the details of the Kubernetes deployment and service using standard Kubernetes CLI commands (`kubectl get deploy`, etc.) or using Kubernetes dashboard for your Kubernetes cluster. The Kubernetes resources for the project are located in `k8s` directory - there is one deployment and one service YAML file.
+
+Now, let’s add more features to our Spring Boot project and see how they get deployed to your Kubernetes cluster without stopping and removing the deployment, manually building and tagging the image, and updating the cluster. Open `HelloController.java` file from `src` and add a new HTTP request mapping:
 
 ```java
    @RequestMapping("/greeting")
@@ -121,6 +123,7 @@ You can use the other Kubernetes run target to build the image and deploy the pr
 
 ![deploy run target click](docs/images/)
 
-## Using existing Kubernetes projects with the plugin
+## Setup existing Kubernetes projects with the plugin
 
 (coming soon)
+
