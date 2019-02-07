@@ -121,7 +121,7 @@ You can continue adding and debugging new features and have them built as an ima
 
 You can use the other Kubernetes run target to build the image and deploy the project to your Kubernetes cluster. Unlike continuous development, your project sources and dependencies are not watched, and the Skaffold process finishes once the image and deployment are complete.
 
-![deploy run target click](docs/images/)
+<img src="docs/images/deploy-k8s-action.png" alt="deploy run target click" width="400"/> 
 
 ## Setup existing Kubernetes projects with the plugin
 
