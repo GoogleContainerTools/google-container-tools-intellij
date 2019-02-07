@@ -78,11 +78,11 @@ Now it is time to deploy the project to Kubernetes or develop on Kubernetes clus
 
 The development cycle initiates and console window with the logs opens. The plugin uses Skaffold to build an image for the project, tag it, push it to the configured repository, and then uses `kubectl` to deploy the project Kubernetes manifests:
 
-![develop on Kubernetes console window](docs/images/)
+![develop on Kubernetes console window](docs/images/console-skaffold-build.gif)
 
 Once the build completes, the image is pushed and deployment starts, the console begins to stream logs from your Kubernetes deployment:
 
-![Spring Boot logs from Kubernetes deployment](docs/images/)
+![Spring Boot logs from Kubernetes deployment](docs/images/console-spring-boot-init.gif)
 
 As you can see, Spring Boot application initializes and launches built-in web server. Be default, Spring Boot web server uses port 8080 to serve the content. The plugin and Skaffold make sure you don’t have to worry about accessing the deployment via remote addresses - all declared container ports are port-forwarded automatically!
 
