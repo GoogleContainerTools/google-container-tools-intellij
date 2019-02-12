@@ -72,7 +72,7 @@ However, before we can deploy and develop, we need to make sure we have access t
 
 *Note*: this step is not required when you work with your own Kubernetes manifests and Skaffold configuration where you specify a repository and an image name that are accessible to you.
 
-Now it is time to deploy the project to Kubernetes or develop on a Kubernetes cluster from your IDE! Before we start, make sure [all required dependencies](https://github.com/GoogleContainerTools/google-container-tools-intellij#prerequisites-and-required-dependencies) are available on your machine. Click run action for `Develop on Kubernetes` to start development cycle on your Kubernetes cluster:
+Now it is time to deploy the project to Kubernetes or develop on a Kubernetes cluster from your IDE! Before we start, make sure [all required dependencies](https://github.com/GoogleContainerTools/google-container-tools-intellij#prerequisites-and-required-dependencies) are available on your machine. Click the run action for `Develop on Kubernetes` to start development cycle on your Kubernetes cluster:
 
 <img src="docs/images/k8s-develop-run-icon.png" alt="run target click" width="400"/> 
 
@@ -84,7 +84,7 @@ Once the build completes, the image is pushed and deployment starts, the console
 
 ![Spring Boot logs from Kubernetes deployment](docs/images/console-spring-boot-init.gif)
 
-As you can see, Spring Boot application initializes and launches built-in web server. Be default, Spring Boot web server uses port 8080 to serve the content. The plugin and Skaffold make sure you don’t have to worry about accessing the deployment via remote addresses - all declared container ports are port-forwarded automatically!
+As you can see, Spring Boot application initializes and launches built-in web server. Be default, Spring Boot web server uses port 8080 to serve the content. The plugin makes sure you don’t have to worry about accessing the deployment via remote addresses - all declared container ports are port-forwarded automatically!
 
 ![automatic port-forwarding](docs/images/auto-port-forward-hello-world.png)
 
@@ -108,7 +108,7 @@ Now, let’s add more features to our Spring Boot project and see how they get d
     }
 ```
 
-Save the changes (`Ctrl-S`) or build the project (use `Build -> Build Project` menu or the toolbar icon). The plugin picks up the changes, re-builds the project, image and deploys the updated image to your Kubernetes cluster. You can watch the progress and deployment logs in the console window. Once the changes are propagated, we can confirm the updates by visiting the newly created endpoint:
+Save the changes (`Ctrl-S`) or build the project (use `Build -> Build Project` menu or the toolbar icon). The plugin picks up the changes, re-builds the project and image, and deploys the updated image to your Kubernetes cluster. You can watch the progress and deployment logs in the console window. Once the changes are propagated, we can confirm the updates by visiting the newly created endpoint:
 
 ![browser showing new greeting page of the application](docs/images/browser-greeting.png)
 
