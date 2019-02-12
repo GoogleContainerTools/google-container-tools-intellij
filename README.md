@@ -119,7 +119,7 @@ Hello from Kubernetes with IntelliJ, User!
 
 You can continue adding and debugging new features and have them built as an image and deployed to your Kubernetes cluster from your IDE on every change. Once you are finished, click `stop` to end the continuous development session. The plugin deletes all Kubernetes resources used for the development session.
 
-You can use the other Kubernetes run target to build the image and deploy the project to your Kubernetes cluster. Unlike continuous development, your project sources and dependencies are not watched, and the Skaffold process finishes once the image and deployment are complete.
+You can use the other Kubernetes run target to build the image and deploy the project to your Kubernetes cluster once. Unlike continuous development, your project sources and dependencies are not watched, and the Skaffold process finishes once the image and deployment are complete.
 
 <img src="docs/images/deploy-k8s-action.png" alt="deploy run target click" width="400"/> 
 
