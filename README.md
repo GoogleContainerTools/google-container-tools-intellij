@@ -43,7 +43,7 @@ If you'd like to try out the plugin pre-release, you can build it from source an
 
 ## Getting started
 
-The plugin can work in any of the  [JetBrains family of IDEs](https://www.jetbrains.com/products.html), let’s try the first example with Kubernetes and Java in IntelliJ IDE (the plugin supports both Community and Ultimate editions). Follow the installation steps above to install the plugin. Restart your IDE if prompted to activate the plugin.
+The plugin works in any of the  [JetBrains family of IDEs](https://www.jetbrains.com/products.html). The following shows an example using Kubernetes with Java and Spring Boot in IntelliJ IDEA (Community or Ultimate editions).. Follow the installation steps above to install the plugin. Restart your IDE if prompted to activate the plugin.
 
 Clone the repository to your local machine to get your copy of the repository:
 ```
@@ -54,9 +54,9 @@ Open the `hello-spring-boot` example from `google-container-tools/examples` dire
 
 <img src="docs/images/sb-hello-world-project.png" alt="opened Spring Boot hello world project" width="500"/> 
 
-This project is a very simple web application created with [the popular Spring Boot framework](https://spring.io/projects/spring-boot). It uses [Jib Maven plugin](https://github.com/GoogleContainerTools/jib) to build a container image for the project, instead of a Dockerfile. Jib is supported by the plugin and Skaffold and recommended as the best way to build optimized Java container images.
+This project is a very simple web application created with [the popular Spring Boot framework](https://spring.io/projects/spring-boot). It uses the [Jib Maven plugin](https://github.com/GoogleContainerTools/jib) to build a container image for the project, without needing to create a Dockerfile.
 
-Once the project loads, the plugin will detect it is preconfigured with Skaffold YAML configuration to build image and deploy to Kubernetes. A notification shows:
+Once the project loads, the plugin will detect the Skaffold configuration and prompt to create the Kubernetes targets. The notification shows::
 
 <img src="docs/images/k8s-skaffold-notification.png" alt="Kubernetes with Skaffold notification" width="400"/> 
 
