@@ -66,11 +66,15 @@ Click `Create run configurations for Kubernetes with Skaffold` link to automatic
 
 Now the new run targets can be used to build the project and deploy it to Kubernetes or develop on Kubernetes cluster continuously. With continuous development, the plugin uses Skaffold to watch the sources and dependencies of your project for changes, so that on any change, Skaffold builds and deploys your application to a Kubernetes cluster.
 
+### Specifying image repository
+
 However, before we can deploy and develop, we need to make sure we have access to the image repository where the project image is about to be pushed. By default the project is configured to use [Google Container Registry](https://cloud.google.com/container-registry/) and a development project for the plugin which you probably don’t have access to. Once you have your repository set up ([Google Container Registry](https://cloud.google.com/container-registry/), [DockerHub](https://hub.docker.com/), private repository, etc.), you can edit the run targets and specify it as a *default image repository* in run target settings:
 
 ![specify your repository in run target settings](docs/images/default-image-repo-settings.png)
 
 *Note*: this step is not required when you work with your own Kubernetes manifests and Skaffold configuration where you specify a repository and an image name that are accessible to you.
+
+### Continuous development on Kubernetes
 
 Now it is time to deploy the project to Kubernetes or develop on a Kubernetes cluster from your IDE! Before we start, make sure [all required dependencies](https://github.com/GoogleContainerTools/google-container-tools-intellij#prerequisites-and-required-dependencies) are available on your machine. Click the run action for `Develop on Kubernetes` to start development cycle on your Kubernetes cluster:
 
@@ -99,6 +103,8 @@ Hello, World of Kubernetes with IntelliJ!
 
 You can check the details of the Kubernetes deployment and service using standard Kubernetes CLI commands (`kubectl get deploy`, etc.) or using Kubernetes dashboard for your Kubernetes cluster. The Kubernetes resources for the project are located in the `k8s` directory - there is one deployment and one service YAML file.
 
+#### Adding new features
+
 Now, let’s add more features to our Spring Boot project and see how they get deployed to your Kubernetes cluster without stopping and removing the deployment, manually building and tagging the image, and updating the cluster. Open `HelloController.java` file from `src` and add a new HTTP request mapping:
 
 ```java
@@ -117,7 +123,9 @@ $ curl localhost:8080/greeting?name=User
 Hello from Kubernetes with IntelliJ, User!
 ```
 
-You can continue adding and debugging new features and have them built as an image and deployed to your Kubernetes cluster from your IDE on every change. Once you are finished, click `stop` to end the continuous development session. The plugin deletes all Kubernetes resources used for the development session.
+You can continue adding and testing new features and have them redeployed automatically to your Kubernetes cluster from your IDE on every change. Once you are finished, click `stop` to end the continuous development session. The plugin deletes all Kubernetes resources used for the development session.
+
+### Deployment to Kubernetes
 
 You can use the other Kubernetes run target to build the image and deploy the project to your Kubernetes cluster once. Unlike continuous development, your project sources and dependencies are not watched, and the Skaffold process finishes once the image and deployment are complete.
 
