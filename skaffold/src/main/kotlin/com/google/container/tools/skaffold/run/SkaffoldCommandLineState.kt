@@ -19,6 +19,7 @@ package com.google.container.tools.skaffold.run
 import com.google.container.tools.skaffold.SkaffoldExecutorService
 import com.google.container.tools.skaffold.SkaffoldExecutorSettings
 import com.google.container.tools.skaffold.SkaffoldLabels
+import com.google.container.tools.skaffold.SkaffoldProcess
 import com.google.container.tools.skaffold.message
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.CommandLineState
@@ -30,7 +31,9 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.io.exists
 import java.io.File
+import java.nio.file.Paths
 
 /**
  * Runs Skaffold on command line in both "run"/"dev" modes based on the given
@@ -46,6 +49,7 @@ class SkaffoldCommandLineState(
     val executionMode: SkaffoldExecutorSettings.ExecutionMode
 ) : CommandLineState(environment) {
     public override fun startProcess(): ProcessHandler {
+
         val runConfiguration: RunConfiguration? =
             environment.runnerAndConfigurationSettings?.configuration
         val projectBaseDir: VirtualFile? = environment.project.guessProjectDir()
@@ -60,6 +64,24 @@ class SkaffoldCommandLineState(
             throw ExecutionException(message("skaffold.no.file.selected.error"))
         }
 
+        //call skaffold version --- look at createProcess function, the command list lets you know if skaffold isn't on the system by process of elimination
+        if (Paths.get("skaffold").exists()) {
+            val testSkaffoldCommand = Paths.get("skaffold").toString() + " " + (executionMode.modeFlag)
+            try {
+                SkaffoldProcess(
+                    SkaffoldExecutorService.instance.createProcess(
+                        File(projectBaseDir.path),
+                        listOf(testSkaffoldCommand)
+                    ),
+                    commandLine = testSkaffoldCommand//skaffold executable path
+                )
+            }catch (e: Exception){
+                throw ExecutionException("skaffold path in system is incorrect")
+            }
+        } else {
+            //Tell the user there is no skafnfold path on the system
+            throw ExecutionException("Cannot find Skaffold executable path on the system. Install Skaffold. See required dependencies here: https://github.com/GoogleContainerTools/google-container-tools-intellij#prerequisites-and-required-dependencies")
+        }
         val configFile: VirtualFile? = LocalFileSystem.getInstance()
             .findFileByPath(runConfiguration.skaffoldConfigurationFilePath!!)
         // use project dir relative location for cleaner command line representation
@@ -70,7 +92,6 @@ class SkaffoldCommandLineState(
         // custom settings for single deployment (run) mode
         val singleRunConfiguration: SkaffoldSingleRunConfiguration? =
             if (runConfiguration is SkaffoldSingleRunConfiguration) runConfiguration else null
-
         val skaffoldProcess = SkaffoldExecutorService.instance.executeSkaffold(
             SkaffoldExecutorSettings(
                 executionMode,
@@ -82,7 +103,6 @@ class SkaffoldCommandLineState(
                 defaultImageRepo = runConfiguration.imageRepositoryOverride
             )
         )
-
         return KillableProcessHandler(skaffoldProcess.process, skaffoldProcess.commandLine)
     }
 }

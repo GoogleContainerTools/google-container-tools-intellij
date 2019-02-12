@@ -43,7 +43,7 @@ abstract class SkaffoldExecutorService {
     }
 
     /** Path for Skaffold executable, any form supported by [ProcessBuilder] */
-    protected abstract var skaffoldExecutablePath: Path
+    open var skaffoldExecutablePath: Path = Paths.get("skaffold")
 
     /**
      * Creates Skaffold command line from the given settings and returns resulting launched
@@ -85,6 +85,8 @@ abstract class SkaffoldExecutorService {
         }
 
         try {
+            //this is where that whole no skaffold directory thing is happening
+            // Wait why isnt going into the catch
             val skaffoldProcess = SkaffoldProcess(
                 createProcess(settings.workingDirectory, commandList),
                 commandLine = commandList.joinToString(" ")

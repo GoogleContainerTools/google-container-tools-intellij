@@ -21,14 +21,19 @@ import com.google.container.tools.skaffold.run.ui.SkaffoldDevSettingsEditor
 import com.google.container.tools.skaffold.run.ui.SkaffoldSingleRunSettingsEditor
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.ConfigurationFactory
+import com.intellij.execution.configurations.ConfigurationPerRunnerSettings
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.configurations.RunConfigurationBase
 import com.intellij.execution.configurations.RunProfileState
+import com.intellij.execution.configurations.RunnerSettings
+import com.intellij.execution.configurations.RuntimeConfigurationException
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.execution.runners.ProgramRunner
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.util.xmlb.XmlSerializer
 import org.jdom.Element
+import java.lang.Exception
 
 /**
  * Template configuration for Skaffold single run configuration, serving as a base for all new
@@ -100,5 +105,19 @@ abstract class AbstractSkaffoldRunConfiguration(
         super.writeExternal(element)
 
         XmlSerializer.serializeInto(this, element)
+    }
+
+    @Throws(RuntimeConfigurationException::class)
+    override fun checkRunnerSettings(
+        runner: ProgramRunner<*>,
+        runnerSettings: RunnerSettings?,
+        configurationPerRunnerSettings: ConfigurationPerRunnerSettings?
+    ) {
+        throw RuntimeConfigurationException("Hitting function2222")
+    }
+
+
+    override fun checkSettingsBeforeRun(){
+        throw RuntimeConfigurationException("Hitting function")
     }
 }
