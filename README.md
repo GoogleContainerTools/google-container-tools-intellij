@@ -107,7 +107,7 @@ You can check the details of the Kubernetes deployment and service using standar
 
 #### Adding new features
 
-Now, let’s add more features to our Spring Boot project and see how they get deployed to your Kubernetes cluster without stopping and removing the deployment, manually building and tagging the image, and updating the cluster. Open `HelloController.java` file from `src` and add a new HTTP request mapping:
+Now, let’s add more features to our Spring Boot project and see how they get deployed to your Kubernetes cluster without stopping and removing the deployment, manually building and tagging the image, or updating the cluster. Open `HelloController.java` file from `src` and add a new HTTP request mapping:
 
 ```java
    @RequestMapping("/greeting")
