@@ -45,6 +45,8 @@ If you'd like to try out the plugin pre-release, you can build it from source an
 
 The plugin works in any of the  [JetBrains family of IDEs](https://www.jetbrains.com/products.html). The following shows an example using Kubernetes with Java and Spring Boot in IntelliJ IDEA (Community or Ultimate editions). Follow the installation steps above to install the plugin. Restart your IDE if prompted to activate the plugin.
 
+Before we start, make sure [all required dependencies](https://github.com/GoogleContainerTools/google-container-tools-intellij#prerequisites-and-required-dependencies) are available on your machine.
+
 Clone the repository to your local machine to get your copy of the repository:
 ```
 git clone https://github.com/GoogleContainerTools/google-container-tools-intellij.git
@@ -76,7 +78,7 @@ However, before we can deploy and develop, we need to make sure we have access t
 
 ### Continuous development on Kubernetes
 
-Now it is time to deploy the project to Kubernetes or develop on a Kubernetes cluster from your IDE! Before we start, make sure [all required dependencies](https://github.com/GoogleContainerTools/google-container-tools-intellij#prerequisites-and-required-dependencies) are available on your machine. Click the run action for `Develop on Kubernetes` to start development cycle on your Kubernetes cluster:
+Now you can set up a continuous development iteration cycle in your IDE. Click the run action for `Develop on Kubernetes` to start development cycle on your Kubernetes cluster:
 
 <img src="docs/images/k8s-develop-run-icon.png" alt="run target click" width="400"/> 
 
