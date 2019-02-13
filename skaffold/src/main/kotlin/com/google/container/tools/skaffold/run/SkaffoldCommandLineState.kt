@@ -45,6 +45,8 @@ class SkaffoldCommandLineState(
     environment: ExecutionEnvironment,
     val executionMode: SkaffoldExecutorSettings.ExecutionMode
 ) : CommandLineState(environment) {
+    lateinit var killCallack: () -> Unit
+
     public override fun startProcess(): ProcessHandler {
         val runConfiguration: RunConfiguration? =
             environment.runnerAndConfigurationSettings?.configuration
@@ -83,6 +85,29 @@ class SkaffoldCommandLineState(
             )
         )
 
-        return KillableProcessHandler(skaffoldProcess.process, skaffoldProcess.commandLine)
+//        val gen = object : GenericDebuggerRunner() {
+//            override fun doExecute(
+//                state: RunProfileState,
+//                environment: ExecutionEnvironment
+//            ): RunContentDescriptor? {
+//                return attachVirtualMachine(state, environment, RemoteConnection(true, "127.0.0.1", "5005", false), true)
+//            }
+//        }
+//        gen.execute(environment)
+
+        return SkaffoldKillableProcessHandler(skaffoldProcess.process, skaffoldProcess.commandLine, killCallack)
+    }
+
+    fun setKillCallback(callback: () -> Unit) {
+       killCallack = callback
+    }
+}
+
+class SkaffoldKillableProcessHandler(process:Process, commandLine: String, val killCallback: () -> Unit): KillableProcessHandler(process, commandLine) {
+
+    override fun destroyProcess() {
+        // todo kill remote run configs here
+        killCallback()
+        super.destroyProcess()
     }
 }
