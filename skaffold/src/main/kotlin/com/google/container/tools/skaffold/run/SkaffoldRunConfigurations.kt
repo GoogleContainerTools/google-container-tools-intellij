@@ -16,24 +16,29 @@
 
 package com.google.container.tools.skaffold.run
 
+import com.google.container.tools.skaffold.SkaffoldExecutorService
 import com.google.container.tools.skaffold.SkaffoldExecutorSettings
+import com.google.container.tools.skaffold.SkaffoldProcess
+import com.google.container.tools.skaffold.message
 import com.google.container.tools.skaffold.run.ui.SkaffoldDevSettingsEditor
 import com.google.container.tools.skaffold.run.ui.SkaffoldSingleRunSettingsEditor
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.ConfigurationFactory
-import com.intellij.execution.configurations.ConfigurationPerRunnerSettings
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.configurations.RunConfigurationBase
 import com.intellij.execution.configurations.RunProfileState
-import com.intellij.execution.configurations.RunnerSettings
-import com.intellij.execution.configurations.RuntimeConfigurationException
+import com.intellij.execution.configurations.RuntimeConfigurationWarning
 import com.intellij.execution.runners.ExecutionEnvironment
-import com.intellij.execution.runners.ProgramRunner
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.io.exists
 import com.intellij.util.xmlb.XmlSerializer
 import org.jdom.Element
-import java.lang.Exception
+import java.io.File
+import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * Template configuration for Skaffold single run configuration, serving as a base for all new
@@ -106,18 +111,33 @@ abstract class AbstractSkaffoldRunConfiguration(
 
         XmlSerializer.serializeInto(this, element)
     }
+    override fun checkConfiguration(){
+        checkConfiguration(project)
 
-    @Throws(RuntimeConfigurationException::class)
-    override fun checkRunnerSettings(
-        runner: ProgramRunner<*>,
-        runnerSettings: RunnerSettings?,
-        configurationPerRunnerSettings: ConfigurationPerRunnerSettings?
-    ) {
-        throw RuntimeConfigurationException("Hitting function2222")
     }
 
 
-    override fun checkSettingsBeforeRun(){
-        throw RuntimeConfigurationException("Hitting function")
+    companion object {
+        var skaffoldPath: Path? = Paths.get("skaffold")
+        @JvmStatic
+        fun checkConfiguration(project:Project) {
+            val projectBaseDir: VirtualFile? = project.guessProjectDir()
+            if (skaffoldPath?.exists() == true && projectBaseDir != null ) {
+                val testSkaffoldCommand = skaffoldPath.toString() + " " + (SkaffoldExecutorSettings.ExecutionMode.SINGLE_RUN.modeFlag)
+                try {
+                    SkaffoldProcess(
+                        SkaffoldExecutorService.instance.createProcess(
+                            File(projectBaseDir.path),
+                            listOf(testSkaffoldCommand)
+                        ),
+                        commandLine = testSkaffoldCommand//skaffold executable path
+                    )
+                }catch (e: Exception){
+                    throw RuntimeConfigurationWarning(message("skaffold.not.on.system.error"))
+                }
+            } else {
+                throw RuntimeConfigurationWarning(message("skaffold.not.on.system.error"))
+            }
+        }
     }
 }

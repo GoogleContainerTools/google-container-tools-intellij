@@ -101,6 +101,7 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
             )
         }
 
+
         return basePanel
     }
 
@@ -111,6 +112,10 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
 
         if (!SkaffoldFileService.instance.isSkaffoldFile(selectedSkaffoldFile)) {
             throw ConfigurationException(message("skaffold.invalid.file.error"))
+        }
+
+        if(true){
+            throw ConfigurationException("Skaffold is not in the system path")
         }
 
         // save properties

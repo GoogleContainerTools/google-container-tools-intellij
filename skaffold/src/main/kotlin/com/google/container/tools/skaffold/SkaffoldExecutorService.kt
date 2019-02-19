@@ -85,8 +85,6 @@ abstract class SkaffoldExecutorService {
         }
 
         try {
-            //this is where that whole no skaffold directory thing is happening
-            // Wait why isnt going into the catch
             val skaffoldProcess = SkaffoldProcess(
                 createProcess(settings.workingDirectory, commandList),
                 commandLine = commandList.joinToString(" ")
