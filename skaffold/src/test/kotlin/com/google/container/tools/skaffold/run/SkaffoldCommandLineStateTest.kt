@@ -145,7 +145,7 @@ class SkaffoldCommandLineStateTest {
     }
 
     @Test
-    fun `A run error is thrown if skaffold isn't in the system PATH`() {
+    fun `A run error is thrown if skaffold is not in the system PATH`() {
         every { SkaffoldExecutorService.instance.isSkaffoldAvailable() } answers { false }
 
         skaffoldCommandLineState = SkaffoldCommandLineState(
@@ -159,7 +159,7 @@ class SkaffoldCommandLineStateTest {
     }
 
     @Test
-    fun `A run error isn't thrown if skaffold is in the system PATH`() {
+    fun `A run error is not thrown if skaffold is in the system PATH`() {
         every { SkaffoldExecutorService.instance.isSkaffoldAvailable() } answers { true }
 
         skaffoldCommandLineState = SkaffoldCommandLineState(

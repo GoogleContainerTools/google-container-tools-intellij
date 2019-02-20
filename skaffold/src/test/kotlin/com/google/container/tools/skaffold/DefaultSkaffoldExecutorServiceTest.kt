@@ -18,6 +18,7 @@ package com.google.container.tools.skaffold
 
 import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.test.ContainerToolsRule
+import com.google.container.tools.test.TestFile
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockkStatic
@@ -37,6 +38,9 @@ class DefaultSkaffoldExecutorServiceTest {
 
     @MockK
     private lateinit var mockProcess: Process
+
+    @TestFile(name = "skaffold", contents = "Some contents")
+    private lateinit var testSkaffoldFile: File
 
     @Before
     fun setUp() {
@@ -230,6 +234,8 @@ class DefaultSkaffoldExecutorServiceTest {
 
     @Test
     fun `isSkaffoldAvailable returns true when skaffold is available`() {
+        mockkStatic(System::class)
+        every { System.getenv("PATH") } answers { testSkaffoldFile.parent }
         assertThat(defaultSkaffoldExecutorService.isSkaffoldAvailable()).isTrue()
     }
 

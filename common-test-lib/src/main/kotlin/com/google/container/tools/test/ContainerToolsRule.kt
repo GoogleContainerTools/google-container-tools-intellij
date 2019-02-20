@@ -133,6 +133,7 @@ class ContainerToolsRule(private val testInstance: Any) : TestRule {
                 }
             }
 
+            file.setExecutable(true)
             filesToDelete.add(file)
             member.setter.call(testInstance, file)
         }
