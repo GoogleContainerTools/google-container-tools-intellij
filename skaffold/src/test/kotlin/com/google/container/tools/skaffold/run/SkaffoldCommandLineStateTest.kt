@@ -21,16 +21,13 @@ import com.google.container.tools.core.PluginInfo
 import com.google.container.tools.skaffold.SkaffoldExecutorService
 import com.google.container.tools.skaffold.SkaffoldExecutorSettings
 import com.google.container.tools.skaffold.SkaffoldProcess
-import com.google.container.tools.skaffold.message
 import com.google.container.tools.test.ContainerToolsRule
 import com.google.container.tools.test.TestService
 import com.google.container.tools.test.expectThrows
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.RunnerAndConfigurationSettings
 import com.intellij.execution.configurations.RunConfigurationBase
-import com.intellij.execution.configurations.RuntimeConfigurationWarning
 import com.intellij.execution.configurations.SearchScopeProvider
-import com.intellij.execution.process.KillableProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.util.ThrowableRunnable
@@ -147,32 +144,29 @@ class SkaffoldCommandLineStateTest {
 
     @Test
     fun `A run error is thrown if skaffold isn't in the system PATH`() {
+        every { SkaffoldExecutorService.instance.isSkaffoldAvailable() } answers { false }
+
         skaffoldCommandLineState = SkaffoldCommandLineState(
             mockExecutionEnvironment,
             SkaffoldExecutorSettings.ExecutionMode.DEV
         )
 
-        every { AbstractSkaffoldRunConfiguration.checkConfiguration(mockExecutionEnvironment.project) } answers { throw RuntimeConfigurationWarning(
-            message("skaffold.not.on.system.error"))
-        }
-
-        every { skaffoldCommandLineState.startProcess()  } throws ExecutionException("skaffold.not.in.system.error")
+        expectThrows(
+            ExecutionException::class,
+            ThrowableRunnable { skaffoldCommandLineState.startProcess() })
     }
-
 
     @Test
     fun `A run error isn't thrown if skaffold is in the system PATH`() {
+        every { SkaffoldExecutorService.instance.isSkaffoldAvailable() } answers { true }
+
         skaffoldCommandLineState = SkaffoldCommandLineState(
             mockExecutionEnvironment,
             SkaffoldExecutorSettings.ExecutionMode.DEV
         )
 
-        every { AbstractSkaffoldRunConfiguration.checkConfiguration(mockExecutionEnvironment.project) } answers { throw RuntimeConfigurationWarning(
-            message("skaffold.not.on.system.error"))
-        }
+        skaffoldCommandLineState.startProcess()
 
-        val killableProcessHandler: KillableProcessHandler = mockk(relaxed = true)
-        every { skaffoldCommandLineState.startProcess()  } answers {killableProcessHandler}
+        assertThat(skaffoldSettingsCapturingSlot.captured.workingDirectory).isNotNull()
     }
-
 }

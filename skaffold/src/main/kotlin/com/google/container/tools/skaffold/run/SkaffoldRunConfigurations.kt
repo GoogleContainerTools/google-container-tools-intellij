@@ -18,7 +18,6 @@ package com.google.container.tools.skaffold.run
 
 import com.google.container.tools.skaffold.SkaffoldExecutorService
 import com.google.container.tools.skaffold.SkaffoldExecutorSettings
-import com.google.container.tools.skaffold.SkaffoldProcess
 import com.google.container.tools.skaffold.message
 import com.google.container.tools.skaffold.run.ui.SkaffoldDevSettingsEditor
 import com.google.container.tools.skaffold.run.ui.SkaffoldSingleRunSettingsEditor
@@ -31,14 +30,8 @@ import com.intellij.execution.configurations.RuntimeConfigurationWarning
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.guessProjectDir
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.util.io.exists
 import com.intellij.util.xmlb.XmlSerializer
 import org.jdom.Element
-import java.io.File
-import java.nio.file.Path
-import java.nio.file.Paths
 
 /**
  * Template configuration for Skaffold single run configuration, serving as a base for all new
@@ -111,33 +104,10 @@ abstract class AbstractSkaffoldRunConfiguration(
 
         XmlSerializer.serializeInto(this, element)
     }
-    override fun checkConfiguration(){
-        checkConfiguration(project)
 
-    }
-
-
-    companion object {
-        var skaffoldPath: Path? = Paths.get("skaffold")
-        @JvmStatic
-        fun checkConfiguration(project:Project) {
-            val projectBaseDir: VirtualFile? = project.guessProjectDir()
-            if (skaffoldPath?.exists() == true && projectBaseDir != null ) {
-                val testSkaffoldCommand = skaffoldPath.toString() + " " + (SkaffoldExecutorSettings.ExecutionMode.SINGLE_RUN.modeFlag)
-                try {
-                    SkaffoldProcess(
-                        SkaffoldExecutorService.instance.createProcess(
-                            File(projectBaseDir.path),
-                            listOf(testSkaffoldCommand)
-                        ),
-                        commandLine = testSkaffoldCommand//skaffold executable path
-                    )
-                }catch (e: Exception){
-                    throw RuntimeConfigurationWarning(message("skaffold.not.on.system.error"))
-                }
-            } else {
-                throw RuntimeConfigurationWarning(message("skaffold.not.on.system.error"))
-            }
+    override fun checkConfiguration() {
+        if (!SkaffoldExecutorService.instance.isSkaffoldAvailable()) {
+            throw RuntimeConfigurationWarning(message("skaffold.not.on.system.error"))
         }
     }
 }

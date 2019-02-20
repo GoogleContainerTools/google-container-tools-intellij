@@ -20,6 +20,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.container.tools.test.ContainerToolsRule
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockkStatic
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.Before
@@ -225,5 +226,18 @@ class DefaultSkaffoldExecutorServiceTest {
         )
 
         assertThat(result.commandLine).isEqualTo("skaffold dev --filename test.yaml")
+    }
+
+    @Test
+    fun `isSkaffoldAvailable returns true when skaffold is available`() {
+
+        assertThat(defaultSkaffoldExecutorService.isSkaffoldAvailable()).isTrue()
+    }
+
+    @Test
+    fun `isSkaffoldAvailable returns false when skaffold is not available`() {
+        mockkStatic(System::class)
+        every { System.getenv("PATH") } answers { "" }
+        assertThat(defaultSkaffoldExecutorService.isSkaffoldAvailable()).isFalse()
     }
 }
