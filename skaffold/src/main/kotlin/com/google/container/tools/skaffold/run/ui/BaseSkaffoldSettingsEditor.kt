@@ -112,6 +112,7 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
         if (!SkaffoldFileService.instance.isSkaffoldFile(selectedSkaffoldFile)) {
             throw ConfigurationException(message("skaffold.invalid.file.error"))
         }
+
         // save properties
         runConfig.skaffoldConfigurationFilePath = selectedSkaffoldFile.path
         runConfig.skaffoldProfile = skaffoldProfilesComboBox.getSelectedProfile()
