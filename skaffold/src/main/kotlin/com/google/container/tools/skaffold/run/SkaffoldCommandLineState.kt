@@ -23,7 +23,6 @@ import com.google.container.tools.skaffold.message
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.CommandLineState
 import com.intellij.execution.configurations.RunConfiguration
-import com.intellij.execution.configurations.RuntimeConfigurationWarning
 import com.intellij.execution.process.KillableProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
@@ -62,9 +61,7 @@ class SkaffoldCommandLineState(
             throw ExecutionException(message("skaffold.no.file.selected.error"))
         }
 
-        try {
-            AbstractSkaffoldRunConfiguration.checkConfiguration(environment.project)
-        } catch (e : RuntimeConfigurationWarning){
+        if (!SkaffoldExecutorService.instance.isSkaffoldAvailable()) {
             throw ExecutionException(message("skaffold.not.on.system.error"))
         }
 
