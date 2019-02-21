@@ -236,7 +236,7 @@ class DefaultSkaffoldExecutorServiceTest {
 
     @Test
     fun `isSkaffoldAvailable returns true when skaffold is available`() {
-
+        testSkaffoldFile.setExecutable(true)
         every { defaultSkaffoldExecutorService.getSystemPath() } answers { testSkaffoldFile.parent }
         assertThat(defaultSkaffoldExecutorService.isSkaffoldAvailable()).isTrue()
     }
