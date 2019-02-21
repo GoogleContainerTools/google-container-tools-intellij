@@ -48,33 +48,11 @@ abstract class SkaffoldExecutorService {
             get() = ServiceManager.getService(SkaffoldExecutorService::class.java)!!
     }
 
-    val NOTIFICATION_GROUP = NotificationGroup(
-        PLUGIN_NOTIFICATION_DISPLAY_GROUP_ID,
-        NotificationDisplayType.BALLOON,
-        true,
-        null,
-        SKAFFOLD_ICON
-    )
-
-    fun createNotification(
-        title: String,
-        message: String,
-        type: NotificationType = NotificationType.INFORMATION
-    ): Notification =
-        NOTIFICATION_GROUP.createNotification(
-            title,
-            null /* subtitle */,
-            message,
-            type,
-            NotificationListener.UrlOpeningListener(true)
-        )
-
-
 
     /** Path for Skaffold executable, any form supported by [ProcessBuilder] */
     protected abstract var skaffoldExecutablePath: Path
 
-    open fun getSystemPath(): String = System.getenv("PATH")
+    abstract fun getSystemPath(): String
 
     fun isSkaffoldAvailable(): Boolean = getSystemPath().split(File.pathSeparator)
             .asSequence()
