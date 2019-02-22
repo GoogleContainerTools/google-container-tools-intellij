@@ -17,7 +17,6 @@
 package com.google.container.tools.skaffold
 
 import com.google.common.annotations.VisibleForTesting
-import com.google.container.tools.core.PLUGIN_NOTIFICATION_DISPLAY_GROUP_ID
 import com.google.container.tools.core.analytics.UsageTrackerProvider
 import com.google.container.tools.skaffold.SkaffoldExecutorSettings.ExecutionMode
 import com.google.container.tools.skaffold.metrics.METADATA_ERROR_MESSAGE_KEY
@@ -25,11 +24,6 @@ import com.google.container.tools.skaffold.metrics.SKAFFOLD_DEV_RUN_FAIL
 import com.google.container.tools.skaffold.metrics.SKAFFOLD_DEV_RUN_SUCCESS
 import com.google.container.tools.skaffold.metrics.SKAFFOLD_SINGLE_RUN_FAIL
 import com.google.container.tools.skaffold.metrics.SKAFFOLD_SINGLE_RUN_SUCCESS
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationDisplayType
-import com.intellij.notification.NotificationGroup
-import com.intellij.notification.NotificationListener
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.ServiceManager
 import java.io.File
 import java.nio.file.Path
@@ -48,11 +42,10 @@ abstract class SkaffoldExecutorService {
             get() = ServiceManager.getService(SkaffoldExecutorService::class.java)!!
     }
 
-
     /** Path for Skaffold executable, any form supported by [ProcessBuilder] */
     protected abstract var skaffoldExecutablePath: Path
 
-    abstract fun getSystemPath(): String
+    fun getSystemPath(): String = System.getenv("PATH")
 
     fun isSkaffoldAvailable(): Boolean = getSystemPath().split(File.pathSeparator)
             .asSequence()
@@ -189,7 +182,4 @@ data class SkaffoldProcess(val process: Process, val commandLine: String)
 class DefaultSkaffoldExecutorService : SkaffoldExecutorService() {
     // use executable available in PATH
     override var skaffoldExecutablePath: Path = Paths.get("skaffold")
-
-    @VisibleForTesting
-    override fun getSystemPath(): String = System.getenv("PATH")
 }
