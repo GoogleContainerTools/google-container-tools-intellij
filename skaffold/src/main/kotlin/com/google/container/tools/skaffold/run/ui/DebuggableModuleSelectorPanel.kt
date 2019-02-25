@@ -16,18 +16,13 @@
 
 package com.google.container.tools.skaffold.run.ui
 
-import com.google.container.tools.skaffold.message
-import com.google.container.tools.skaffold.run.SkaffoldDevConfiguration
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.module.Module
+import com.intellij.ui.AddDeleteListPanel
 
-/**
- * Settings editor that provides a UI for Skaffold continuous development mode run
- * configuration settings (ultimately calling "skaffold dev"), also saves and retrieves
- * the settings from the project state.
- */
-class SkaffoldDevSettingsEditor(project: Project) :
-    BaseSkaffoldSettingsEditor<SkaffoldDevConfiguration>(
-        project,
-        editorTitle = message("skaffold.run.config.dev.run.name"),
-        helperText = message("skaffold.run.config.dev.run.helperText")
-    )
+class DebuggableModuleSelectorPanel(title: String, initialList: List<Module>) :
+    AddDeleteListPanel<Module>(title, initialList) {
+
+    override fun findItemToAdd(): Module? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}

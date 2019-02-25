@@ -28,6 +28,7 @@ import com.intellij.execution.configurations.RunConfigurationBase
 import com.intellij.execution.configurations.RunProfileState
 import com.intellij.execution.configurations.RuntimeConfigurationWarning
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.util.xmlb.XmlSerializer
@@ -51,7 +52,7 @@ class SkaffoldSingleRunConfiguration(
         SkaffoldCommandLineState(environment, SkaffoldExecutorSettings.ExecutionMode.SINGLE_RUN)
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> =
-        SkaffoldSingleRunSettingsEditor()
+        SkaffoldSingleRunSettingsEditor(project)
 }
 
 /**
@@ -69,7 +70,7 @@ class SkaffoldDevConfiguration(
         SkaffoldCommandLineState(environment, SkaffoldExecutorSettings.ExecutionMode.DEV)
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> =
-        SkaffoldDevSettingsEditor()
+        SkaffoldDevSettingsEditor(project)
 }
 
 /**
@@ -92,6 +93,8 @@ abstract class AbstractSkaffoldRunConfiguration(
 
     /** Image repository to use with a Skaffold run target instead of one configured by default. */
     var imageRepositoryOverride: String? = null
+
+    var modulesToDebug: List<Module>? = null
 
     override fun readExternal(element: Element) {
         super.readExternal(element)

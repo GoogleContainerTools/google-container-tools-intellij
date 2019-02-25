@@ -20,12 +20,16 @@ import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.skaffold.SkaffoldFileService
 import com.google.container.tools.skaffold.message
 import com.google.container.tools.skaffold.run.AbstractSkaffoldRunConfiguration
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SettingsEditor
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.TitledSeparator
 import com.intellij.ui.border.IdeaTitledBorder
+import com.intellij.ui.components.JBTabbedPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.layout.panel
 import com.intellij.util.ui.UIUtil
@@ -43,6 +47,7 @@ import javax.swing.JPanel
  * @param T type of the [AbstractSkaffoldRunConfiguration] this editor works with, i.e. run or dev.
  */
 open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
+    val project: Project,
     val editorTitle: String,
     val helperText: String = ""
 ) :
@@ -57,7 +62,7 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
     @VisibleForTesting
     val overrideImageRepoTextField = JBTextField()
 
-    protected lateinit var basePanel: JPanel
+    lateinit var addDeleteListPanel: DebuggableModuleSelectorPanel
 
     private val extensionComponents: MutableMap<String, JComponent> = mutableMapOf()
 
@@ -70,7 +75,59 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
     }
 
     override fun createEditor(): JComponent {
-        basePanel = panel {
+        val tabbedPane: JBTabbedPane = JBTabbedPane()
+
+        tabbedPane.addTab("Configuration", createConfigurationPanel())
+        tabbedPane.addTab("Debug", createDebugPanel())
+
+        return tabbedPane
+    }
+
+    override fun applyEditorTo(runConfig: T) {
+        val selectedSkaffoldFile: VirtualFile =
+            skaffoldFilesComboBox.getSelectedSkaffoldFile()
+                ?: throw ConfigurationException(message("skaffold.no.file.selected.error"))
+
+        if (!SkaffoldFileService.instance.isSkaffoldFile(selectedSkaffoldFile)) {
+            throw ConfigurationException(message("skaffold.invalid.file.error"))
+        }
+
+        // save properties
+        runConfig.skaffoldConfigurationFilePath = selectedSkaffoldFile.path
+        runConfig.skaffoldProfile = skaffoldProfilesComboBox.getSelectedProfile()
+        // do not save empty repository name, convert to null
+        runConfig.imageRepositoryOverride =
+            overrideImageRepoTextField.text.let { if (it.isEmpty()) null else it }
+        runConfig.modulesToDebug = addDeleteListPanel.listItems.toList().map {
+            it as Module
+        }
+    }
+
+    override fun resetEditorFrom(runConfig: T) {
+        skaffoldFilesComboBox.setProject(runConfig.project)
+        skaffoldProfilesComboBox.project = runConfig.project
+
+        runConfig.skaffoldConfigurationFilePath?.let {
+            LocalFileSystem.getInstance().findFileByPath(it)
+        }?.let { skaffoldFilesComboBox.setSelectedSkaffoldFile(it) }
+
+        runConfig.skaffoldProfile?.let {
+            skaffoldProfilesComboBox.setSelectedProfile(it)
+        }
+
+        runConfig.imageRepositoryOverride?.let {
+            overrideImageRepoTextField.text = it
+        }
+
+        runConfig.modulesToDebug?.let {
+            addDeleteListPanel.removeAll()
+            // todo need to properly reset the form element
+//            it.forEach(addDeleteListPanel.addElement)
+        }
+    }
+
+    private fun createConfigurationPanel(): JPanel {
+        val configurationPanel: JPanel = panel {
             row {
                 label(helperText, 0, UIUtil.ComponentStyle.SMALL)
             }
@@ -89,7 +146,7 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
             row(message("skaffold.override.image.repo")) { overrideImageRepoTextField(grow) }
         }
 
-        basePanel.border = IdeaTitledBorder(editorTitle, 0, Insets(0, 0, 0, 0))
+        configurationPanel.border = IdeaTitledBorder(editorTitle, 0, Insets(0, 0, 0, 0))
 
         overrideImageRepoTextField.emptyText.text =
             message("skaffold.override.image.repo.empty.prompt")
@@ -101,40 +158,13 @@ open class BaseSkaffoldSettingsEditor<T : AbstractSkaffoldRunConfiguration>(
             )
         }
 
-        return basePanel
+        return configurationPanel
     }
 
-    override fun applyEditorTo(runConfig: T) {
-        val selectedSkaffoldFile: VirtualFile =
-            skaffoldFilesComboBox.getSelectedSkaffoldFile()
-                ?: throw ConfigurationException(message("skaffold.no.file.selected.error"))
+    private fun createDebugPanel(): JPanel {
+        // todo modules need to be sourced from skaffold.yaml
+        addDeleteListPanel = DebuggableModuleSelectorPanel("Modules to debug", ModuleManager.getInstance(project).modules.toList())
 
-        if (!SkaffoldFileService.instance.isSkaffoldFile(selectedSkaffoldFile)) {
-            throw ConfigurationException(message("skaffold.invalid.file.error"))
-        }
-
-        // save properties
-        runConfig.skaffoldConfigurationFilePath = selectedSkaffoldFile.path
-        runConfig.skaffoldProfile = skaffoldProfilesComboBox.getSelectedProfile()
-        // do not save empty repository name, convert to null
-        runConfig.imageRepositoryOverride =
-            overrideImageRepoTextField.text.let { if (it.isEmpty()) null else it }
-    }
-
-    override fun resetEditorFrom(runConfig: T) {
-        skaffoldFilesComboBox.setProject(runConfig.project)
-        skaffoldProfilesComboBox.project = runConfig.project
-
-        runConfig.skaffoldConfigurationFilePath?.let {
-            LocalFileSystem.getInstance().findFileByPath(it)
-        }?.let { skaffoldFilesComboBox.setSelectedSkaffoldFile(it) }
-
-        runConfig.skaffoldProfile?.let {
-            skaffoldProfilesComboBox.setSelectedProfile(it)
-        }
-
-        runConfig.imageRepositoryOverride?.let {
-            overrideImageRepoTextField.text = it
-        }
+        return addDeleteListPanel
     }
 }

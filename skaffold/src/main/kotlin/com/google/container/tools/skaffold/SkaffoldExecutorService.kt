@@ -65,8 +65,10 @@ abstract class SkaffoldExecutorService {
         SkaffoldProcess {
         val commandList = mutableListOf<String>()
         with(commandList) {
-            add(skaffoldExecutablePath.toString())
-            add(settings.executionMode.modeFlag)
+            add("/Users/eshaul/go/src/github.com/GoogleContainerTools/skaffold/out/skaffold")
+            add("debug")
+            add("-v")
+            add("debug")
             settings.skaffoldConfigurationFilePath?.let {
                 add("--filename")
                 add(it)

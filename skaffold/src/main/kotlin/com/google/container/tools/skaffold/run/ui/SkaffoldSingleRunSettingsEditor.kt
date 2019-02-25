@@ -19,14 +19,16 @@ package com.google.container.tools.skaffold.run.ui
 import com.google.common.annotations.VisibleForTesting
 import com.google.container.tools.skaffold.message
 import com.google.container.tools.skaffold.run.SkaffoldSingleRunConfiguration
+import com.intellij.openapi.project.Project
 import javax.swing.JCheckBox
 
 /**
  * Settings editor that provides a UI for Skaffold single mode run configuration settings,
  * also saves and retrieves the settings from the project state.
  */
-class SkaffoldSingleRunSettingsEditor :
+class SkaffoldSingleRunSettingsEditor(project: Project) :
     BaseSkaffoldSettingsEditor<SkaffoldSingleRunConfiguration>(
+        project,
         editorTitle = message("skaffold.run.config.single.run.name"),
         helperText = message("skaffold.run.config.single.run.helperText")
     ) {

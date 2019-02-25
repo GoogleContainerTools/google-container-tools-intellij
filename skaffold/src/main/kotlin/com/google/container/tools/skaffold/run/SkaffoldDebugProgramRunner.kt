@@ -42,6 +42,8 @@ class SkaffoldDebugProgramRunner : DefaultProgramRunner() {
     }
 
     // do stuff before the command line state is executed
+    // TODO how to do this after deploy - we won't know the port until the event api reports
+    //  the local mapping. so this needs to be started after the fact. right now its started first..
     override fun doExecute(
         state: RunProfileState,
         environment: ExecutionEnvironment
@@ -51,27 +53,27 @@ class SkaffoldDebugProgramRunner : DefaultProgramRunner() {
 
 //        attachVirtualMachine(state, environment, RemoteConnection(true, "127.0.0.1", "5006", false), true)
         val remote505 = RemoteConnection(true, "127.0.0.1", "5005", false)
-        val remote506 = RemoteConnection(true, "127.0.0.1", "5006", false)
+//        val remote506 = RemoteConnection(true, "127.0.0.1", "5006", false)
         val runnerAndConfig = RunnerAndConfigurationSettingsImpl(
             (environment.runnerAndConfigurationSettings as RunnerAndConfigurationSettingsImpl).manager,
             RemoteConfiguration(environment.project, SkaffoldDebugRunConfigurationType()),
             false,
             RunConfigurationLevel.WORKSPACE
         )
-        runnerAndConfig.name = "debug: catalog:5005"
+        runnerAndConfig.name = "debug: customer:5005"
         val newEnv1 = ExecutionEnvironment(
             environment.executor,
             environment.runner,
             runnerAndConfig,
             environment.project
         )
-        val newEnv2 = ExecutionEnvironment(
-            environment.executor,
-            environment.runner,
-            runnerAndConfig,
-            environment.project
-        )
-
+//        val newEnv2 = ExecutionEnvironment(
+//            environment.executor,
+//            environment.runner,
+//            runnerAndConfig,
+//            environment.project
+//        )
+//
         val gen = object : GenericDebuggerRunner() {
             override fun doExecute(
                 state: RunProfileState,
@@ -86,35 +88,36 @@ class SkaffoldDebugProgramRunner : DefaultProgramRunner() {
             }
         }
         gen.execute(newEnv1)
-
-        runnerAndConfig.name = "debug: order:5006"
-
-        val gen2 = object : GenericDebuggerRunner() {
-            override fun doExecute(
-                state: RunProfileState,
-                environment: ExecutionEnvironment
-            ): RunContentDescriptor? {
-                return attachVirtualMachine(
-                    RemoteStateState(environment.project, remote506),
-                    newEnv2,
-                    remote506,
-                    true
-                )
-            }
-        }
-        gen2.execute(newEnv2)
-//        newEnv.contentToReuse
-        // See StopAction
-        //  ExecutionManagerImpl.stopProcess(getRecentlyStartedContentDescriptor(dataContext));
-//        environment.dataContext = listOf(gen, gen2)
-
+//
+//        runnerAndConfig.name = "debug: order:5006"
+//
+//        val gen2 = object : GenericDebuggerRunner() {
+//            override fun doExecute(
+//                state: RunProfileState,
+//                environment: ExecutionEnvironment
+//            ): RunContentDescriptor? {
+//                return attachVirtualMachine(
+//                    RemoteStateState(environment.project, remote506),
+//                    newEnv2,
+//                    remote506,
+//                    true
+//                )
+//            }
+//        }
+//        gen2.execute(newEnv2)
+////        newEnv.contentToReuse
+//        // See StopAction
+//        //  ExecutionManagerImpl.stopProcess(getRecentlyStartedContentDescriptor(dataContext));
+////        environment.dataContext = listOf(gen, gen2)
+//
         state.killCallack = {
            ExecutionManagerImpl.stopProcess(newEnv1.contentToReuse)
-            ExecutionManagerImpl.stopProcess(newEnv2.contentToReuse)
+//            ExecutionManagerImpl.stopProcess(newEnv2.contentToReuse)
 
             ExecutionManager.getInstance(environment.project).contentManager.removeRunContent(newEnv1.executor, newEnv1.contentToReuse!!)
-            ExecutionManager.getInstance(environment.project).contentManager.removeRunContent(newEnv2.executor, newEnv2.contentToReuse!!)
+//            ExecutionManager.getInstance(environment.project).contentManager.removeRunContent(newEnv2.executor, newEnv2.contentToReuse!!)
         }
+//        state.killCallack = {}
 
         return super.doExecute(
             state,
