@@ -48,6 +48,7 @@ class SkaffoldCommandLineState(
     lateinit var killCallack: () -> Unit
 
     public override fun startProcess(): ProcessHandler {
+
         val runConfiguration: RunConfiguration? =
             environment.runnerAndConfigurationSettings?.configuration
         val projectBaseDir: VirtualFile? = environment.project.guessProjectDir()
@@ -62,6 +63,10 @@ class SkaffoldCommandLineState(
             throw ExecutionException(message("skaffold.no.file.selected.error"))
         }
 
+        if (!SkaffoldExecutorService.instance.isSkaffoldAvailable()) {
+            throw ExecutionException(message("skaffold.not.on.system.error"))
+        }
+
         val configFile: VirtualFile? = LocalFileSystem.getInstance()
             .findFileByPath(runConfiguration.skaffoldConfigurationFilePath!!)
         // use project dir relative location for cleaner command line representation
@@ -72,7 +77,6 @@ class SkaffoldCommandLineState(
         // custom settings for single deployment (run) mode
         val singleRunConfiguration: SkaffoldSingleRunConfiguration? =
             if (runConfiguration is SkaffoldSingleRunConfiguration) runConfiguration else null
-
         val skaffoldProcess = SkaffoldExecutorService.instance.executeSkaffold(
             SkaffoldExecutorSettings(
                 executionMode,
@@ -109,5 +113,6 @@ class SkaffoldKillableProcessHandler(process:Process, commandLine: String, val k
         // todo kill remote run configs here
         killCallback()
         super.destroyProcess()
+//        return KillableProcessHandler(skaffoldProcess.process, skaffoldProcess.commandLine)
     }
 }
